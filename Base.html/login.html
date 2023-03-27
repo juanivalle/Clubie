@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>GreenGenius</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="Estilologin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <header class="header">
+        <div class="logo"><img src="../media/Sin título-2.png" alt="Logo de marca"></div>
+        <ul class="nav-links">
+            <li><a href="home.html">home</a></li>
+            <li><a href="tweets.html">Clubes</a></li>
+            <li><a href="variety.html">Chats</a></li>
+            <li><a href="lenguages.html">Inicio de sesion</a></li>
+            <li><button class="btn-perfil" src=""><a href="perfil.html">
+                        <div class="profile-image"></div>
+                    </a></button></li>
+        </ul>
+        <div class="bitin">
+            <button class="bdark" id="bdark">
+                <span><i class="fas fa-sun" style="color: #343D5B;"></i></span>
+                <span><i class="fas fa-moon"></i></span>
+            </button>
+        </div>
+    </header>
+    <div class="contenedor">
+        <div class="container-form sign-up">
+            <div class="welcome-back">
+                <div class="message">
+                    <h2>Bienvenido a GreenGenius!</h2>
+                    <p>Si ya tienes una cuenta por favor inicia sesion aqui</p>
+                    <button class="sign-up-btn">Iniciar Sesion</button>
+                </div>
+            </div>
+            <form class="formulario">
+                <h2 class="create-account">Crear una cuenta</h2>
+                <div class="iconos">
+                    <div class="border-icon">
+
+                    </div>
+                    <div class="border-icon">
+
+                    </div>
+                    <div class="border-icon">
+
+                    </div>
+                </div>
+                <p class="cuenta-gratis">Si ya tienes cuenta, inicia sesión</p>
+                <input type="text" placeholder="Nombre">
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Contraseña">
+                <input type="button" value="Registrarse">
+            </form>
+        </div>
+        <div class="container-form sign-in">
+            <form class="formulario">
+                <h2 class="create-account">Iniciar Sesion</h2>
+                <div class="iconos">
+                    <div class="border-icon">
+
+                    </div>
+                    <div class="border-icon">
+
+                    </div>
+                    <div class="border-icon">
+
+                    </div>
+                </div>
+                <p class="cuenta-gratis">Si aún no tienes cuenta, registrate!</p>
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Contraseña">
+                <input type="button" value="Iniciar Sesion">
+            </form>
+            <div class="welcome-back">
+                <div class="message">
+                    <h2>Que gusto vernos denuevo!</h2>
+                    <p>Si aun no tienes una cuenta por favor registrese aqui</p>
+                    <button class="sign-in-btn">Registrarse</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.addEventListener('load', () => {
+            const emailInput = document.querySelector('.email');
+            emailInput.focus();
+        });
+    </script>
+    <script src="page.js"></script>
+</body>
+
+</html>
