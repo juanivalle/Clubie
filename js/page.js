@@ -1,26 +1,19 @@
-window.addEventListener("load",inicio);
 
-function inicio(){
-  //Esta función hará que al ser cargada la página se carguen todas las funciones 
-  darkMode();
-}
-
-//creacion de variables con let
-let bdark = document.querySelector("#bdark");
-let body = document.querySelector('body');
-let isChecked = localStorage.getItem('isChecked');
+const bdark = document.querySelector("#bdark");
+const body = document.querySelector('body');
+const isChecked = localStorage.getItem('isChecked');
 
 
 // para subir perfil::::::: const btnperfil = document.getElementById('btn-perfil');
 // para subir perfil::::::: const fileInput = document.getElementById('file-input');
 
-function darkMode(){
+
   // Si el estado guardado es "true", agregar la clase "darkmode" al body
-  if (isChecked === 'true') {
+if (isChecked === 'true') {
     body.classList.add('darkmode');
     bdark.classList.add('active');
-  }
 }
+
 
 
 // Agregar un event listener al checkbox

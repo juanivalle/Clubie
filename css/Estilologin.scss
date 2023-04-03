@@ -1,0 +1,130 @@
+//VARIABLES GLOBALES 
+:root {
+    --dark: #343D5B;
+    --white: #F1F1F1;
+    --grin: #19A415;
+    --blackgrin: #1CB218;
+    --detailgrin: #126D0F;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+p,h2{
+    text-align: center;
+    cursor:default;
+}
+//DARKMODE 
+
+
+.contenedor {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-form {
+    width: 90%;
+    height: 90vh;
+    display: flex;
+    justify-content: space-around;
+    transition: all .5s ease-out;
+}
+
+.welcome-back {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.message {
+    padding: 1rem;
+}
+
+.message h2 {
+    font-size: 1.7rem;
+    padding: 1rem 0;
+}
+
+.message button {
+    padding: 1rem;
+    font-weight: 400;
+    background-color: var(--detailgrin);
+    border-radius: 2rem;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: .9rem;
+    margin-top: 2rem;
+    transition: all .3s ease-in;
+    color: #fff;
+}
+
+.message button:hover {
+    background-color: var(--grin);
+}
+.formulario {
+    height: auto;
+    width: 400px;
+    padding: 1rem;
+    margin: 2rem;
+    background-color: rgb(43, 43, 51);
+}
+
+.create-account {
+    padding: 2.7rem 0;
+    font-size: 1.7rem;
+}
+
+.cuenta-gratis {
+    padding: 2rem 0;
+}
+
+.formulario input {
+    width: 72%;
+    display: block;
+    margin: auto;
+    margin-bottom: 1.8rem;
+    background-color: transparent;
+    border: none;
+    border-bottom: white thin solid;
+    text-align: center;
+    outline: none;
+    padding: .2rem 0;
+    font-size: .9rem;
+    color: white;
+}
+
+.formulario input[type="button"] {
+    width: 60%;
+    margin: auto;
+    border: solid thin var(--white);
+    padding: .7rem;
+    border-radius: 2rem;
+    background-color: var(--white);
+    font-weight: 600;
+    margin-top: 3rem;
+    font-size: .8rem;
+    cursor: pointer;
+    color: #222;
+}
+
+.sign-up {
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.sign-in.active {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.sign-up.active {
+    opacity: 1;
+    visibility: visible;
+}

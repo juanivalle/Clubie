@@ -5,30 +5,15 @@
     <meta charset="utf-8">
     <title>GreenGenius</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="Estilologin.css">
+    <link rel="stylesheet" href="../css/Estilologin.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../js/estil.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css"
         integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body>
-    <header class="header">
-        <div class="logo"><img src="../media/Sin título-2.png" alt="Logo de marca"></div>
-        <ul class="nav-links">
-            <li><a href="home.html">home</a></li>
-            <li><a href="tweets.html">Clubes</a></li>
-            <li><a href="variety.html">Chats</a></li>
-            <li><a href="lenguages.html">Inicio de sesion</a></li>
-            <li><button class="btn-perfil" src=""><a href="perfil.html">
-                        <div class="profile-image"></div>
-                    </a></button></li>
-        </ul>
-        <div class="bitin">
-            <button class="bdark" id="bdark">
-                <span><i class="fas fa-sun" style="color: #343D5B;"></i></span>
-                <span><i class="fas fa-moon"></i></span>
-            </button>
-        </div>
-    </header>
+    <div id="header"></div>
     <div class="contenedor">
         <div class="container-form sign-up">
             <div class="welcome-back">
@@ -86,13 +71,8 @@
             </div>
         </div>
     </div>
-    <script>
-        window.addEventListener('load', () => {
-            const emailInput = document.querySelector('.email');
-            emailInput.focus();
-        });
-    </script>
-    <script src="page.js"></script>
+    <div id="footer"></div>
 </body>
+
 
 </html>
