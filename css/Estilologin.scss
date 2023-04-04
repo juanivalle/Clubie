@@ -13,18 +13,29 @@
     padding: 0;
     font-family: 'Roboto', sans-serif;
 }
-p,h2{
+
+p,
+h2 {
     text-align: center;
-    cursor:default;
+    cursor: default;
+}
+a{
+    text-decoration: none;
 }
 //DARKMODE 
-
+.seleccion {
+    position: fixed;
+    top: 0;
+    margin-top: 60px;
+}
 
 .contenedor {
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 80px;
+    
 }
 
 .container-form {
@@ -67,6 +78,7 @@ p,h2{
 .message button:hover {
     background-color: var(--grin);
 }
+
 .formulario {
     height: auto;
     width: 400px;
@@ -79,6 +91,7 @@ p,h2{
     padding: 2.7rem 0;
     font-size: 1.7rem;
 }
+
 
 .cuenta-gratis {
     padding: 2rem 0;

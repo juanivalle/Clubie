@@ -13,9 +13,20 @@
   font-family: "Roboto", sans-serif;
 }
 
-p, h2 {
+p,
+h2 {
   text-align: center;
   cursor: default;
+}
+
+a {
+  text-decoration: none;
+}
+
+.seleccion {
+  position: fixed;
+  top: 0;
+  margin-top: 60px;
 }
 
 .contenedor {
@@ -23,6 +34,7 @@ p, h2 {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 80px;
 }
 
 .container-form {
