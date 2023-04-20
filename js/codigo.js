@@ -14,6 +14,7 @@ function inicio(){
 }
 
 function registrarUsuario() {
+    //funcion que registrara a un usuario si se utilizan los datos correctos
     let name = document.querySelector("#txtName").value;
     let pwd = document.querySelector("#txtPwd").value;
     let email = document.querySelector("#txtEmail").value;
@@ -36,7 +37,7 @@ function registrarUsuario() {
 
 function addUser(name, pwd, type, email) {
     let result;
-    let exist = userExist(name); //verifica si existe usuario
+    let exist = ifExists(name, listaUsuarios); //verifica si existe usuario
     if (exist){
         result = false; //No se puede agregar por eso retorna false
     }
@@ -49,10 +50,11 @@ function addUser(name, pwd, type, email) {
     return result;
 }
 
-function userExist(name){
+function ifExists(name, list){
+    //funcion que corrobora si existe un objeto en una lista
     let exist = false;
-    for (let i = 0; i < listaUsuarios.length && !exist; i++){
-        let objUsuario = listaUsuarios[pos];
+    for (let i = 0; i < list.length && !exist; i++){
+        let objUsuario = list[i];
         if (objUsuario.nombre.toLowerCase() == name.toLowerCase()){
             exist = true;
         }
