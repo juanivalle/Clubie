@@ -70,7 +70,17 @@ class Plant():
             raise TypeError("Es obligatorio indicar la raza")
         self.idRaza = value
 
-    # SIN TERMINAR
+    @property
+    def cantidad(self):
+        return self.cantidad
+    
+    @cantidad.setter
+    def cantidad(self, value):
+        if value <= 0:
+            raise ValueError("La cantidad debe ser un número entero y mayor que 0")
+        self.cantidad = value
+
+    #SIN TERMINAR
 
 class Cogo():
     """Define the new class Cogo"""
