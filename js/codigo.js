@@ -72,3 +72,4 @@ function addFlor(raza, stock, precio){
     let objFlor = new Cogollos(raza, stock, precio);
     listaFlores.push(objFlor);
 }
+  
