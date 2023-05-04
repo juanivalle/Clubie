@@ -1,5 +1,4 @@
-import Swal from 'sweetalert2/dist/sweetalert2.js'
-import 'sweetalert2/src/sweetalert2.scss'
+
 if value <= 0:
             raise ValueError("La cantidad debe ser un número entero y mayor que 0")
 if not value:
