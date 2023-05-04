@@ -4,49 +4,39 @@ import uuid4
 import re #
 
 class User():
-    """Define the new class User"""
-    def __init__(self, name, pwd, email, pType):
-        self.id = str(uuid4)
-        self.name = name
-        self.__pwd = pwd
-        self.email = email
-        self.type = pType
-
-    @property
-    def name(self):
-        return self.name
-
-    @name.setter
-    def name(self, value):
-        if type(value) != str:
-            raise TypeError("El nombre no puede contener números")
-        if not value:
-            raise ValueError("Es obligatorio el ingreso de su Nombre")
-        self.name = value
-
-    @property
-    def pwd(self):
-        return self.__pwd
-
-    @pwd.setter
-    def pwd(self, value):
-        if len(value) < 8:
-            raise TypeError("La contraseña debe tener como mínimo 8 caracteres")
-        if isdigit(str(value)) == False:
-            raise TypeError("La contraseña debe tener al menos un número")
-        self.__pwd = value
-
-    @property
-    def email(self):
-        return self.email
-
-    @email.setter
-    def email(self, value):
-        expresion_regular = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"
-        if re.match(expresion_regular, value) is not None:
-            self.email = value
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(30), unique=True, nullable=False)
+    password = db.Column(db.String(25), nullable=False)
+    email = db.Column(db.String(30, nullable=False))
+    pType = db.Column(db.Integer(1, ))
+#CORROBAR INGRSO DE TIPO DE USUARIO, CLIENTE = 1, CLUB = 2
+    @app.route('/register', methods =['GET', 'POST'])
+def register():
+    msg = ''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form :
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE username = % s', (username, ))
+        account = cursor.fetchone()
+        if account:
+            msg = 'Cuenta ya existente'
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            msg = 'Mail invalido'
+        elif not re.match(r'[A-Za-z]+', username):
+            msg = 'Usuario con caracteres inválidos'
+        elif not username or not password or not email:
+            msg = 'Ingreso de datos incorrectos'
         else:
-            raise TypeError("Ingrese un email válido")
+            cursor.execute('INSERT INTO accounts VALUES (NULL, % s, % s, % s)', (username, password, email, ))
+            mysql.connection.commit()
+            msg = 'Registrado correctamente'
+    elif request.method == 'POST':
+        msg = 'Please fill out the form !'
+    return render_template('register.html', msg = msg)
+
+  
 
 class Plant():
     """Define the new class Plant"""
