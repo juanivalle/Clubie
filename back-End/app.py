@@ -16,6 +16,7 @@ from flask_bcrypt import check_password_hash, Bcrypt
 from app import create_app, db
 from sqlalchemy import or_
 
+
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -43,7 +44,7 @@ class RegistrationForm(Form):
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-
+#CAMBIAR EL CEDULA.EMAIL.DATA
     if form.validate_on_submit():
         cedula = cedula.email.data
         username = form.username.data
@@ -125,6 +126,19 @@ class LoginForm(FlaskForm):
         min=6, max=6)], render_kw={"placeholder": "Contraseña"})
     
     submit = SubmitField("Iniciar")
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+
+    
+    if request.method=='POST':
+        print(request.form['username'])
+        print(request.form['password'])
+        return render_template('login.html')
+    else:
+        return render_template('login.html')
 
 class Plant():
     """Define the new class Plant"""
