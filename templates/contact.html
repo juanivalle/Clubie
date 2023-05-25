@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/contact.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+    <title>Contacto</title>
+</head>
+<body>
+    {% extends 'base/base-nolog.html'%}
+
+    {% block content %}
+    <div class="container-form">
+        <div class="info-form">
+            <h2>Contactanos</h2>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Tenetur recusandae, nostrum, neque magni voluptates possimus architecto quos aut explicabo officiis expedita? Officia consectetur debitis quod sint autem! Ratione, illum necessitatibus</p>
+            <a href="#"> <i class="fa fa-phone"></i>123-456-789</a>
+            <a href="#"> <i class="fa fa-envelope"></i>adm.clubie@gmail.com</a>
+            <a href="#"> <i class="fa fa-map-marked"></i> Montevideo, Uruguay</a>
+        </div>
+        <form action="https://formsubmit.co/adm.clubie@gmail.com" method="POST" autocomplete="off">
+            <input type="text" name="name" placeholder="Ingrese su nombre" class="campo">
+            <input type="email" name="email" placeholder="Ingrese su correo" class="campo">
+            <input type="text" name="subject" placeholder="Asunto de su consulta" class="campo">
+            <textarea type="coments" name="coments" placeholder="Ingresa tu mensaje"></textarea>
+            <input type="submit" value="enviar mensaje" class="btn">
+            <input type="hidden" name="_next" value="http://127.0.0.1:5000/contact.html">
+            <input type="hidden" name="_captcha" value="false">
+        </form>
+    </div>
+    {% endblock %}
+</body>
+</html>

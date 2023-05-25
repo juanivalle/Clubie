@@ -1,5 +1,18 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    overflow: hidden;
+
+}
+
 header {
-    position: relative;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -50,7 +63,8 @@ header {
     transform: scale(0);
 }
 
-.opcion a:hover span {
+.opcion a:hover span,
+.opcion a.active span {
     transform: scale(1);
     opacity: 1;
 }
@@ -64,7 +78,21 @@ ul li {
     padding: 0px 20px;
     }
 
-.opcion a:hover {
+.opcion a:hover,
+.opcion a.active {
     color: #333;
 
+}
+
+.fondo {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('/css/media/fondo-3.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    top: 0;
 }
