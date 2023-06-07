@@ -2,7 +2,7 @@
 """Creation of the diferent clases that we need"""
 #CAMBIAR REGISTER DE USUARIO POR LA PAGINA DOPNDE SUBE DATA EL CLUB Y PONER REGISTER PARA EL CLUB
 from uuid import uuid4
-import re #
+import re
 from flask import Flask, render_template, url_for, redirect, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
@@ -10,20 +10,25 @@ from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
-import random
-import hashlib
 from flask_bcrypt import check_password_hash, Bcrypt
-from app import create_app, db
-from sqlalchemy import or_
-
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'thisisasecretkey'
 db = SQLAlchemy(app)
+#ESTO VA EN ROUTES.PY PARA QUE QUEDE MEJOR
+# from app import app
 
+# @app.route('/')
+# def index():
+#     return 'Hola, mundo!'
 
+# @app.route('/about')
+# def about():
+#     return 'Acerca de nosotros'
+
+#from app import routes
 
 
 class User(db.Model):
@@ -152,50 +157,4 @@ class Plant():
         self.poda = Poda
         self.residuos = residuos
 
-    @property
-    def idRaza(self):
-        return self.idRaza
-
-    @idRaza.setter
-    def idRaza(self, value):
-        if not value:
-            raise TypeError("Es obligatorio indicar la raza")
-        self.idRaza = value
-
-    @property
-    def cantidad(self):
-        return self.cantidad
-    
-    @cantidad.setter
-    def cantidad(self, value):
-        if value <= 0:
-            raise ValueError("La cantidad debe ser un número entero y mayor que 0")
-        self.cantidad = value
-
-    #SIN TERMINAR
-
-class Cogo():
-    """Define the new class Cogo"""
-    def __init__(self, idRaza, stock):
-        self.idRaza = idRaza
-        self.stock = stock
-
-    @property
-    def idRaza(self):
-        return self.idRaza
-
-    @idRaza.setter
-    def idRaza(self, value):
-        if not value:
-            raise TypeError("Es obligatorio indicar la raza")
-        self.idRaza = value
-
-    @property
-    def stock(self):
-        return self.stock
-
-    @stock.setter
-    def stock(self, value):
-        if value <= 0:
-            raise ValueError("Debe ingresar una cantidad mayor a 0")
-        self.stock = value
+   
