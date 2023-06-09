@@ -76,7 +76,7 @@ def register():
 
 class Club():
     id = db.Column(db.Integer, primary_key=True)
-    campoarchivo = db.Column(db.String(30, nullable=False))
+    campoarchivo = db.Column(db.String(30))
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(70))
@@ -158,3 +158,5 @@ class Plant():
         self.residuos = residuos
 
    
+if __name__ == '__main__':
+    app.run()
