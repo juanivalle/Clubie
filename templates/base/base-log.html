@@ -3,6 +3,7 @@
 <header class="header">
     <div class="logo"><a href="home.html"><img src="../css/media/Mi proyecto.png" alt="Logo de marca"></a></div>
     <nav class="opcion">
+      <span class="nav-toggle"><i class="fas fa-bars"></i></span>
         <ul class="nav-links">
             <li><a href="miembros.html">Miembros<span></span></a></li>
             <li><a href="ventas.html">Ventas<span></span></a></li>
@@ -13,6 +14,16 @@
     </nav>
     </div>
 </header>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const navToggle = document.querySelector('.nav-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      navToggle.addEventListener('click', function() {
+          navLinks.classList.toggle('show');
+      });
+  });
+</script>
 <body>
     {% block content %}
     
