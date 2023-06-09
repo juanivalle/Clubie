@@ -1,0 +1,39 @@
+<link rel="stylesheet" href="../css/header.css">
+<link rel="stylesheet" href="../css/footer.css">
+<header class="header">
+    <div class="logo"><a href="home.html"><img src="../css/media/Mi proyecto.png" alt="Logo de marca"></a></div>
+    <nav class="opcion">
+      <span class="nav-toggle"><i class="fas fa-bars"></i></span>
+        <ul class="nav-links">
+            <li><a href="miembros.html">Miembros<span></span></a></li>
+            <li><a href="ventas.html">Ventas<span></span></a></li>
+            <li><a href="trasabilidad.html">Trasabildiad<span></span></a></li>
+            <li><a href="ctrplanta.html">Control de plantas<span></span></a></li>
+            <li><a href="tableros.html">Tableros<span></span></a>
+        </ul>
+    </nav>
+    </div>
+</header>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const navToggle = document.querySelector('.nav-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      navToggle.addEventListener('click', function() {
+          navLinks.classList.toggle('show');
+      });
+  });
+</script>
+<body>
+    {% block content %}
+    
+    {% endblock %}
+    <footer>
+        <div class="footer-content">
+          <p>Este es el contenido del footer.</p>
+        </div>
+        <div class="footer-bottom">
+          <p>Derechos de autor &copy; 2023 - Mi Sitio Web</p>
+        </div>
+      </footer>
+</body>
