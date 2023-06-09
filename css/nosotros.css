@@ -16,16 +16,18 @@ body {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    width: 80%;
+    width: 60%;
+    height: 70vh;
     margin: 0 auto;
-    border: 2px solid #003E00;
     background-color: #ce9256be;
-    justify-content: center;
-    align-content: center;
-    margin-top: 5%;
+    /*justify-content: center;
+    align-content: center;*/
+    margin-top: 5vh;
+    box-shadow:  20px 20px 24px rgba(0, 0, 0, 0.3);
+
 }
 .valores {
-    width: 80%;
+    width: 100%;
     border-top: 2px solid #003E00;
     margin-bottom: 15px;
 }
@@ -37,10 +39,9 @@ body {
     width: 50%;
 }
 .nosotros h1 {
-    margin-top: 15px;
+    margin-top: 3vh;
     width: 100%;
     text-align: center;
-    margin-bottom: 35px;
     font-size: 35px;
 }
 .nosotros h2 {
@@ -50,5 +51,12 @@ body {
 }
 .nosotros p {
     margin: 25px;
-    text-align: justify;
+    /*text-align: justify;*/
+}
+
+@media screen and (max-width: 768px) {
+    .nosotros {
+        overflow: scroll;
+        width: 80%;
+    }
 }

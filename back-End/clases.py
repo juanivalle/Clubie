@@ -6,7 +6,7 @@ from wtforms import *
 from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
 
-app = Flask(__name__)
+from rutas import *
 app.config['SECRET_KEY'] = 'clave_secreta'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

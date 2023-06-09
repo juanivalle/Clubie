@@ -8,15 +8,8 @@ from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
 from flask_bcrypt import check_password_hash, Bcrypt
 
-
+from rutas import *
 from clases import *
-
-
-@app.route('/')
-def Index():
-    usuarios = User.query.all()
-    
-    return render_template("home.html", usuarios=usuarios)
 
 
 
@@ -73,7 +66,7 @@ def clubes():
     return render_template('clubes.html', form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
+"""@app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
 
@@ -82,7 +75,7 @@ def login():
         print(request.form['password'])
         return render_template('login.html')
     else:
-        return render_template('login.html')
+        return render_template('login.html')"""
 
 
 if __name__ == '__main__':
