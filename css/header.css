@@ -68,3 +68,37 @@ ul li {
     color: #333;
 
 }
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 20px;
+    }
+
+    .header .logo img {
+        width: 100px;
+    }
+
+    .nav-links {
+        position: absolute;
+        top: 100%;
+        right:0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 10px;
+        display: none;
+    }
+
+    .nav-links.show {
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+        width: max-content;
+    }
+
+    .nav-toggle {
+        display: block;
+        color: #fff;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+}
