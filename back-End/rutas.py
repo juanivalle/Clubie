@@ -19,6 +19,10 @@ def login():
 def nosotros():
     return render_template('/noLog/nosotros.html')
 
+@app.route('/road-map.html')
+def roadMap():
+    return render_template('/noLog/road-map.html')
+
 @app.route('/home-club.html')
 def home_club():
     return render_template('/logueado/home-club.html')
