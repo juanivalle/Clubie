@@ -19,7 +19,6 @@ header {
 .header .logo img {
     transition: all 0.3s;
     height: auto;
-    /*width: 130px;*/
 }
   
 .header .logo img:hover {
