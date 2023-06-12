@@ -25,14 +25,14 @@ header {
 
 }
 
-.header .logo {
+.header .logo{
     cursor: pointer;
 }
   
 .header .logo img {
     transition: all 0.3s;
     height: auto;
-    width: 130px;
+    width: auto;
 }
   
 .header .logo img:hover {
