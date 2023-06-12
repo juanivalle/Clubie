@@ -11,6 +11,7 @@ html {
 body {
     overflow: scroll;
     overflow-x: hidden;
+    background-color: #111222;
 }
 
 section {
@@ -19,7 +20,7 @@ section {
     justify-content: center;
     align-items: center;
     padding: 80px 100px;
-    color: #000000;
+    color: #fff;
 }
 .contenedor {
     position: relative;
@@ -40,6 +41,14 @@ body h1 {
     justify-content: center;
     align-items: center;
 }
+
+.sec-2 .contenido {
+    flex-direction: row-reverse;
+  }
+  
+.sec-4 .contenido {
+    flex-direction: row-reverse;
+  }
 
 .contenido .imagen {
     position: relative;
@@ -64,7 +73,7 @@ body h1 {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(20px);
     padding: 40px;
-    max-width: 35vh;
+    max-width: 40vh;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     transform: translate(-80px, 50px);
@@ -73,4 +82,36 @@ body h1 {
 .contenido .text-box h3 {
     font-size: 2em;
     margin-bottom: 10px;
+}
+.text-box p {
+    font-size: 1.4em;
+}
+
+.section-title {
+    font-size: 3em;
+    margin-bottom: 80px;
+    margin-top: 20vh;
+}
+.info-title {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+.info {
+    width: 45vh;
+    margin-left: 50px;
+}
+.info p {
+    font-size: 1.4em;
+}
+.media-info {
+    width: 45vh;
+    margin-left: 50px;
+}
+
+.media-info p {
+    font-size: 1.4em;
+}
+
+.sec-4 {
+    margin-bottom: 15vh;
 }
