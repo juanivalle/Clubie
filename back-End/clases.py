@@ -15,14 +15,14 @@ db = SQLAlchemy(app)
 class User(db.Model):
     # id = db.Column(db.Integer, primary_key=True)
     cedula = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    username = db.Column(db.String(30), unique=True, nullable=False)
+    name = db.Column(db.String(30), nullable=False)
     telefono = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(30), nullable=False)
 
 class RegistrationForm(FlaskForm):
 
     cedula = IntegerField('cedula', validators=[validators.NumberRange(min=1000000, max=99999999)])
-    username = StringField('username', validators=[validators.Length(min=6, max=25)])
+    name = StringField('name', validators=[validators.Length(min=6, max=25)])
     telefono = IntegerField('telefono', validators=[validators.NumberRange(min=100000000, max=999999999)])
     email = StringField('email', validators=[validators.Length(min=6, max=35)])
 

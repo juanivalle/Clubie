@@ -17,25 +17,31 @@ from clases import *
 @app.route('/registerform', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-# CAMBIAR EL CEDULA.EMAIL.DATA
+
     if form.validate_on_submit():
-        cedula = cedula.integer_field.email.data
-        username = form.string_field.username.data
-        telefono = form.integer_field.telefono.data
-        email = form.string_field.email.data
+        cedula = form.cedula.data
+        name = form.name.data
+        telefono = form.telefono.data
+        email = form.email.data
 
         user = User.query.filter(or_(
-            User.cedula == cedula, User.username == username, User.email == email)).first()
+            User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
         if user:
             return redirect(url_for('roadMap'))
 
-        new_user = User(cedula=cedula, username=username,
+        new_user = User(cedula=cedula, name=name,
                         telefono=telefono, email=email)
         db.session.add(new_user)
         db.session.commit()
+        all_users = User.query.all()
+        for user in all_users:
+            print(user.cedula, user.name, user.telefono, user.email)
+
+       
         return redirect(url_for('login'))
 
     return redirect(url_for('miembros', form=form))
+
 
 # Es importante tener en cuenta que, para que el formulario se muestre correctamente en la vista, es necesario
 # renderizarlo usando una plantilla de Jinja2 y agregar el atributo enctype="multipart/form-data" al formulario para permitir la carga de archivos.
@@ -79,6 +85,6 @@ def register():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        db.session.commit()
+        
 
     app.run(port=5000, debug=True)
