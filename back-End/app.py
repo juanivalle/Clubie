@@ -13,7 +13,7 @@ from clases import *
 
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/registerform', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
 # CAMBIAR EL CEDULA.EMAIL.DATA
@@ -66,16 +66,19 @@ def clubes():
     return render_template('clubes.html', form=form)
 
 
-"""@app.route('/login', methods=['GET', 'POST'])
+@app.route('/loginform', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        nombre = request.form['nombre']  # Obtiene el valor del campo "nombre"
+    edad = request.form['edad'] 
 
     if request.method == 'POST':
         print(request.form['username'])
         print(request.form['password'])
         return render_template('login.html')
     else:
-        return render_template('login.html')"""
+        return render_template('login.html')
 
 
 if __name__ == '__main__':
