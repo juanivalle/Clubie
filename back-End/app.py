@@ -13,14 +13,14 @@ from clases import *
 
 
 
-@app.route('/registerform', methods=['GET', 'POST'])
+@app.route('/registerform', methods=['POST'])
 def register():
     form = RegistrationForm()
 # CAMBIAR EL CEDULA.EMAIL.DATA
     if form.validate_on_submit():
         cedula = cedula.email.data
         username = form.username.data
-        password = form.password.data
+        telefono = form.telefono.data
         email = form.email.data
 
         user = User.query.filter(or_(
@@ -28,10 +28,10 @@ def register():
         if user:
             response = jsonify({'message': 'El usuario ya existe'})
             response.headers['Fail-SweetAlert'] = 'error'
-            return redirect(url_for('register'))
+            return redirect(url_for('miembros'))
 
         new_user = User(cedula=cedula, username=username,
-                        password=password, email=email)
+                        telefono=telefono, email=email)
         db.session.add(new_user)
         db.session.commit()
 
@@ -39,7 +39,7 @@ def register():
         response.headers['Fail-SweetAlert'] = 'success'
         return redirect(url_for('login'))
 
-    return redirect(url_for('register', form=form))
+    return redirect(url_for('miembros', form=form))
 
 # Es importante tener en cuenta que, para que el formulario se muestre correctamente en la vista, es necesario
 # renderizarlo usando una plantilla de Jinja2 y agregar el atributo enctype="multipart/form-data" al formulario para permitir la carga de archivos.
@@ -66,19 +66,19 @@ def clubes():
     return render_template('clubes.html', form=form)
 
 
-@app.route('/loginform', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        nombre = request.form['nombre']  # Obtiene el valor del campo "nombre"
-    edad = request.form['edad'] 
+# @app.route('/loginform', methods=['GET', 'POST'])
+# def login():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         nombre = request.form['nombre']  # Obtiene el valor del campo "nombre"
+#     edad = request.form['edad'] 
 
-    if request.method == 'POST':
-        print(request.form['username'])
-        print(request.form['password'])
-        return render_template('login.html')
-    else:
-        return render_template('login.html')
+#     if request.method == 'POST':
+#         print(request.form['username'])
+#         print(request.form['password'])
+#         return render_template('login.html')
+#     else:
+#         return render_template('login.html')
 
 
 if __name__ == '__main__':

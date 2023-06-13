@@ -13,8 +13,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    cedula = db.Column(db.String(8), unique=True, nullable=False)
+    # id = db.Column(db.Integer, primary_key=True)
+    cedula = db.Column(db.String(8), unique=True, nullable=False, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(30), nullable=False)
@@ -22,10 +22,11 @@ class User(db.Model):
 class RegistrationForm(FlaskForm):
     username = StringField('username', [validators.Length(min=6, max=25)])
     cedula = IntegerField('cedula', [validators.Length(min=7, max=8)])
+    telefono = IntegerField('telefono', [validators.Length(min=9, max=9)])
     email = StringField('email', [validators.Length(min=6, max=35)])
-    password = PasswordField('password', [
-        validators.DataRequired()
-    ])
+    # password = PasswordField('password', [
+    #     validators.DataRequired()
+    # ])
 
 class Club():
     id = db.Column(db.Integer, primary_key=True)
