@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 class User(db.Model):
     # id = db.Column(db.Integer, primary_key=True)
-    cedula = db.Column(db.String(8), unique=True, nullable=False, primary_key=True)
+    cedula = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(30), nullable=False)

@@ -13,7 +13,7 @@ from clases import *
 
 
 
-@app.route('/registerform', methods=['POST'])
+@app.route('/registerform', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
 # CAMBIAR EL CEDULA.EMAIL.DATA
@@ -45,25 +45,24 @@ def register():
 # renderizarlo usando una plantilla de Jinja2 y agregar el atributo enctype="multipart/form-data" al formulario para permitir la carga de archivos.
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def clubes():
-    form = ClubForm()
+# @app.route('/register', methods=['GET', 'POST'])
+# def clubes():
+#     form = ClubForm()
 
-    if form.validate_on_submit():
+#     if form.validate_on_submit():
 
-      # procesa el formulario y guarda los datos en la base de datos
+#       # procesa el formulario y guarda los datos en la base de datos
 
-        # Si todo va bien, redirige a otra página que seria la del registro del club como puede ser el login
-        return redirect(url_for('otra_pagina'))
+#         # Si todo va bien, redirige a otra página que seria la del registro del club como puede ser el login
+#         return redirect(url_for('otra_pagina'))
 
-    # Si hay algún error en la validación del formulario, muestra una SweetAlert como la de arriba
-    errors = form.errors.items()
-    if errors:
-        response = jsonify({'message': 'El usuario ya existe'})
-        response.headers['Fail-SweetAlert'] = 'error'
-        return render_template('clubes.html', form=form)
+#     # Si hay algún error en la validación del formulario, muestra una SweetAlert como la de arriba
+#     errors = form.errors.items()
+#     if errors:
+#         response = jsonify({'message': 'El usuario ya existe'})
+#         response.headers['Fail-SweetAlert'] = 'error'
+#         return render_template('clubes.html', form=form)
 
-    return render_template('clubes.html', form=form)
 
 
 # @app.route('/loginform', methods=['GET', 'POST'])
