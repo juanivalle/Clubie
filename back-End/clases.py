@@ -8,7 +8,7 @@ from flask_wtf.file import FileField, FileAllowed, FileSize
 
 from rutas import *
 app.config['SECRET_KEY'] = 'clave_secreta'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -20,8 +20,9 @@ class User(db.Model):
     email = db.Column(db.String(30), nullable=False)
 
 class RegistrationForm(FlaskForm):
-    username = StringField('username', validators=[validators.Length(min=6, max=25)])
+
     cedula = IntegerField('cedula', validators=[validators.NumberRange(min=1000000, max=99999999)])
+    username = StringField('username', validators=[validators.Length(min=6, max=25)])
     telefono = IntegerField('telefono', validators=[validators.NumberRange(min=100000000, max=999999999)])
     email = StringField('email', validators=[validators.Length(min=6, max=35)])
 
