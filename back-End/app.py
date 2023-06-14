@@ -8,15 +8,14 @@ from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
 from flask_bcrypt import check_password_hash, Bcrypt
 
-
+from rutas import *
 from clases import *
 
 
 @app.route('/')
 def Index():
-    usuarios = User.query.all()
     
-    return render_template("home.html", usuarios=usuarios)
+    return render_template("home.html")
 
 
 

@@ -27,12 +27,57 @@ class RegistrationForm(FlaskForm):
         validators.DataRequired()
     ])
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class ClubForm(FlaskForm):
+    campoarchivo = FileField('campoarchivo', validators=[
+        DataRequired(message='Por favor seleccione un archivo.'),
+        FileAllowed(['jpg', 'jpeg', 'png']),
+        FileSize(max_size=10 * 1024 * 1024)
+#ESTA ES LA PARTE DEL ARCHIVO
+])
+    #FALTA DIRECCION, DUEÑO, CAPAZ ALGO MAS
+    username = StringField('username', [validators.Length(min=6, max=25)])
+    email = StringField('email', [validators.Length(min=6, max=35)])
+    password = PasswordField('password', [
+        validators.DataRequired()
+    ])
 class Club():
     id = db.Column(db.Integer, primary_key=True)
     campoarchivo = db.Column(db.String(30))
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(25), nullable=False)
     email = db.Column(db.String(70))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class LoginForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(
@@ -54,17 +99,3 @@ class Plant(FlaskForm):
         self.luz = Luz
         self.poda = Poda
         self.residuos = residuos
-
-class ClubForm(FlaskForm):
-    campoarchivo = FileField('campoarchivo', validators=[
-        DataRequired(message='Por favor seleccione un archivo.'),
-        FileAllowed(['jpg', 'jpeg', 'png']),
-        FileSize(max_size=10 * 1024 * 1024)
-#ESTA ES LA PARTE DEL ARCHIVO
-])
-    #FALTA DIRECCION, DUEÑO, CAPAZ ALGO MAS
-    username = StringField('username', [validators.Length(min=6, max=25)])
-    email = StringField('email', [validators.Length(min=6, max=35)])
-    password = PasswordField('password', [
-        validators.DataRequired()
-    ])

@@ -13,7 +13,7 @@
         integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="cuerpo">
-    {% extends 'base/base-nolog.html'%}
+    {% extends 'base-nolog.html'%}
     {% block content %}
     <div id="header"></div>
     <div class="contenedor">
@@ -24,7 +24,7 @@
             <form class="formulario">
                 <h2 class="create-account">Iniciar Sesion</h2>
 
-                <input type="email" placeholder="Email">
+                <input type="email" placeholder="Email" value ="email">
                 <input type="password" placeholder="Contraseña">
                 <p class="recuperar">Has olvidado tu contraseña?</p>
                 <input type="button" value="Iniciar Sesion">
