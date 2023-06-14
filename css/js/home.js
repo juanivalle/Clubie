@@ -10,15 +10,4 @@ document.addEventListener("DOMContentLoaded", function() {
       } else {
         video.pause();
       }
-    });
-    window.onscroll = () => {
-      sec.forEach(section => {
-        let top = window.scrollY;
-        let offset = section.offsetTop - 60;
-        let height = section.offsetHeight;
-        let id = section.getAttribute("id");
-
-        if (top >= offset && top < offset + height) {
-          links.forEach(link => {
-            document.querySelector('nav a[href*=' + id + ']');
-  })}})}});
+    })});
