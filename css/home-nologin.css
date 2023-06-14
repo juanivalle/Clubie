@@ -210,9 +210,14 @@ ul li {
     height: 350px;
     border-radius: 10px;
     box-shadow: 2px 3px 5px rgba(73, 69, 52, 0.4);
-    margin: 40px;
+    margin-right: 55px;
 }
-
+.equipo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
 .card .content {
     position: relative;
     z-index: 100;
@@ -251,24 +256,24 @@ ul li {
     left: -100px;
 }
 
-.card .content h4 {
+.card h4 {
     font-size: 18px;
     color: #1a1919;
     margin-bottom: 5px;
 }
 
-.card .content h6 {
+.card h6 {
     font-size: 13px;
     color: #5e2066;
 }
 
-.card .content p {
+.card p {
     font-size: 13px;
     color: #1a161f;
     margin-top: 10px;
 }
 
-.card .links {
+.card .links-iconos {
     position: absolute;
     z-index: 90;
     width: 50px;
@@ -284,19 +289,30 @@ ul li {
     transition: .5s;
 }
 
-.card:hover .links {
+.card:hover .links-iconos {
     right: -50px;
     border-radius: 0 10px 10px 0;
 }
 
 
-.card .links a {
+.card .links-iconos a {
     font-size: 20px;
     color: #646069;
 }
 
-.card .links a:nth-child(1):hover {
+.card .links-iconos a:nth-child(1):hover {
     color: #0158ca;
+}
+.card .links-iconos a:nth-child(2):hover {
+    color: #1C93E4;
+}
+
+.card .links-iconos a:nth-child(3):hover {
+    color: #5D277D;
+}
+
+.card .links-iconos a:nth-child(4):hover {
+    color: #FE0000;
 }
 @media screen and (max-width: 768px) {
     .nosotros-card {
