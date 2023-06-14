@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../../css/road-map.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <title>Road Map</title>
+</head>
+<body>
+    {% extends 'base/base-nolog.html'%}
+
+    {% block content %}
+    <section class="sec-1">
+        <div class="contenedor">
+            <h1 class="main-title">Road Map</h1>
+            <div class="contenido">
+                <div class="imagen">
+                    <img src="../../../css/media/hemp-g03ce11077_1280.jpg" alt="">
+                </div>
+                <div class="text-box">
+                    <h3>Lorem ipsum</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum nemo, beatae, eaque quos temporibus debitis quisquam adipisci praesentium dolorem, quam sunt dolorum consequuntur officia quia error odit aut accusamus iusto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="sec-2">
+        <div class="contenedor">
+            <h2 class="section-title">lorem ipsum</h2>
+            <div class="contenido">
+                <div class="imagen">
+                    <img src="../../../css/media/hemp-g03ce11077_1280.jpg" alt="">
+                </div>
+                <div class="info">
+                    <h3 class="info-title">Lorem ipsum</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum nemo, beatae, eaque quos temporibus debitis quisquam adipisci praesentium dolorem, quam sunt dolorum consequuntur officia quia error odit aut accusamus iusto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="sec-3">
+        <div class="contenedor">
+            <h2 class="section-title">lorem ipsum</h2>
+            <div class="contenido">
+                <div class="imagen">
+                    <img src="../../../css/media/hemp-g03ce11077_1280.jpg" alt="">
+                </div>
+                <div class="media-info">
+                    <h3 class="info-title">Lorem ipsum</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum nemo, beatae, eaque quos temporibus debitis quisquam adipisci praesentium dolorem, quam sunt dolorum consequuntur officia quia error odit aut accusamus iusto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="sec-4">
+        <div class="contenedor">
+            <h2 class="section-title">lorem ipsum</h2>
+            <div class="contenido">
+                <div class="imagen">
+                    <img src="../../../css/media/hemp-g03ce11077_1280.jpg" alt="">
+                </div>
+                <div class="info">
+                    <h3 class="info-title">Lorem ipsum</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cum nemo, beatae, eaque quos temporibus debitis quisquam adipisci praesentium dolorem, quam sunt dolorum consequuntur officia quia error odit aut accusamus iusto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        ScrollReveal({
+            reset: true,
+            distance: '40px',
+            duration: '2000',
+            delay: 400
+        });
+
+        ScrollReveal().reveal('.main-title, .section-title', { delay: 400, origin: 'left' });
+        ScrollReveal().reveal('.sec-1 .imagen', { delay: 400, origin: 'bottom' });
+        ScrollReveal().reveal('.text-box, .info, .media-info', { delay: 500, origin: 'right' });
+        ScrollReveal().reveal('.sec-2 .imagen, .sec-4 .imagen', { delay: 500, origin: 'top' });
+        ScrollReveal().reveal('.sec-3 .imagen', { delay: 500, origin: 'bottom' });
+    </script>
+    {% endblock %}
+</body>
+</html>

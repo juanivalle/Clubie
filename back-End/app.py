@@ -14,79 +14,81 @@ from clases import *
 
 @app.route('/')
 def Index():
+    usuarios = User.query.all()
     
-    return render_template("home.html")
+    return render_template("home.html", usuarios=usuarios)
 
-
-
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/registerform', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-# CAMBIAR EL CEDULA.EMAIL.DATA
+
     if form.validate_on_submit():
-        cedula = cedula.email.data
-        username = form.username.data
-        password = form.password.data
+        cedula = form.cedula.data
+        name = form.name.data
+        telefono = form.telefono.data
         email = form.email.data
 
         user = User.query.filter(or_(
-            User.cedula == cedula, User.username == username, User.email == email)).first()
+            User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
         if user:
-            response = jsonify({'message': 'El usuario ya existe'})
-            response.headers['Fail-SweetAlert'] = 'error'
-            return redirect(url_for('register'))
+            return redirect(url_for('roadMap'))
 
-        new_user = User(cedula=cedula, username=username,
-                        password=password, email=email)
+        new_user = User(cedula=cedula, name=name,
+                        telefono=telefono, email=email)
         db.session.add(new_user)
         db.session.commit()
+        all_users = User.query.all()
+        for user in all_users:
+            print(user.cedula, user.name, user.telefono, user.email)
 
-        response = jsonify({'message': 'Registrado exitosamente'})
-        response.headers['Fail-SweetAlert'] = 'success'
+       
         return redirect(url_for('login'))
 
-    return redirect(url_for('register', form=form))
+    return redirect(url_for('miembros', form=form))
+
 
 # Es importante tener en cuenta que, para que el formulario se muestre correctamente en la vista, es necesario
 # renderizarlo usando una plantilla de Jinja2 y agregar el atributo enctype="multipart/form-data" al formulario para permitir la carga de archivos.
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def clubes():
-    form = ClubForm()
+# @app.route('/register', methods=['GET', 'POST'])
+# def clubes():
+#     form = ClubForm()
 
-    if form.validate_on_submit():
+#     if form.validate_on_submit():
 
-      # procesa el formulario y guarda los datos en la base de datos
+#       # procesa el formulario y guarda los datos en la base de datos
 
-        # Si todo va bien, redirige a otra página que seria la del registro del club como puede ser el login
-        return redirect(url_for('otra_pagina'))
+#         # Si todo va bien, redirige a otra página que seria la del registro del club como puede ser el login
+#         return redirect(url_for('otra_pagina'))
 
-    # Si hay algún error en la validación del formulario, muestra una SweetAlert como la de arriba
-    errors = form.errors.items()
-    if errors:
-        response = jsonify({'message': 'El usuario ya existe'})
-        response.headers['Fail-SweetAlert'] = 'error'
-        return render_template('clubes.html', form=form)
-
-    return render_template('clubes.html', form=form)
+#     # Si hay algún error en la validación del formulario, muestra una SweetAlert como la de arriba
+#     errors = form.errors.items()
+#     if errors:
+#         response = jsonify({'message': 'El usuario ya existe'})
+#         response.headers['Fail-SweetAlert'] = 'error'
+#         return render_template('clubes.html', form=form)
 
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
 
-    if request.method == 'POST':
-        print(request.form['username'])
-        print(request.form['password'])
-        return render_template('login.html')
-    else:
-        return render_template('login.html')
+# @app.route('/loginform', methods=['GET', 'POST'])
+# def login():
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         nombre = request.form['nombre']  # Obtiene el valor del campo "nombre"
+#     edad = request.form['edad'] 
+
+#     if request.method == 'POST':
+#         print(request.form['username'])
+#         print(request.form['password'])
+#         return render_template('login.html')
+#     else:
+#         return render_template('login.html')
 
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        db.session.commit()
+        
 
     app.run(port=5000, debug=True)

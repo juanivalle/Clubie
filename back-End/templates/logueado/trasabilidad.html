@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/miembros.css">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+    <title>Miembros</title>
+</head>
+<body>
+    {% extends 'base-log.html'%}
+
+    {% block content %}
+    <div class="container-form">
+        <h2>Miembros</h2>
+        <div class="tabla-miembro">
+            <table id="miembros">
+                <tr>
+                  <th>Nombre</th>
+                  <th>Cedula</th>
+                  <th>Edad</th>
+                  <th>Membresia</th>
+                </tr>
+                <tr>
+                  <td>Juan</td>
+                  <td>47256564</td>
+                  <td>25</td>
+                  <td>No</td>
+                </tr>
+                <tr>
+                  <td>Matias Mancini</td>
+                  <td>78878652</td>
+                  <td>20</td>
+                  <td>Si</td>
+                </tr>
+                <tr>
+                    <td>Matias Mancini</td>
+                    <td>78878652</td>
+                    <td>20</td>
+                    <td>Si</td>
+                  </tr>
+                  <tr>
+                    <td>Matias Mancini</td>
+                    <td>78878652</td>
+                    <td>20</td>
+                    <td>Si</td>
+                  </tr>
+              </table>
+        </div>
+        <div class="form-miembro">
+          <!--Hay que ver que es lo que se precisa para esto. Fechas no se guardan en caso de solo querer alerta pero si en el caso de querer tener un registro de cuando se planto-->
+            <p>Nuevo Miembro</p>
+            <form method="POST" autocomplete="off">
+                <input type="text" name="name" placeholder="Nombre completo" class="campo">
+                <input type="text" name="cedula" placeholder="Cedula" class="campo">
+                <input type="text" name="edad" placeholder="Fecha de nacimiento" class="campo">
+                <input type="text" name="Membresia" placeholder="Tiene Membresia Si/No" class="campo">
+                <input type="submit" value="Cargar miembro" class="btn-miembro">
+            </form>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>
