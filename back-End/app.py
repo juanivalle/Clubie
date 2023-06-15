@@ -27,26 +27,32 @@ def register():
     if request.method == "POST":
         form = RegistrationForm()
 
-        #if form.validate_on_submit():
-        cedula = form.cedula.data
-        name = form.name.data
-        telefono =form.telefono.data
-        email = form.email.data        
-        user = User.query.filter(or_(
-            User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
-        if user:
-            return redirect(url_for('miembros'))        
-        new_user = User(cedula=cedula, name=name,
-                        telefono=telefono, email=email)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('miembros'))
+        if form.validate_on_submit():
+            cedula = form.cedula.data
+            name = form.name.data
+            telefono =form.telefono.data
+            email = form.email.data        
+            user = User.query.filter(or_(
+                User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
+            if user:
+                return redirect(url_for('miembros'))        
+            new_user = User(cedula=cedula, name=name,
+                            telefono=telefono, email=email)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('miembros'))
     
 @app.route('/miembros.html')
 def miembros():
     usuarios = User.query.all()
     return render_template('/logueado/miembros.html', users=usuarios)
 
+@app.route('/eliminar/<string:user_cedula>', methods=['POST'])
+def eliminar_usuario(user_cedula):
+    usuario = User.query.filter_by(cedula=user_cedula).first_or_404()
+    db.session.delete(usuario)
+    db.session.commit()
+    return redirect(url_for('miembros'))
 
 
 
