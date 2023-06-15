@@ -50,7 +50,7 @@ section {
     rgba(0,0,0,0.5),rgba(255, 0, 0, 0.5))
   }
   
-  .home .video image {
+  .home .video img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -209,18 +209,20 @@ ul li {
 
   .card {
     position: relative;
-    width: 250px;
-    height: 350px;
+    width: 13.5vw;
+    height: 40vh;
     border-radius: 10px;
     box-shadow: 2px 3px 5px rgba(73, 69, 52, 0.4);
-    margin-right: 55px;
+    margin-right: 5vw;
 }
 .equipo {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100vh;
+    width: 100vw;
 }
+
 .card .content {
     position: relative;
     z-index: 100;
@@ -253,7 +255,7 @@ ul li {
     position: absolute;
     width: 350px;
     height: 200px;
-    background: rgba(60, 60, 59, 1);
+    background: rgba( 15, 230, 161, 1);
     transform: rotate(-35deg);
     top: -50px;
     left: -100px;
@@ -319,7 +321,89 @@ ul li {
 }
 @media screen and (max-width: 768px) {
     .nosotros-card {
+        width: 90vw;
+        height: auto;
+        padding: 20px;
         overflow: scroll;
-        width: 80%;
+      }
+      
+      .nosotros-card h2 {
+        font-size: 28px;
+      }
+      
+      .nosotros-card h3 {
+        font-size: 20px;
+      }
+      
+      .card {
+        width: 100%;
+        height: auto;
+        margin-right: 7vw;
+        margin-bottom: 20px;
+      }
+      
+      .equipo {
+        padding: 20px;
+      }
+      
+      .equipo .titulo {
+        font-size: 28px;
+      }
+      .header {
+        padding: 20px 50px;
+      }
+      
+      .header .logo img {
+        height: 40px;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .nav-links.active {
+        display: block;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        text-align: center;
+        z-index: 99;
+      }
+      
+      .nav-links.active li {
+        display: block;
+        margin: 10px 0;
+      }
+      
+      .nav-links.active a {
+        font-size: 16px;
+      }
+      
+      .burger {
+        display: block;
+        cursor: pointer;
+      }
+      
+      .burger div {
+        width: 25px;
+        height: 3px;
+        background-color: #fff;
+        margin: 5px;
+        transition: all 0.3s ease;
+      }
+      
+      .burger.active div:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+      }
+      
+      .burger.active div:nth-child(2) {
+        opacity: 0;
+      }
+      
+      .burger.active div:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
+      }
+    
     }
-}
