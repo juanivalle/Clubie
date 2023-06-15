@@ -8,7 +8,7 @@ from flask_wtf.file import FileField, FileAllowed, FileSize
 
 from rutas import *
 app.config['SECRET_KEY'] = 'clave_secreta'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
