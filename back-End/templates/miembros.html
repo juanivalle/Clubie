@@ -9,43 +9,27 @@
     <title>Miembros</title>
 </head>
 <body>
-    {% extends 'base-log.html'%}
+    {% extends 'base-log.html' %}
 
     {% block content %}
     <div class="container-form">
         <h2>Miembros</h2>
         <div class="tabla-miembro">
             <table id="miembros">
-                <tr>
-                  <th>Nombre</th>
-                  <th>Cedula</th>
-                  <th>Edad</th>
-                  <th>Membresia</th>
-                </tr>
-                <tr>
-                  <td>Juan</td>
-                  <td>47256564</td>
-                  <td>25</td>
-                  <td>No</td>
-                </tr>
-                <tr>
-                  <td>Matias Mancini</td>
-                  <td>78878652</td>
-                  <td>20</td>
-                  <td>Si</td>
-                </tr>
-                <tr>
-                    <td>Matias Mancini</td>
-                    <td>78878652</td>
-                    <td>20</td>
-                    <td>Si</td>
-                  </tr>
-                  <tr>
-                    <td>Matias Mancini</td>
-                    <td>78878652</td>
-                    <td>20</td>
-                    <td>Si</td>
-                  </tr>
+              <tr>
+                <th>Nombre</th>
+                <th>Cedula</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+            </tr>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.name }}</td>
+                <td>{{ cliente.cedula }}</td>
+                <td>{{ cliente.telefono }}</td>
+                <td>{{ cliente.email }}</td>
+            </tr>
+            {% endfor %}
               </table>
         </div>
         <div class="form-miembro">
@@ -53,8 +37,8 @@
             <form method="POST" autocomplete="off">
                 <input type="text" name="name" placeholder="Nombre completo" class="campo">
                 <input type="text" name="cedula" placeholder="Cedula" class="campo">
-                <input type="text" name="edad" placeholder="Fecha de nacimiento" class="campo">
-                <input type="text" name="Membresia" placeholder="Tiene Membresia Si/No" class="campo">
+                <input type="text" name="telefono" placeholder="Teléfono" class="campo">
+                <input type="text" name="email" placeholder="Email" class="campo">
                 <input type="submit" value="Cargar miembro" class="btn-miembro">
             </form>
         </div>

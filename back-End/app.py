@@ -38,7 +38,10 @@ def register():
         db.session.commit()
         return redirect(url_for('login'))
 
-    return redirect(url_for('miembros', form=form))
+    
+
+    clientes = User.query.filter_by().all()
+    return redirect(url_for('miembros', clientes=clientes))
 
 
 # Es importante tener en cuenta que, para que el formulario se muestre correctamente en la vista, es necesario
