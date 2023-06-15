@@ -39,45 +39,48 @@ section {
   .home {
     position: relative;
   }
-  
+   /* AGREGUE EL LINEAR GRADIENT QUE CON ESO NOS SIRVE PARA EL FONDO  Y CAMBIE "VIDEO" POR "IMAGE"-------------------------------------------------------*/
   .home .video {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background-image:linear-gradient(0deg,
+    rgba(0,0,0,0.5),rgba(255, 0, 0, 0.5))
   }
   
-  .home .video video {
+  .home .video image {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    
 
   }
-  video::-webkit-media-controls {
+  image::-webkit-media-controls {
     display: none;
 }
 
- video::-webkit-media-controls-enclosure {
+image::-webkit-media-controls-enclosure {
     display: none;
 }
 
- video::-webkit-media-controls-overlay-enclosure {
+image::-webkit-media-controls-overlay-enclosure {
     display: none;
 }
 
- video::-webkit-media-controls-panel {
+image::-webkit-media-controls-panel {
     display: none;
 }
 
-video::-webkit-media-controls-play-button {
+image::-webkit-media-controls-play-button {
     display: none;
 }
 
-video::-webkit-media-controls-timeline {
+image::-webkit-media-controls-timeline {
     display: none;
 }
-
+  /* HASTA ACA LLEGAN LOS CAMBIOS"--------------------------------------------------------------------------------------------------------*/
 .logo-movil {
     position: relative;
     display: flex;
