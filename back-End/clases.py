@@ -5,15 +5,14 @@ from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
-
 from rutas import *
+
 app.config['SECRET_KEY'] = 'clave_secreta'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class User(db.Model):
-    # id = db.Column(db.Integer, primary_key=True)
     cedula = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
     telefono = db.Column(db.Integer, nullable=False)
@@ -23,7 +22,7 @@ class RegistrationForm(FlaskForm):
 
     cedula = IntegerField('cedula', validators=[validators.NumberRange(min=1000000, max=99999999)])
     name = StringField('name', validators=[validators.Length(min=6, max=25)])
-    telefono = IntegerField('telefono', validators=[validators.NumberRange(min=100000000, max=999999999)])
+    telefono = IntegerField('telefono', validators=[validators.NumberRange(min=10000000, max=999999999)])
     email = StringField('email', validators=[validators.Length(min=6, max=35)])
 
     # password = PasswordField('password', [
