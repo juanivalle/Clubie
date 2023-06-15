@@ -23,29 +23,25 @@ def register():
     if request.method == "POST":
         form = RegistrationForm()
 
-        if form.validate_on_submit():
-            cedula = request.form["cedula"]
-            name = request.form["name"]
-            telefono = request.form["telefono"]
-            email = request.form["email"]
+        #if form.validate_on_submit():
+        cedula = form.cedula.data
+        name = form.name.data
+        telefono =form.telefono.data
+        email = form.email.data        
+        user = User.query.filter(or_(
+            User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
+        if user:
+            return redirect(url_for('roadMap'))        
+        new_user = User(cedula=cedula, name=name,
+                        telefono=telefono, email=email)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
 
-            user = User.query.filter(or_(
-                User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
-            if user:
-                return redirect(url_for('roadMap'))
+    
 
-            new_user = User(cedula=cedula, name=name,
-                            telefono=telefono, email=email)
-            db.session.add(new_user)
-            db.session.commit()
-            all_users = User.query.all()
-            for user in all_users:
-                print(user.cedula, user.name, user.telefono, user.email)
-
-        
-            return redirect(url_for('login'))
-
-        return redirect(url_for('miembros', form=form))
+    clientes = User.query.filter_by().all()
+    return redirect(url_for('miembros', clientes=clientes))
 
 
 # Es importante tener en cuenta que, para que el formulario se muestre correctamente en la vista, es necesario
