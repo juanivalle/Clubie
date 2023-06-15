@@ -2,10 +2,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__, static_folder='../css')
 
-@app.route('/')
-@app.route('/home.html')
-def home():
-    return render_template('/noLog/home.html')
+
 
 @app.route('/contact.html')
 def contact():
@@ -27,9 +24,7 @@ def roadMap():
 def home_club():
     return render_template('/logueado/home-club.html')
 
-@app.route('/miembros.html')
-def miembros():
-    return render_template('/logueado/miembros.html')
+
 
 @app.route('/ventas.html')
 def ventas():

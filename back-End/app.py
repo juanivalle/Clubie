@@ -12,10 +12,13 @@ from rutas import *
 from clases import *
 
 
+
+def load_user(cedula):
+    return User.query.get(int(cedula))
+
 @app.route('/')
-def Index():
+def index():
     usuarios = User.query.all()
-    
     return render_template("home.html", usuarios=usuarios)
 
 @app.route('/registerform', methods=['GET', 'POST'])
@@ -37,11 +40,41 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
-
     
+@app.route('/miembros.html')
+def miembros():
+    usuarios = User.query.all()
+    return render_template('/logueado/miembros.html', users=usuarios)
 
-    clientes = User.query.filter_by().all()
-    return redirect(url_for('miembros', clientes=clientes))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Es importante tener en cuenta que, para que el formulario se muestre correctamente en la vista, es necesario

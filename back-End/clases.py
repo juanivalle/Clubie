@@ -22,7 +22,7 @@ class RegistrationForm(FlaskForm):
 
     cedula = IntegerField('cedula', validators=[validators.NumberRange(min=1000000, max=99999999)])
     name = StringField('name', validators=[validators.Length(min=6, max=25)])
-    telefono = IntegerField('telefono', validators=[validators.NumberRange(min=10000000, max=999999999)])
+    telefono = IntegerField('telefono', validators=[validators.NumberRange(min=100000000, max=999999999)])
     email = StringField('email', validators=[validators.Length(min=6, max=35)])
 
     # password = PasswordField('password', [
