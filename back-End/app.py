@@ -35,12 +35,12 @@ def register():
         user = User.query.filter(or_(
             User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
         if user:
-            return redirect(url_for('roadMap'))        
+            return redirect(url_for('miembros'))        
         new_user = User(cedula=cedula, name=name,
                         telefono=telefono, email=email)
         db.session.add(new_user)
         db.session.commit()
-        return redirect(url_for('login'))
+        return redirect(url_for('miembros'))
     
 @app.route('/miembros.html')
 def miembros():

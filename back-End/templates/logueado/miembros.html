@@ -1,36 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/miembros.css">
-    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
-    <title>Miembros</title>
-</head>
-<body>
+<link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+
     {% extends 'base-log.html' %}
 
-    {% block content %}
-    <div class="container-form">
+    {% block body %}
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card card-body">
+                <h2>Nuevo Miembro</h2>
+                <form action="/registerform" method="POST" autocomplete="off">
+                    <div class="form-group">
+                        <input type="text" name="name" placeholder="Nombre completo" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="cedula" placeholder="Cedula" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="telefono" placeholder="Teléfono" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" name="email" placeholder="Email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block-miembro">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <h2>Miembros</h2>
+            <table id="miembros" class="table table-stripped table-bordered bg-white table-sm">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cedula</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.cedula }}</td>
+                        <td>{{ user.telefono }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            <a href="/edit/{{user.cedula}}" class="btn btn-secondary">Editar</a>
+                            <a href="/delete/{{user.cedula}}" class="btn btn-danger">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- <div class="container-form">
         <h2>Miembros</h2>
         <div class="tabla-miembro">
             <table id="miembros">
-              <tr>
-                <th>Nombre</th>
-                <th>Cedula</th>
-                <th>Teléfono</th>
-                <th>Email</th>
-            </tr>
-            {% for user in users %}
-            <tr>
-                <td>{{ user.name }}</td>
-                <td>{{ user.cedula }}</td>
-                <td>{{ user.telefono }}</td>
-                <td>{{ user.email }}</td>
-            </tr>
-            {% endfor %}
-              </table>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cedula</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.cedula }}</td>
+                    <td>{{ user.telefono }}</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                {% endfor %}
+            </table>
         </div>
         <div class="form-miembro">
             <p>Nuevo Miembro</p>
@@ -42,7 +86,5 @@
                 <input type="submit" value="Cargar miembro" class="btn-miembro">
             </form>
         </div>
-    </div>
+    </div> -->
     {% endblock %}
-</body>
-</html>
