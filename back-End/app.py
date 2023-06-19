@@ -70,6 +70,10 @@ def login():
 def nosotros():
     return render_template('/noLog/nosotros.html')
 
+@app.route('/equipo.html')
+def equipo():
+    return render_template('/noLog/equipo.html')
+
 @app.route('/road-map.html')
 def roadMap():
     return render_template('/noLog/road-map.html')
