@@ -164,59 +164,61 @@ ul li {
 
 }
 .nosotros {
-    margin-top: 7vh;
+    margin-top: 50vh;
 }
-.nosotros-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 60vw;
-    height: 85vh;
-    margin: 0 auto;
-    background: rgba(60, 60, 59, 1);
-    border: 1px solid rgba(60, 60, 59, 1);
-    backdrop-filter: blur(20px);
-    margin-top: 5vh;
-    border-radius: 10px;
-    box-shadow: 0 0 54px rgb(0, 0, 0);
-    padding: 30px;
-  }
-  .valores {
-    width: 75%;
-    margin-bottom: 15px;
+.container-nosotros {
+  width: 100%;
+  display: flex;
+  max-width: 1100px;
 }
-.mision {
-    width: 75%;
-}
-.vision {
-    width: 75%;
-}
-  
-  .nosotros-card h2 {
-    margin-top: 3vh;
-    width: 100%;
-    text-align: center;
-    font-size: 35px;
-}
-  
-  .nosotros-card h3 {
-    font-size: 25px;
-    margin-top: 7vh;
-    text-align: center;
-  }
-  
-  .nosotros-card p {
-    margin: 25px;
-    /*text-align: justify;*/
-  }
 
-  .card {
+.card-nosotros {
+  width: 100%;
+  margin: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0px 1px 10px rgba(0,0,0,0.2);
+  cursor: default;
+  transition: all 400ms ease;
+  height: 50vh;
+  
+}
+.card-nosotros:hover{
+  box-shadow: 5px 5px 20px rgba(169, 151, 237, 0.5);
+  transform: translateY(-3%);
+}
+
+.card-nosotros img{
+  width: 100%;
+  height: 25vh;
+}
+.card-nosotros .contenido{
+  padding: 15px;
+  text-align: center;
+}
+.card-nosotros .contenido p{
+  line-height: 1.5;
+  color: #6a6a6a;
+}
+.card-nosotros .contenido h3{
+  font-weight: 400;
+  margin-bottom: 15px;
+  color: rgba( 15, 230, 161, 1);
+}
+
+.card {
     position: relative;
     width: 13.5vw;
-    height: 40vh;
+    height: 50vh;
     border-radius: 10px;
     box-shadow: 2px 3px 5px rgba(73, 69, 52, 0.4);
     margin-right: 5vw;
+    margin-bottom: 25vh;
+}
+
+.card:first-child {
+  margin-left: 5vw;
 }
 .equipo {
     display: flex;
@@ -268,6 +270,7 @@ ul li {
     font-size: 18px;
     color: #1a1919;
     margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 .card h6 {
