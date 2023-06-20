@@ -96,6 +96,7 @@ def trasabilidad():
 def ctrplanta():
     return render_template('/logueado/ctrplanta.html')
 
+
 @app.route('/graficos.html')
 def graficos():
     return render_template('/logueado/graficos.html')
