@@ -10,7 +10,19 @@ html {
 body {
     overflow-x: hidden;
     background: linear-gradient(0deg, rgba(0,0,0,1) 22%, rgba(17,18,34,1) 50%, rgba(20,21,29,1) 77%, rgba(17,18,34,1) 100%);
-    overflow-y: hidden;
+    overflow-y: scroll;
+}
+body::-webkit-scrollbar {
+  width: 0em; /* Ancho de la scrollbar */
+  background-color: #F5F5F5; /* Color de fondo de la scrollbar */
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #CECECE; /* Color del pulgar de la scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+  background-color: #F5F5F5; /* Color de la pista de la scrollbar */
 }
 section {
     height: 100vh;
@@ -22,6 +34,7 @@ section {
     scroll-snap-type: y mandatory;
     overflow-y: scroll;
     height: 100vh;
+    overflow-x: hidden;
 
 }
 /* Estilo de la barra de desplazamiento */
