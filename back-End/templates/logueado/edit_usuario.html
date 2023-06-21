@@ -4,26 +4,26 @@
 
 <div class="col-md-5 offset-md-4">
     <div class="card card-body">
-        <form action="/update/{{user.cedula}}" method="POST">
+        <form action="/update/{{ usuario.cedula }}" method="POST">
             <div class="form-group">
                 <label for="txtName">Nombre</label>
                 <input type="text" id="txtName" name="name" placeholder="Nombre completo"
-                    value="{{ user.name }}" class="form-control"> <br>
+                    value="{{usuario.name}}" class="form-control"> <br>
             </div>
             <div class="form-group">
                 <label for="txtCi">Cédula</label>
                 <input type="text" id="txtCi" placeholder="Cédula" name="cedula"
-                    value="{{ user.cedula }}" class="form-control"><br>
+                    value="{{usuario.cedula}}" class="form-control"><br>
             </div>
             <div class="form-group">
                 <label for="txtTelefono">Teléfono</label>
                 <input type="text" id="txtTelefono" placeholder="Teléfono" name="telefono"
-                    value="{{ usuario.telefono }}" class="form-control"><br>
+                    value="{{usuario.telefono}}" class="form-control"><br>
             </div>
             <div class="form-group">
                 <label for="txtEmail">Email</label>
                 <input type="text" id="txtEmail" placeholder="Email" name="email"
-                    value="{{ user.email }}" class="form-control"><br>
+                    value="{{usuario.email}}" class="form-control"><br>
             </div>
             <div class="form-group">
                 <input type="submit" value="Guardar cambios" class="btn btn-primary btn-block-miembro">

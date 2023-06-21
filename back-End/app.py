@@ -28,20 +28,21 @@ def register():
     if request.method == "POST":
         form = RegistrationForm()
 
-        #if form.validate_on_submit():
-        cedula = form.cedula.data
-        name = form.name.data
-        telefono =form.telefono.data
-        email = form.email.data        
-        user = User.query.filter(or_(
-            User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
-        if user:
-            return redirect(url_for('miembros'))        
-        new_user = User(cedula=cedula, name=name,
-                        telefono=telefono, email=email)
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('miembros'))
+        if form.validate_on_submit():
+            cedula = form.cedula.data
+            name = form.name.data
+            telefono =form.telefono.data
+            email = form.email.data        
+            user = User.query.filter(or_(
+                User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
+            if user:
+                return redirect(url_for('home'))        
+            new_user = User(cedula=cedula, name=name,
+                            telefono=telefono, email=email)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('miembros'))
+        return redirect(url_for('login'))
     
 @app.route('/miembros.html')
 def miembros():
@@ -57,31 +58,31 @@ def delete_socio(cedula):
     return redirect(url_for('miembros'))
 
 
-@app.route('/edit/<cedula>', methods=['GET'])
-@login_required
-def editar_usuario(cedula):
-    form = EditForm(obj=usuario)
-    usuario = User.query.get_or_404(cedula)
 
-    return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
-
-@app.route('/update/<cedula>', methods=['POST'])
-@login_required
 def update_user(cedula):
     form = EditForm()
+    usuario = User.query.get_or_404(cedula)
 
     if form.validate_on_submit():
-        usuario = User.query.get_or_404(cedula)
         usuario.cedula = form.cedula.data
         usuario.name = form.name.data
         usuario.telefono =form.telefono.data
         usuario.email = form.email.data
         db.session.commit()
         return redirect(url_for('miembros'))
-    
+
     form = EditForm(obj=usuario)
     return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
+
     
+
+@app.route('/edit/<cedula>', methods=['GET'])
+#@login_required
+def editar_usuario(cedula):
+    form = EditForm(obj=User)
+    usuario = User.query.get_or_404(cedula)
+
+    return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
 
 
 # @app.route('/eliminar/<string:user_cedula>', methods=['POST'])
