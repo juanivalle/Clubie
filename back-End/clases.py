@@ -1,4 +1,3 @@
-from uuid import uuid4
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_wtf import FlaskForm
@@ -29,18 +28,12 @@ class RegistrationForm(FlaskForm):
     #     validators.DataRequired()
     # ])
 
-
-
-
-
-
-
-
-
-
-
-
-
+class EditForm(FlaskForm):
+    cedula = StringField('Cédula', validators=[DataRequired()])
+    name = StringField('Nombre', validators=[DataRequired()])
+    telefono = StringField('Teléfono', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Guardar cambios')
 
 
 
