@@ -5,69 +5,103 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length, ValidationError
 import random
-import string
-from flask_bcrypt import Bcrypt
-from clases import *
-from flask_login import UserMixin
+import hashlib
+from flask_bcrypt import check_password_hash, Bcrypt
+from app import create_app, db
 
+
+app = Flask(__name__)
 bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SECRET_KEY'] = 'thisisasecretkey'
+db = SQLAlchemy(app)
 
 
-class User(UserMixin):
-    def __init__(self, username, password):
-        self.username = username
-        self.password = password
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = "login"
 
-    def get_id(self):
-        return self.username
 
-    @staticmethod
-    def get_by_username(username):
-        users = [
-            User('jugador', 'numeroso'),
-        ]
-        for user in users:
-            if user.username == username:
-                return user
-        return None
-    def check_password(self, password):
-        return self.password == password
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(6), unique=True, nullable=False)
+    password = db.Column(db.String(256), nullable=False)
+
+"""GENERA usuario y password aleatorio de 6 caracteres si no me equivoco"""
+def generate_username(length):
+    characters = "abcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    username = ''.join(random.choice(characters) for i in range(length))
+    return username
+
+
+def generate_password(length):
+    characters = "abcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    password = ''.join(random.choice(characters) for i in range(length))
+    return password
+
+def hash_password(password):
+    """ESTO NO SE QUE TAN NECESARIO ES PERO ES UN CIFRADO DE CONTRASEÑAS"""
+    salt = hashlib.sha256(str(random.getrandbits(256)).encode('utf-8')).hexdigest().encode('utf-8')
+    hash = hashlib.sha256(salt + password.encode('utf-8')).hexdigest()
+    return (salt + hash).decode('utf-8')
+
+"""No se como puedo ac"""
+@app.route('/new_user', methods=['POST'])
+def new_user():
+    if current_user.is_authenticated and current_user.is_superuser():
+        new_user = User(username=generate_username(6), password=hash_password(generate_password(6)))
+        db.session.add(new_user)
+        db.session.commit()
+
+
+class LoginForm(FlaskForm):
+    username = StringField(validators=[InputRequired(), Length(
+        min=6, max=6)], render_kw={"placeholder": "Usuario"})
+
+    password = PasswordField(validators=[InputRequired(), Length(
+        min=6, max=6)], render_kw={"placeholder": "Contraseña"})
     
-"""Modificar los campos para que queden acorde a la base de datos y no con self"""
+    submit = SubmitField("Iniciar")
 
-@app.route('/login', methods=['GET', 'POST'])
+"""SUPER USUARIO"""
+app = create_app()
+with app.app_context():
+    db.create_all()
+
+    superuser = User(username='Moria3', is_superuser=True)
+    superuser.set_password('Kiko01')
+    db.session.add(superuser)
+    db.session.commit()
+
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+
+@app.route('/', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.get_by_username(form.username.data)
-        if user and user.check_password(form.password.data):
+        user = User.query.filter_by(username=form.username.data).first()
+        if user and check_password_hash(user.password, form.password.data):
             login_user(user)
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('votacion.html'))
         else:
-            return
+            ValidationError("Usuario o contraseña equivocado")
     return render_template('login.html', form=form)
 
-@app.route('/admin', methods=['GET'])
+
+@app.route('/logout', methods=['GET', 'POST'])
 @login_required
-def admin():
-    # Resto del código para la página de administración
-    return render_template('PAGINAADMIN.html')
-def generate_random_string(length):
-    characters = string.ascii_letters + string.digits
-    random_string = ''.join(random.choices(characters, k=length))
-    return random_string
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
-def generate_user_credentials():
-    username = generate_random_string(6)
-    password = generate_random_string(12)
-    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-    return username, password, hashed_password
-
-"""CONECTAR ESTE USUARIO CON EL LOGINPAGE DE LA OTRA PAGINA"""
-
-"""LA PAGINA DE ARRIBA DEBERIA SER PARA ENTRAR A LA PAGINA PARA LOG DE ADMIN"""
 
 if __name__ == '__main__':
-    db.create_all()
     app.run(debug=True)
