@@ -1,18 +1,19 @@
-from flask import Flask, render_template, url_for, redirect, request, jsonify, g
+from flask import Flask, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_
+from sqlalchemy import or_, text
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
 from flask_bcrypt import check_password_hash, Bcrypt
-
 from rutas import *
 from clases import *
 
 
+login_manager = LoginManager(app)
 
+@login_manager.user_loader
 def load_user(cedula):
     return User.query.get(int(cedula))
 
@@ -27,32 +28,70 @@ def register():
     if request.method == "POST":
         form = RegistrationForm()
 
-        if form.validate_on_submit():
-            cedula = form.cedula.data
-            name = form.name.data
-            telefono =form.telefono.data
-            email = form.email.data        
-            user = User.query.filter(or_(
-                User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
-            if user:
-                return redirect(url_for('miembros'))        
-            new_user = User(cedula=cedula, name=name,
-                            telefono=telefono, email=email)
-            db.session.add(new_user)
-            db.session.commit()
-            return redirect(url_for('miembros'))
+        #if form.validate_on_submit():
+        cedula = form.cedula.data
+        name = form.name.data
+        telefono =form.telefono.data
+        email = form.email.data        
+        user = User.query.filter(or_(
+            User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
+        if user:
+            return redirect(url_for('miembros'))        
+        new_user = User(cedula=cedula, name=name,
+                        telefono=telefono, email=email)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('miembros'))
     
 @app.route('/miembros.html')
 def miembros():
     usuarios = User.query.all()
     return render_template('/logueado/miembros.html', users=usuarios)
 
-@app.route('/eliminar/<string:user_cedula>', methods=['POST'])
-def eliminar_usuario(user_cedula):
-    usuario = User.query.filter_by(cedula=user_cedula).first_or_404()
-    db.session.delete(usuario)
+# FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB // FUNCIONA
+@app.route('/delete/<cedula>')
+def delete_socio(cedula):
+    query = text('DELETE FROM user WHERE cedula = :cedula')
+    db.session.execute(query, {'cedula': cedula})
     db.session.commit()
     return redirect(url_for('miembros'))
+
+
+@app.route('/edit/<cedula>', methods=['GET'])
+@login_required
+def editar_usuario(cedula):
+    form = EditForm(obj=usuario)
+    usuario = User.query.get_or_404(cedula)
+
+    return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
+
+@app.route('/update/<cedula>', methods=['POST'])
+@login_required
+def update_user(cedula):
+    form = EditForm()
+
+    if form.validate_on_submit():
+        usuario = User.query.get_or_404(cedula)
+        usuario.cedula = form.cedula.data
+        usuario.name = form.name.data
+        usuario.telefono =form.telefono.data
+        usuario.email = form.email.data
+        db.session.commit()
+        return redirect(url_for('miembros'))
+    
+    form = EditForm(obj=usuario)
+    return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
+    
+
+
+# @app.route('/eliminar/<string:user_cedula>', methods=['POST'])
+# def eliminar_usuario(user_cedula):
+#     usuario = User.query.filter_by(cedula=user_cedula).first_or_404()
+#     db.session.delete(usuario)
+#     db.session.commit()
+#     return redirect(url_for('miembros'))
+
+
 
 
 
