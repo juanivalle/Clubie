@@ -11,6 +11,7 @@ from rutas import *
 from clases import *
 
 
+
 login_manager = LoginManager(app)
 
 @login_manager.user_loader
