@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card card-body">
+            <form action="/add_club" method="POST">
+                <div class="form-group">
+                    <label for="txtName">Nombre</label>
+                    <input type="text" id="txtName" placeholder="Ingrese el nombre del Club" name="fullname"
+                        class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="txtEmail">Email</label>
+                    <input type="text" id="txtEmail" placeholder="Ingrese el email del Club" name="email"
+                        class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="txtTel">Teléfono</label>
+                    <input type="text" id="txtTel" placeholder="Ingrese el Teléfono del Club" name="phone"
+                        class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="txtDir">Dirección</label>
+                    <input type="text" id="txtDir" placeholder="Ingrese la dirección del Club" name="direccion"
+                        class="form-control">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block">Registrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <table class="table table-stripped table-bordered bg-white table-sm">
+            <thead>
+                <tr>
+                    <td>Nombre</td>
+                    <td>Email</td>
+                    <td>Teléfono</td>
+                    <td>Dirección</td>
+                    <td>Operations</td>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- clubes = tabla en base de datos -->
+                {% for club in clubes %}
+                <tr>
+                    <!-- Nombre -->
+                    <td>{{club.1}}</td>
+                    <!-- Email -->
+                    <td>{{club.2}}</td>
+                    <td>{{club.3}}</td>
+                    <td>{{club.4}}</td>
+                    <td>
+                        <a href="/edit/{{club.0}}" class="btn btn-secondary">Edit</a>
+                        <a href="/delete/{{club.0}}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
