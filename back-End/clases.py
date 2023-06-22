@@ -36,9 +36,6 @@ class EditForm(FlaskForm):
     submit = SubmitField('Guardar cambios')
 
 
-
-
-
 class ClubForm(FlaskForm):
     campoarchivo = FileField('campoarchivo', validators=[
         DataRequired(message='Por favor seleccione un archivo.'),

@@ -36,26 +36,23 @@
         <table class="table table-stripped table-bordered bg-white table-sm">
             <thead>
                 <tr>
-                    <td>Nombre</td>
-                    <td>Email</td>
-                    <td>Teléfono</td>
-                    <td>Dirección</td>
-                    <td>Operations</td>
+                    <th>Cedula</th>
+                    <th>Contrasena</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Operaciones</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- clubes = tabla en base de datos -->
-                {% for club in clubes %}
+                {% for adminuser in adminusers %}
                 <tr>
-                    <!-- Nombre -->
-                    <td>{{club.1}}</td>
-                    <!-- Email -->
-                    <td>{{club.2}}</td>
-                    <td>{{club.3}}</td>
-                    <td>{{club.4}}</td>
+                    <td>{{ adminuser.cedula }}</td>
+                    <td>{{ adminuser.password }}</td>
+                    <td>{{ adminuser.telefono }}</td>
+                    <td>{{ adminuser.email }}</td>
                     <td>
-                        <a href="/edit/{{club.0}}" class="btn btn-secondary">Edit</a>
-                        <a href="/delete/{{club.0}}" class="btn btn-danger">Delete</a>
+                        <a href="/edit/{{adminuser.cedula}}" class="btn btn-secondary">Editar</a>
+                        <a href="/delete/{{adminuser.cedula}}" class="btn btn-danger">Eliminar</a>
                     </td>
                 </tr>
                 {% endfor %}
