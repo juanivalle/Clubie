@@ -6,10 +6,9 @@ from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
-from flask_bcrypt import check_password_hash, Bcrypt
 from rutas import *
 from clases import *
-
+from sqlalchemy.orm import joinedload
 
 
 login_manager = LoginManager(app)
@@ -53,9 +52,12 @@ def miembros():
 # FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB // FUNCIONA
 @app.route('/delete/<cedula>')
 def delete_socio(cedula):
-    query = text('DELETE FROM user WHERE cedula = :cedula')
-    db.session.execute(query, {'cedula': cedula})
-    db.session.commit()
+    socio = User.query.filter_by(cedula=cedula).first()
+    
+    if socio:
+        db.session.delete(socio)
+        db.session.commit()
+    
     return redirect(url_for('miembros'))
 
 
@@ -93,6 +95,85 @@ def editar_usuario(cedula):
 #     db.session.commit()
 #     return redirect(url_for('miembros'))
 
+########################################################################################################
+@app.route('/registerplanta', methods=['GET', 'POST'])
+def registerplanta():
+    form = PlantForm()
+
+    if form.validate_on_submit():
+        idRaza = form.idraza.data
+        raza = form.raza.data
+        enraizado = form.enraizado.data
+        paso1 = form.paso1.data
+        paso2 = form.paso2.data
+        paso3 = form.paso3.data
+        floracion = form.floracion.data
+        cosecha = form.cosecha.data
+        cantidad = form.cantidad.data
+        observaciones = form.observaciones.data
+
+        planta = Trazabilidad.query.filter(or_(
+            Trazabilidad.idRaza == idRaza, Trazabilidad.raza == raza)).first()
+        if planta:
+            return redirect(url_for('homeplanta'))
+
+        new_planta = Trazabilidad(idRaza=idRaza, raza=raza, enraizado=enraizado,
+                                  paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
+                                  cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
+        db.session.add(new_planta)
+        db.session.commit()
+        return redirect(url_for('otra_pagina')) 
+
+    return render_template('registerplanta.html', form=form)  # Renderiza el formulario en la vista
+#############################################################################################################################################
+@app.route('/delete/<idRaza>')
+def delete_planta(idRaza):
+    elimplanta = User.query.filter_by(idRaza=idRaza).first()
+    
+    if elimplanta:
+        db.session.delete(elimplanta)
+        db.session.commit()
+    
+    return redirect(url_for('homeplantcreo'))
+#############################################################################################################################################
+##########################################################################################################################################
+
+@app.route('/crear_venta')
+def Creoventa():
+    datos = obtener_datos()
+    return render_template('ventas.html', datos=datos)
+
+#########################################################################################################################################################
+
+
+@app.route('/tabla_ventas')
+def tabla_datos():
+    datos = obtener_datos()
+    return render_template('ventas.html', datos=datos)
+
+def obtener_datos():
+    datos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
+    return datos
+
+#########################################################################################################################################################
+
+
+#############################################################################################################################################
+
+
+def obtenemos():
+    atos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
+    datos_dict = [{'idventas': ato.idventas, 'cedula': ato.cedula, 'raza': ato.raza, 'cantidad': ato.cantidad, 'retiro': ato.retiro,} for ato in atos]
+    return datos_dict
+
+
+
+@app.route('/datos')
+def mostrar_datos():
+    datos = obtenemos()
+    return render_template('ventas.html', datos=datos)
+
+##############################################################################################################################################
 
 
 
@@ -102,6 +183,7 @@ def editar_usuario(cedula):
 @app.route('/contact.html')
 def contact():
     return render_template('/noLog/contact.html')
+
 
 @app.route('/login.html')
 def login():
@@ -129,7 +211,7 @@ def home_club():
 def ventas():
     return render_template('/logueado/ventas.html')
 
-@app.route('/trasabilidad.html')
+@app.route('/trazabilidad.html')
 def trasabilidad():
     return render_template('/logueado/trasabilidad.html')
 
@@ -213,6 +295,4 @@ def graficos():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        
-
-    app.run(port=5000, debug=True)
+    app.run(debug=True)

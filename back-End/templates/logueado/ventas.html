@@ -15,38 +15,30 @@
     <div class="container-form">
         <h2>Miembros</h2>
         <div class="tabla-miembro">
-            <table id="miembros">
-                <tr>
-                  <th>Nombre value="nombre"</th>
-                  <th>Cedula value="cedula"</th>
-                  <th>Edad</th>
-                  <th>Membresia</th>
-                </tr>
-                <tr>
-                  <td>Juan</td>
-                  <td>47256564</td>
-                  <td>25</td>
-                  <td>No</td>
-                </tr>
-                <tr>
-                  <td>Matias Mancini</td>
-                  <td>78878652</td>
-                  <td>20</td>
-                  <td>Si</td>
-                </tr>
-                <tr>
-                    <td>Matias Mancini</td>
-                    <td>78878652</td>
-                    <td>20</td>
-                    <td>Si</td>
-                  </tr>
-                  <tr>
-                    <td>Matias Mancini</td>
-                    <td>78878652</td>
-                    <td>20</td>
-                    <td>Si</td>
-                  </tr>
-              </table>
+          <table>
+            <thead>
+              <tr>
+                <th>ID Venta</th>
+                <th>Cédula</th>
+                <th>Raza</th>
+                <th>Cantidad</th>
+                <th>Retiro</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <!-- LA TABLA DE ABAJO ES PARA MOSTRAR LAS PLANTAS-->
+              {% for dato in datos %}
+              <tr>
+                <td>{{ dato[0] }}</td>
+                <td>{{ dato[1] }}</td>
+                <td>{{ dato[2] }}</td>
+                <td>{{ dato[3] }}</td>
+                <td>{{ dato[4] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
         <div class="form-miembro">
             <p>Nuevo Miembro</p>
@@ -57,7 +49,22 @@
                 <input type="text" name="Membresia" placeholder="Tiene Membresia Si/No" class="campo">
                 <input type="submit" value="Cargar miembro" class="btn-miembro">
             </form>
-        </div>
+            <!--LA TABLA DE ABAJO ES PARA MOSTRAR LAS VENTAS-->
+            <tbody>
+              {% for dato in datos %}
+              <tr>
+                <td>{{ dato.idventas }}</td>
+                <td>{{ dato.cedula }}</td>
+                <td>{{ dato.raza }}</td>
+                <td>{{ dato.cantidad }}</td>
+                <td>{{ dato.retiro }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+        
+        
+        
+          </div>
     </div>
     {% endblock %}
 </body>

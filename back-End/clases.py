@@ -5,6 +5,7 @@ from wtforms import *
 from wtforms.validators import *
 from flask_wtf.file import FileField, FileAllowed, FileSize
 from rutas import *
+from datetime import datetime
 
 app.config['SECRET_KEY'] = 'clave_secreta'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
@@ -49,7 +50,7 @@ class ClubForm(FlaskForm):
     password = PasswordField('password', [
         validators.DataRequired()
     ])
-class Club():
+class Club(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     campoarchivo = db.Column(db.String(30))
     username = db.Column(db.String(30), unique=True, nullable=False)
@@ -80,14 +81,49 @@ class LoginForm(FlaskForm):
     
     submit = SubmitField("Iniciar")
 
-class Plant(FlaskForm):
+class Trazabilidad(db.Model):
     """Define the new class Plant"""
-    def __init__(self, idRaza, cantidad, riego, sustrato, cortes, Luz, Poda, residuos):
-        self.idRaza = idRaza
-        self.cantidad = cantidad
-        self.riego = riego
-        self.sustrato = sustrato
-        self.cortes = cortes
-        self.luz = Luz
-        self.poda = Poda
-        self.residuos = residuos
+    idraza = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    raza = db.Column(db.String(30), nullable=False)
+    enraizado = db.Column(db.String(30), nullable=False)
+    paso1 = db.Column(db.DateTime, nullable=True)
+    paso2 = db.Column(db.DateTime, nullable=True)
+    paso3 = db.Column(db.DateTime, nullable=True)
+    floracion = db.Column(db.String(30), nullable=False)
+    cosecha = db.Column(db.String(30), nullable=False)
+    cantidad = db.Column(db.String(30))
+    observaciones = db.Column(db.String(30), nullable=False)
+    #PREGUNTAR ESTO: riego = db.Column(db.String(30), unique=True, nullable=False)
+    #PREGUNTAR ESTO: sustrato = db.Column(db.String(25), nullable=False)
+    #PREGUNTAR ESTO: cortes = db.Column(db.String(70))
+    #PREGUNTAR ESTO: luz= db.Column(db.String(70))
+    #PREGUNTAR ESTO: poda= db.Column(db.String(70))
+    #PREGUNTAR ESTO: residuos= db.Column(db.String(70))
+
+class PlantForm(FlaskForm):
+    idraza = IntegerField('idRaza')
+    raza = StringField('Raza')
+    enraizado = StringField('Enraizado')
+    paso1 = DateTimeLocalField('Paso 1')
+    paso2 = DateTimeLocalField('Paso 2')
+    paso3 = DateTimeLocalField('Paso 3')
+    floracion = StringField('Floración')
+    cosecha = StringField('Cosecha' )
+    cantidad = StringField('Cantidad')
+    observaciones = StringField('Observaciones')
+  ##FIJARSE SI LOS CAMPOS ESTAN BIEN, SI ESTAN BIEN PONER VALIDADORES COMO EN "REGISTRATION FORM"
+
+
+##NO SE SI CANTIDAD ES LOS COGOLLOS, O COSECHA, ESO FALTA PARA PODER CONECTAR
+class Ventasform(FlaskForm):
+    idventas = IntegerField('idRaza')
+    cantidad = StringField('cantidad')
+    retiro = StringField('retiro')
+
+
+
+
+class Ventas(db.Model):
+    idventas = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    cantidad = db.Column(db.String(30), nullable=False)
+    retiro = db.Column(db.String(12), default=datetime.now())
