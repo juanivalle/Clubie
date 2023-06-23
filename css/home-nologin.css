@@ -29,6 +29,7 @@ section {
     display: flex;
     justify-content: center;
     color: #fff;
+    margin-bottom: 10vh;
 }
 .container {
     scroll-snap-type: y mandatory;
@@ -174,8 +175,11 @@ ul li {
     color: #333;
 
 }
+
+/*Nosotros*/
+
 .nosotros {
-    margin-top: 50vh;
+    margin-top: 10vh;
 }
 .container-nosotros {
   width: 100%;
@@ -231,6 +235,9 @@ ul li {
 .card:first-child {
   margin-left: 5vw;
 }
+
+/*Equipo*/
+
 .equipo {
     display: flex;
     align-items: center;
@@ -345,6 +352,7 @@ ul li {
   align-items: center;
   padding: 80px 100px;
   color: #fff;
+  margin-bottom: 10vh;
 }
 .contenedor-map {
   position: relative;
@@ -353,8 +361,15 @@ ul li {
   align-items: center;
   flex-direction: column;
 }
+
+h1 {
+  color: white;
+  margin-bottom: 0;
+  margin-left: 10%;
+}
+
 body h1 {
-  font-size: 4em;
+  font-size: 3em;
   margin-bottom: 50px;
 }
 
@@ -439,6 +454,8 @@ body h1 {
 .sec-4 {
   margin-bottom: 15vh;
 }
+
+/*Contacto*/
 
 .container-form{
   width: 100vw;
