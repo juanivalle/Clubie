@@ -10,19 +10,20 @@ html {
 body {
     overflow-x: hidden;
     background: linear-gradient(0deg, rgba(0,0,0,1) 22%, rgba(17,18,34,1) 50%, rgba(20,21,29,1) 77%, rgba(17,18,34,1) 100%);
-    overflow-y: scroll;
     color: white;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .login-box {
-    width: 320px;
-    height: 420px;
+    width: 17vw;
+    height: 45vh;
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 5px 5px 20px rgba(169, 151, 237, 0.5);
-    top: 50%;
+    top: 45%;
     left: 50%;
-    position: relative;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
     transform: translate(-50%, -50%);
     box-sizing: border-box;
     padding: 70px 30px;
@@ -90,3 +91,11 @@ body {
 .login-box a:hover{
     color: #fff;
 }
+footer {
+    position: fixed;
+    height: 23.2vh;
+    overflow: hidden;
+}
+.footer-icons a i {
+    margin-top: 7.5px;
+  }

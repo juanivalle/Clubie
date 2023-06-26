@@ -2,6 +2,7 @@ footer {
   bottom: 0;
   margin-top: 10vh;
   overflow-x:hidden;
+  font-family: "Roboto", sans-serif;
 }
 
 @media (max-height:800px) {
@@ -33,7 +34,7 @@ footer {
 
 .footer-distributed h3 {
   color: #ffffff;
-  font: normal 36px 'Cookie', cursive;
+  font: normal 36px "Roboto", sans-serif;
   margin: 0;
 }
 
