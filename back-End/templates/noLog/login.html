@@ -21,9 +21,10 @@
         <div class="container-form sign-in">
             <form class="formulario" action="/loginform" method="POST" onsubmit="return validar_login()">
                 <h2 class="create-account">Iniciar Sesion</h2>
-
+                <label for="txtEmail">Email:</label>
                 <input id="txtEmail" type="email" name="email" placeholder="Email">
-                <input type="password" name="password" placeholder="Contraseña">
+                <label for="contraseña">Contraseña:</label>
+                <input type="password" id="contraseña" name="password" placeholder="Contraseña">
                 <p class="recuperar">Has olvidado tu contraseña?</p>
                 <input type="button" value="Iniciar Sesion">
             </form>

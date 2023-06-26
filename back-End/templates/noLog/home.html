@@ -244,10 +244,14 @@
                     <a href="#"> <i class="fa fa-map-marked"></i> Montevideo, Uruguay</a>
                 </div>
                 <form action="https://formsubmit.co/adm.clubie@gmail.com" method="POST" autocomplete="off">
-                    <input type="text" name="name" placeholder="Ingrese su nombre" class="campo">
-                    <input type="email" name="email" placeholder="Ingrese su correo" class="campo">
-                    <input type="text" name="subject" placeholder="Asunto de su consulta" class="campo">
-                    <textarea type="coments" name="coments" placeholder="Ingresa tu mensaje"></textarea>
+                    <label for="name">Nombre:</label>
+                    <input type="text" name="name" id="name" placeholder="Ingrese su nombre" class="campo">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" placeholder="Ingrese su correo" class="campo">
+                    <label for="subject">Asunto:</label>
+                    <input type="text" name="subject" id="subject" placeholder="Asunto de su consulta" class="campo">
+                    <label for="coments">Comentario:</label>
+                    <textarea type="coments" name="coments" id="coments" placeholder="Ingresa tu mensaje"></textarea>
                     <input type="submit" value="Enviar mensaje" class="btn">
                     <input type="hidden" name="_next" value="http://127.0.0.1:5000/contact.html">
                     <input type="hidden" name="_captcha" value="false">

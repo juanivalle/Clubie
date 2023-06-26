@@ -5,9 +5,15 @@
   font-family: "Roboto", sans-serif;
 }
 body{
-  background-color: #ce925693;
+  background-color: #111222;
   display: flex;
   flex-direction: column;
+}
+footer {
+  position:fixed;
+}
+header {
+  font-size: 16px;
 }
 .container-form{
   display: flex;
@@ -56,7 +62,7 @@ td, th {
   padding: 10px 20px;
 }
 th {
-  background-color: rgb(5, 51, 10);
+  background-color: #3C3C3B;
   color: white;
   font-size: 15px;
   font-weight: bolder;
@@ -69,7 +75,7 @@ tr:nth-child(even) td {
 }
 
 tr:nth-child(odd) td {
-  background-color: rgb(176, 175, 175);
+  background-color: rgb(250,250,250);
 }
 
 caption {
@@ -102,6 +108,21 @@ display: none;
 color: #fff;
 font-size: 1.5em;
 cursor: pointer;
+}
+.col-md-7 h2 {
+  color: #fff;
+}
+.footer-icons a i {
+  margin-top: 7.5px;
+}
+label {
+  font-size: 16px;
+  font-weight: bolder;
+  margin-bottom: -10px;
+  color: #3C3C3B;
+}
+.col-md-5 h2 {
+  text-align: center;
 }
 
 @media screen and (max-width: 768px) {

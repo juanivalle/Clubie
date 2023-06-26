@@ -43,8 +43,11 @@
         <div class="form-miembro">
             <p>Nuevo Miembro</p>
             <form method="POST" autocomplete="off" onsubmit="return validar_form_trazabilidad()">
+                <label for="txtName">Nombre Completo:</label>
                 <input id="txtName" type="text" name="name" placeholder="Nombre completo" class="campo">
+                <label for="txtCi">Cedula:</label>
                 <input id="txtCi"type="text" name="cedula" placeholder="Cedula" class="campo">
+                <label for="edad">Fecha de nacimiento:</label>
                 <input id="edad" type="text" name="edad" placeholder="Fecha de nacimiento" class="campo">
                 <input type="text" name="Membresia" placeholder="Tiene Membresia Si/No" class="campo">
                 <input type="submit" value="Cargar miembro" class="btn-miembro">

@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
 <link rel="stylesheet" href="../../../css/miembros.css">
+<script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
 
     {% extends 'base-log.html' %}
 
@@ -11,16 +12,20 @@
                 <h2>Nuevo Miembro</h2>
                 <form action="/registerform" method="POST" autocomplete="off" onsubmit="return validar_form_miembros()">
                     <div class="form-group">
-                        <input id ="txtName" type="text" name="name" placeholder="Nombre completo" class="form-control">
+                        <label for="txtName">Nombre Completo:</label>
+                        <input id ="txtName" type="text" name="name" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input id="txtCi" type="text" name="cedula" placeholder="Cedula" class="form-control">
+                        <label for="txtCi">Cedula:</label>
+                        <input id="txtCi" type="text" name="cedula"  class="form-control">
                     </div>
                     <div class="form-group">
-                        <input id="txtTelefono" type="text" name="telefono" placeholder="Teléfono" class="form-control">
+                        <label for="txtTelefono">Telefono:</label>
+                        <input id="txtTelefono" type="text" name="telefono"  class="form-control">
                     </div>
                     <div class="form-group">
-                        <input id="txtEmail "type="text" name="email" placeholder="Email" class="form-control">
+                        <label for="txtEmail">Email:</label>
+                        <input id="txtEmail "type="text" name="email"  class="form-control">
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block-miembro">
