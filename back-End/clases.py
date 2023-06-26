@@ -117,13 +117,17 @@ class PlantForm(FlaskForm):
 ##NO SE SI CANTIDAD ES LOS COGOLLOS, O COSECHA, ESO FALTA PARA PODER CONECTAR
 class Ventasform(FlaskForm):
     idventas = IntegerField('idRaza')
+    cedula = IntegerField('cedula')
+    raza = StringField('raza')
     cantidad = StringField('cantidad')
-    retiro = StringField('retiro')
+    retiro = DateTimeLocalField('retiro')
 
 
 
 
 class Ventas(db.Model):
     idventas = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    cedula = StringField('cedula')
+    idraza = IntegerField('idRaza')
     cantidad = db.Column(db.String(30), nullable=False)
     retiro = db.Column(db.String(12), default=datetime.now())
