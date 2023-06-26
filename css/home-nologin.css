@@ -104,7 +104,7 @@ image::-webkit-media-controls-timeline {
     
   }
 header {
-    position: relative;
+    position: sticky;
     top: 0;
     left: 0;
     width: 100vw;
@@ -112,7 +112,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 100;
+    z-index: 333;
     background-color: rgba(0, 0, 0, 0.8); /* Valor del canal alfa (alpha) para la opacidad */     
 
 }
@@ -348,11 +348,24 @@ ul li {
 #roadMap {
   position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   padding: 80px 100px;
   color: #fff;
   margin-bottom: 10vh;
+  overflow-x:visible;
+}
+.sec-1 {
+  right: 3vw;
+}
+.sec-2 {
+  left: 42vw;
+}
+.sec-3 {
+  right: 3vw;
+}
+.sec-4 {
+  left: 42vw;
 }
 .contenedor-map {
   position: relative;
