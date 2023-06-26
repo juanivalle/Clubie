@@ -51,10 +51,10 @@
         <div class="form-miembro">
           <!--Hay que ver que es lo que se precisa para esto. Fechas no se guardan en caso de solo querer alerta pero si en el caso de querer tener un registro de cuando se planto-->
             <p>Nuevo Miembro</p>
-            <form method="POST" autocomplete="off">
-                <input type="text" name="name" placeholder="Nombre completo" class="campo">
-                <input type="text" name="cedula" placeholder="Cedula" class="campo">
-                <input type="text" name="edad" placeholder="Fecha de nacimiento" class="campo">
+            <form method="POST" autocomplete="off" onsubmit="return validar_form_trazabilidad()">
+                <input id="txtName" type="text" name="name" placeholder="Nombre completo" class="campo">
+                <input id="txtCi" type="text" name="cedula" placeholder="Cedula" class="campo">
+                <input id="edad" type="text" name="edad" placeholder="Fecha de nacimiento" class="campo">
                 <input type="text" name="Membresia" placeholder="Tiene Membresia Si/No" class="campo">
                 <input type="submit" value="Cargar miembro" class="btn-miembro">
             </form>

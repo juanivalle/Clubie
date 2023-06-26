@@ -9,18 +9,18 @@
         <div class="col-md-5">
             <div class="card card-body">
                 <h2>Nuevo Miembro</h2>
-                <form action="/registerform" method="POST" autocomplete="off">
+                <form action="/registerform" method="POST" autocomplete="off" onsubmit="return validar_form_miembros()">
                     <div class="form-group">
-                        <input type="text" name="name" placeholder="Nombre completo" class="form-control">
+                        <input id ="txtName" type="text" name="name" placeholder="Nombre completo" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="cedula" placeholder="Cedula" class="form-control">
+                        <input id="txtCi" type="text" name="cedula" placeholder="Cedula" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="telefono" placeholder="Teléfono" class="form-control">
+                        <input id="txtTelefono" type="text" name="telefono" placeholder="Teléfono" class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="text" name="email" placeholder="Email" class="form-control">
+                        <input id="txtEmail "type="text" name="email" placeholder="Email" class="form-control">
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block-miembro">

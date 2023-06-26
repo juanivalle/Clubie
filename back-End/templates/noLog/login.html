@@ -20,10 +20,10 @@
         <div class="container-form sign-up">
         </div>
         <div class="container-form sign-in">
-            <form class="formulario" action="/loginform" method="POST">
+            <form class="formulario" action="/loginform" method="POST" onsubmit="return validar_login()">
                 <h2 class="create-account">Iniciar Sesion</h2>
 
-                <input type="email" name="email" placeholder="Email">
+                <input id="txtEmail" type="email" name="email" placeholder="Email">
                 <input type="password" name="password" placeholder="Contraseña">
                 <p class="recuperar">Has olvidado tu contraseña?</p>
                 <input type="button" value="Iniciar Sesion">
