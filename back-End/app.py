@@ -137,12 +137,29 @@ def delete_planta(idRaza):
     return redirect(url_for('homeplantcreo'))
 #############################################################################################################################################
 ##########################################################################################################################################
+@app.route('/ventas', methods=['GET', 'POST'])
+def ventosa():
+    form = Ventasform()
+    idventa = form.idventa.data
+    cedula = form.cedula.data
+    raza = form.raza.data
+    cantidad = form.cantidad.data
+    retiro = form.retiro.data
+    if Ventas.cedula == User.cedula & Ventas.raza == Trazabilidad.raza:
+        new_venta = Ventas(idventa=idventa, cedula=cedula, raza=raza, cantidad=cantidad,
+                                  retiro=retiro,)
+        db.session.add(new_venta)
+        db.session.commit()
+        return redirect(url_for('otra_pagina')) 
+    
+    return render_template('registerplanta.html', form=form)
 
-@app.route('/crear_venta')
-def Creoventa():
-    datos = obtener_datos()
-    return render_template('ventas.html', datos=datos)
 
+
+
+
+
+#######################################
 #########################################################################################################################################################
 
 
@@ -152,15 +169,13 @@ def tabla_datos():
     return render_template('ventas.html', datos=datos)
 
 def obtener_datos():
-    datos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
+    datos = db.session.query(Ventas.idventas, Ventas.cedula, Ventas.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
     return datos
 
 #########################################################################################################################################################
 
 
 #############################################################################################################################################
-
-
 def obtenemos():
     atos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
     datos_dict = [{'idventas': ato.idventas, 'cedula': ato.cedula, 'raza': ato.raza, 'cantidad': ato.cantidad, 'retiro': ato.retiro,} for ato in atos]

@@ -7,7 +7,7 @@ var campotexto = document.getElementById("campotexto");
 var campolargo = document.getElementById("campolargo");
 
 function validar_form_miembros() {
-    valortelefono;
+    valortelefono();
     valorcedula();
     valormail();
     valorusuario();
