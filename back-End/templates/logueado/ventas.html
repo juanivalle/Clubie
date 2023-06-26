@@ -45,9 +45,12 @@
             <form method="POST" autocomplete="off" onsubmit="return validar_form_trazabilidad()">
                 <label for="txtName">Nombre Completo:</label>
                 <input id="txtName" type="text" name="name" placeholder="Nombre completo" class="campo">
+                <label for="txtCi">Cedula:</label>
                 <input id="txtCi"type="text" name="cedulaVenta" placeholder="Cedula" class="campo">
-                <input type="text" name="razaVenta" placeholder="Raza" class="campo">
-                <input type="number" name="cantVenta" placeholder="Cantidad" class="campo">
+                <label for="razaVenta">Raza Venta:</label>
+                <input type="text" name="razaVenta" id="razaVenta" placeholder="Raza" class="campo">
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" name="cantVenta" id="cantidad" placeholder="Cantidad" class="campo">
                 <input type="submit" value="Cargar miembro" class="btn-miembro">
             </form>
             <!--LA TABLA DE ABAJO ES PARA MOSTRAR LAS VENTAS-->
