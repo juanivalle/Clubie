@@ -16,14 +16,14 @@ body {
 
 .login-box {
     width: 17vw;
-    height: 45vh;
+    height: 55vh;
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 5px 5px 20px rgba(169, 151, 237, 0.5);
-    top: 45%;
+    top: 50%;
     left: 50%;
     position: absolute;
     align-items: center;
-    justify-content: center;
+
     transform: translate(-50%, -50%);
     box-sizing: border-box;
     padding: 70px 30px;
@@ -70,7 +70,7 @@ body {
     font-size: 16px;
 }
 
-.login-box input[type="submit"] {
+.login-box input[type="submit"]{
     border: none;
     outline: none;
     height: 40px;
@@ -79,6 +79,25 @@ body {
     font-weight: bold;
     font-size: 18px;
     border-radius: 20px;
+}
+
+.alerta {
+    background-color: #0fe6a2dd;
+    color: #000;
+    padding: 10px;
+    border: 1px solid #0fe6a2dd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    margin-top: 25%;
+    text-align: center;
+}
+  
+.oculto {
+    display: none;
+}
+  
+.mensaje {
+    font-weight: bold;
 }
 
 .login-box a {
@@ -91,11 +110,13 @@ body {
 .login-box a:hover{
     color: #fff;
 }
+
+
 footer {
     position: fixed;
-    height: 23.2vh;
     overflow: hidden;
+    margin-top: 100%;
 }
 .footer-icons a i {
     margin-top: 7.5px;
-  }
+}
