@@ -7,24 +7,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
 
-<body class="cuerpo">
-    {% extends 'base-nolog.html'%}
-    {% block content %}
-    <div class="login-box">
-        <img class="avatar" src="../../../css/media/Logo-verde.png" alt="logo">
-        <h1>Ingresar</h1>
-        <form class="formulario" action="/loginform" method="POST" onsubmit="return validar_login()">
-            <label for="username">Username</label>
-            <input type="text" id="username" placeholder="Ingresar Username">
+    <body class="cuerpo">
+        {% extends 'base-nolog.html'%}
+        {% block content %}
+        <div class="login-box">
+            <img class="avatar" src="../../../css/media/Logo-verde.png" alt="logo">
+            <h1>Ingresar</h1>
+            <form class="formulario" action="/loginform" method="POST" onsubmit="return validar_login()">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Ingresar Username">
 
-            <label for="password">Contraseña</label>
-            <input type="text" id="password" placeholder="Ingresar Contraseña">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="Ingresar Contraseña">
 
-            <input type="submit" value="Log in">
+                
+                <input type="submit" value="Log in" id="miBoton">
+                <a href="#">Olvide mi Contraseña </a><br>
+                <a href="#">No tengo cuenta, <b>Contactanos</b></a>
+                
+                <div id="alerta" class="alerta oculto">
+                    <span class="mensaje">registro con exito!</span>
+                </div>
+            </form>
+        </div>
+        <script>
+            function mostrarAlerta() {
+                document.getElementById("alerta").style.display = "block";
+            }
 
-            <a href="#">Olvide mi Contraseña</a><br>
-            <a href="#">No tengo cuenta, <b>Contactanos</b></a>
-        </form>
-    </div>
-    {% endblock %}
-</body>
+            document.getElementById("miBoton").addEventListener("click", function() {
+                mostrarAlerta();
+            });
+        </script>
+        {% endblock %}
+    </body>
