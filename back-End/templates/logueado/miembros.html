@@ -2,15 +2,16 @@
 <link rel="stylesheet" href="../../../css/miembros.css">
 <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
 
+
     {% extends 'base-log.html' %}
 
     {% block body %}
-
+    
     <div class="row">
         <div class="col-md-5">
             <div class="card card-body">
                 <h2>Nuevo Miembro</h2>
-                <form action="/registerform" method="POST" autocomplete="off" onsubmit="return validar_form_miembros()">
+                <form action="/registerform" method="POST" autocomplete="off">
                     <div class="form-group">
                         <label for="txtName">Nombre Completo:</label>
                         <input id ="txtName" type="text" name="name" class="form-control">
@@ -62,4 +63,5 @@
             </table>
         </div>
     </div>
+    
     {% endblock %}

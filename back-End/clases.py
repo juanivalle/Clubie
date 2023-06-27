@@ -15,25 +15,22 @@ db = SQLAlchemy(app)
 class User(db.Model):
     cedula = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
-    telefono = db.Column(db.Integer, nullable=False)
-    email = db.Column(db.String(30), nullable=False)
+    telefono = db.Column(db.Integer, nullable=False, unique=True)
+    email = db.Column(db.String(30), nullable=False, unique=True)
 
 class RegistrationForm(FlaskForm):
-
-    cedula = IntegerField('cedula', validators=[validators.NumberRange(min=1000000, max=99999999)])
     name = StringField('name', validators=[validators.Length(min=6, max=25)])
-    telefono = IntegerField('telefono', validators=[validators.NumberRange(min=100000000, max=999999999)])
+    cedula = IntegerField('cedula', validators=[validators.NumberRange(min=1000000, max=99999999)])
+    telefono = IntegerField('telefono', validators=[validators.NumberRange(min=10000000, max=999999999)])
     email = StringField('email', validators=[validators.Length(min=6, max=35)])
 
-    # password = PasswordField('password', [
-    #     validators.DataRequired()
-    # ])
+
 
 class EditForm(FlaskForm):
-    cedula = StringField('Cédula', validators=[DataRequired()])
-    name = StringField('Nombre', validators=[DataRequired()])
-    telefono = StringField('Teléfono', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    cedula = StringField('cedula', validators=[DataRequired()])
+    name = StringField('name', validators=[DataRequired()])
+    telefono = StringField('telefono', validators=[DataRequired()])
+    email = StringField('email', validators=[DataRequired(), Email()])
     submit = SubmitField('Guardar cambios')
 
 
@@ -44,12 +41,7 @@ class ClubForm(FlaskForm):
         FileSize(max_size=10 * 1024 * 1024)
 #ESTA ES LA PARTE DEL ARCHIVO
 ])
-    #FALTA DIRECCION, DUEÑO, CAPAZ ALGO MAS
-    username = StringField('username', [validators.Length(min=6, max=25)])
-    email = StringField('email', [validators.Length(min=6, max=35)])
-    password = PasswordField('password', [
-        validators.DataRequired()
-    ])
+
 class Club(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     campoarchivo = db.Column(db.String(30))
