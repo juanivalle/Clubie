@@ -4,7 +4,7 @@
 
 <div class="col-md-5 offset-md-4">
     <div class="card card-body">
-        <form action="/update/{{ usuario.cedula }}" method="POST" onsubmit="return validar_form_trazabilidad()">
+        <form action="/edit/{{ usuario.cedula }}" method="POST" onsubmit="return validar_form_trazabilidad()">
             <div class="form-group">
                 <label for="txtName">Nombre</label>
                 <input type="text" id="txtName" name="name" placeholder="Nombre completo"

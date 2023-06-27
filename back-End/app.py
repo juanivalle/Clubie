@@ -25,8 +25,8 @@ def index():
 
 @app.route('/registerform', methods=['GET', 'POST'])
 def register():
+    form = RegistrationForm()
     if request.method == "POST":
-        form = RegistrationForm()
 
         if form.validate_on_submit():
             cedula = form.cedula.data
@@ -36,14 +36,14 @@ def register():
             user = User.query.filter(or_(
                 User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
             if user:
-                return redirect(url_for('home'))        
+                return redirect(url_for('home'))
             new_user = User(cedula=cedula, name=name,
                             telefono=telefono, email=email)
             db.session.add(new_user)
             db.session.commit()
             return redirect(url_for('miembros'))
-        return redirect(url_for('login'))
-    
+        return redirect(url_for('miembros'))
+
 @app.route('/miembros.html')
 def miembros():
     usuarios = User.query.all()
@@ -79,7 +79,7 @@ def update_user(cedula):
 
     
 
-@app.route('/edit/<cedula>', methods=['GET'])
+@app.route('/edit/<cedula>', methods=['GET', 'POST'])
 #@login_required
 def editar_usuario(cedula):
     form = EditForm(obj=User)
