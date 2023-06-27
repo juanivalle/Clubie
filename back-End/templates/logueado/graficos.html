@@ -7,10 +7,22 @@
     <title>Graficos</title>
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300" rel="stylesheet"/>
     <link rel="stylesheet" href="../../../css/graficos.css">
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
 </head>
-{% extends 'base-log.html' %}
-
-    {% block body %}
+    <header class="header">
+        <div class="logo"><a href="home.html"><img src="../../../css/media/editado.png" alt="Logo de marca"></a></div>
+        <nav class="opcion">
+            <ul class="nav-links">
+                <li><a href="miembros.html">Miembros<span></span></a></li>
+                <li><a href="ventas.html">Ventas<span></span></a></li>
+                <li><a href="trasabilidad.html">Trasabildiad<span></span></a></li>
+                <li><a href="ctrplanta.html">Control de plantas<span></span></a></li>
+                <li><a href="tableros.html">Tableros<span></span></a>
+                <li><a href="graficos.html">Graficos<span></span></a>
+            </ul>
+        </nav>
+        </div>
+    </header>
     <main>
 
         <h1>Informacion de la empresa</h1>
@@ -46,10 +58,59 @@
         </section>
 
     </main>
+    <footer id="myFooter" class="footer-distributed">
+
+        <div class="footer-left">
+            <h3>Clubie</h3>
+
+            <p class="footer-links">
+                <a href="#">Home</a>
+                |
+                <a href="#">Nosotros</a>
+                |
+                <a href="#">Equipo</a>
+                |
+                <a href="#">Contacto</a>
+            </p>
+
+            <p class="footer-company-name">Copyright © 2023 <strong>Clubie</strong> All rights reserved</p>
+        </div>
+
+        <div class="footer-center">
+            <div>
+                <i class="fa fa-map-marker"></i>
+                <p><span>Zonamerica</span>
+                    Montevideo</p>
+            </div>
+
+            <div>
+                <i class="fa fa-phone"></i>
+                <p>Numero de telefono</p>
+            </div>
+            <div>
+                <i class="fa fa-envelope"></i>
+                <p><a href="adm.clubie@gmail.com">adm.clubie@gmail.com</a></p>
+            </div>
+        </div>
+        <div class="footer-right">
+            <p class="footer-company-about">
+                <span>Sobre nosotros</span>
+                <strong>Clubie</strong> lalalalalalalalalalalalalalalalalala
+                lala
+                lalalalalalal
+                lalalalalalalalalalalala
+            </p>
+            <div class="footer-icons">
+                <a href="#"><i class="fa fa-facebook"></i></a>
+                <a href="#"><i class="fa fa-instagram"></i></a>
+                <a href="#"><i class="fa fa-linkedin"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <script src="../../../css/js/handlers.js"></script>
     <script src="../../../css/js/helpers.js"></script>
     <script src="../../../css/js/grafico.js"></script>
-    {% endblock %}
-
 </html>

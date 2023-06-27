@@ -4,13 +4,13 @@ footer {
   overflow:hidden;
   font-family: "Roboto", sans-serif;
   position: fixed;
-  height: 23.3vh;
 }
 
 @media (max-height:800px) {
   footer {
-      position: absolute;
+      position: relative;
       bottom: 0;
+      height: 39vh;
   }
 }
 
@@ -27,7 +27,6 @@ footer {
 .footer-distributed .footer-left, .footer-distributed .footer-center, .footer-distributed .footer-right {
   display: inline-block;
   vertical-align: top;
-  margin-top: -40px;
 }
 
 /* Footer left */
