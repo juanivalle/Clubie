@@ -139,6 +139,9 @@ label {
 .col-md-5 h2 {
   text-align: center;
 }
+.container-form h2 {
+  color: #fff;
+}
 
 @media screen and (max-width: 768px) {
 
