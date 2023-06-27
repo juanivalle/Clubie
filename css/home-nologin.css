@@ -181,6 +181,11 @@ ul li {
 .nosotros {
     margin-top: 10vh;
 }
+
+#title-nos{
+  margin-bottom: 12%;
+}
+
 .container-nosotros {
   width: 100%;
   display: flex;
@@ -247,6 +252,10 @@ ul li {
     width: 100vw;
 }
 
+
+#title-equipo{
+  margin-bottom: 12%;
+}
 
 .card .content {
     position: relative;
@@ -346,6 +355,8 @@ ul li {
     color: #FE0000;
 }
 
+/*ROADMAP*/
+
 #roadMap {
   position: relative;
   display: flex;
@@ -356,6 +367,11 @@ ul li {
   margin-bottom: 10vh;
   overflow-x:visible;
 }
+
+#title-road{
+  margin-bottom: 12%;
+}
+
 .sec-1 {
   right: 3vw;
 }
@@ -395,7 +411,6 @@ body h1 {
   width: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .sec-2 .contenido-map {
@@ -435,11 +450,56 @@ body h1 {
   transform: translate(-80px, 50px);
 }
 
-.contenido-map .text-box h3 {
+.contenido-map .text-box2 {
+  z-index: 222;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  max-width: 40vh;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transform: translate(80px, 50px);
+}
+
+.contenido-map .text-box3 {
+  z-index: 222;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  max-width: 40vh;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transform: translate(-80px, 50px);
+}
+
+.contenido-map .text-box4 {
+  z-index: 222;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  max-width: 40vh;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transform: translate(80px, 50px);
+}
+
+.contenido-map .text-box5 {
+  z-index: 222;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  padding: 40px;
+  max-width: 40vh;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  transform: translate(-80px, 50px);
+}
+
+
+.contenido-map h3 {
   font-size: 2em;
   margin-bottom: 10px;
 }
-.text-box p {
+.contenedor-map p {
   font-size: 1.4em;
 }
 
@@ -484,6 +544,11 @@ body h1 {
   margin-top: 90px;
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 5px 5px 20px rgba(169, 151, 237, 0.5);
+}
+
+
+#title-contacto{
+  margin-bottom: 12%;
 }
 
 .info-form{
