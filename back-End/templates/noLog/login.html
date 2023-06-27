@@ -3,13 +3,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../../../css/login.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/estil.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
 
     <body class="cuerpo">
-        {% extends 'base-nolog.html'%}
-        {% block content %}
+        <header>
+            <div class="logo"><a href="home.html"><img src="../../../css/media/editado.png" alt="Logo de marca"></a></div>
+            <nav class="opcion">
+                <ul class="nav-links">
+                    <li><a href="home.html" class="active">Home<span></span></a></li>
+                    <li><a href="nosotros.html">Nosotros<span></span></a></li>
+                    <li><a href="equipo.html">Equipo<span></span></a></li>
+                    <li><a href="road-map.html">Road Map<span></span></a></li>
+                    <li><a href="contact.html">Contacto<span></span></a></li>
+                    <li><a href="miembros.html">loginpage<span></span></a></li>
+                </ul>
+            </nav>
+            <ul class="opciones">
+                <li class="opcion">
+                    <span class="opcion-text"><a class ="link" href="login.html">login</a></span>
+                </li>
+            </ul>
+        </div>
+        </header>
         <div class="login-box">
             <img class="avatar" src="../../../css/media/Logo-verde.png" alt="logo">
             <h1>Ingresar</h1>
@@ -39,5 +55,55 @@
                 mostrarAlerta();
             });
         </script>
-        {% endblock %}
+        <footer id="myFooter" class="footer-distributed">
+
+            <div class="footer-left">
+                <h3>Clubie</h3>
+    
+                <p class="footer-links">
+                    <a href="#">Home</a>
+                    |
+                    <a href="#">Nosotros</a>
+                    |
+                    <a href="#">Equipo</a>
+                    |
+                    <a href="#">Contacto</a>
+                </p>
+    
+                <p class="footer-company-name">Copyright © 2023 <strong>Clubie</strong> All rights reserved</p>
+            </div>
+    
+            <div class="footer-center">
+                <div>
+                    <i class="fa fa-map-marker"></i>
+                    <p><span>Zonamerica</span>
+                        Montevideo</p>
+                </div>
+    
+                <div>
+                    <i class="fa fa-phone"></i>
+                    <p>Numero de telefono</p>
+                </div>
+                <div>
+                    <i class="fa fa-envelope"></i>
+                    <p><a href="adm.clubie@gmail.com">adm.clubie@gmail.com</a></p>
+                </div>
+            </div>
+            <div class="footer-right">
+                <p class="footer-company-about">
+                    <span>Sobre nosotros</span>
+                    <strong>Clubie</strong> lalalalalalalalalalalalalalalalalala
+                    lala
+                    lalalalalalal
+                    lalalalalalalalalalalala
+                </p>
+                <div class="footer-icons">
+                    <a href="#"><i class="fa fa-facebook"></i></a>
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                    <a href="#"><i class="fa fa-linkedin"></i></a>
+                    <a href="#"><i class="fa fa-twitter"></i></a>
+                    <a href="#"><i class="fa fa-youtube"></i></a>
+                </div>
+            </div>
+        </footer>
     </body>
