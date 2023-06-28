@@ -1,25 +1,33 @@
-const printCharts = () => {
-    renderModelsChart()
-}
+fetch('/prueba')
+  .then(response => response.json())
+  .then(data => {
+    // Preparar los datos para el gráfico
+    const labels = data.map(user => user.name);
+    const values = data.map(user => user.telefono);
 
-const renderModelsChart = () => {
-    const data = {
-        labels: ['uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez'],
+    // Configurar y generar el gráfico utilizando Chart.js
+    const ctx = document.getElementById('modelsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
         datasets: [{
-            data: [10,20,30, 40, 50,60,70,80,90,100],
-            borderColor: getDataColors(),
-            borderWidth: 1,
-            backgroundColor: getDataColors(20)
+          label: 'Teléfonos',
+          data: values,
+          backgroundColor: 'rgba(0, 123, 255, 0.5)',
+          borderColor: 'rgba(0, 123, 255, 1)',
+          borderWidth: 1
         }]
-    }
-    const options = {
-        plugins: {
-            
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
-    }
-    
-    new Chart ('modelsChart', {type: 'bar', data, options })
-}
-
-
-printCharts()
+      }
+    });
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
