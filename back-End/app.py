@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash
+from flask import Flask, jsonify, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, text
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
@@ -56,7 +56,7 @@ def miembros():
 @app.route('/delete/<cedula>')
 def delete_socio(cedula):
     socio = User.query.filter_by(cedula=cedula).first()
-    
+
     if socio:
         db.session.delete(socio)
         db.session.commit()
@@ -176,6 +176,23 @@ def obtener_datos():
 
 # #########################################################################################################################################################
 
+@app.route('/prueba', methods=['GET', 'POST'])
+def obDatosU():
+    users = User.query.all()
+
+    # Crear una lista para almacenar los datos de los usuarios
+    users_data = []
+    for user in users:
+        user_data = {
+            'cedula': user.cedula,
+            'name': user.name,
+            'telefono': user.telefono,
+            'email': user.email
+        }
+        users_data.append(user_data)
+
+    # Devolver los datos de los usuarios en formato JSON
+    return jsonify(users_data)
 
 # #############################################################################################################################################
 # def obtenemos():
