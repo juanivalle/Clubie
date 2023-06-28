@@ -14,8 +14,8 @@ fetch('/prueba')
         datasets: [{
           label: 'Teléfonos',
           data: values,
-          backgroundColor: 'rgba(0, 123, 255, 0.5)',
-          borderColor: 'rgba(0, 123, 255, 1)',
+          backgroundColor: getDataColors(),
+          borderColor: getDataColors(),
           borderWidth: 1
         }]
       },
