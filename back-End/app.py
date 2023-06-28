@@ -36,18 +36,21 @@ def register():
             user = User.query.filter(or_(
                 User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
             if user:
-                return redirect(url_for('home'))
+                return redirect(url_for('miembros'))
             new_user = User(cedula=cedula, name=name,
                             telefono=telefono, email=email)
             db.session.add(new_user)
             db.session.commit()
-            return redirect(url_for('miembros'))
+            
         return redirect(url_for('miembros'))
+
+    return redirect(url_for('miembros', form=form))
 
 @app.route('/miembros.html')
 def miembros():
+    form = RegistrationForm()
     usuarios = User.query.all()
-    return render_template('/logueado/miembros.html', users=usuarios)
+    return render_template('/logueado/miembros.html',form=form, users=usuarios)
 
 # FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB // FUNCIONA
 @app.route('/delete/<cedula>')
@@ -88,156 +91,156 @@ def editar_usuario(cedula):
     return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
 
 
-# @app.route('/eliminar/<string:user_cedula>', methods=['POST'])
-# def eliminar_usuario(user_cedula):
-#     usuario = User.query.filter_by(cedula=user_cedula).first_or_404()
-#     db.session.delete(usuario)
-#     db.session.commit()
-#     return redirect(url_for('miembros'))
+# # @app.route('/eliminar/<string:user_cedula>', methods=['POST'])
+# # def eliminar_usuario(user_cedula):
+# #     usuario = User.query.filter_by(cedula=user_cedula).first_or_404()
+# #     db.session.delete(usuario)
+# #     db.session.commit()
+# #     return redirect(url_for('miembros'))
 
-########################################################################################################
-@app.route('/registerplanta', methods=['GET', 'POST'])
-def registerplanta():
-    form = PlantForm()
+# ########################################################################################################
+# @app.route('/registerplanta', methods=['GET', 'POST'])
+# def registerplanta():
+#     form = PlantForm()
 
-    if form.validate_on_submit():
-        idRaza = form.idraza.data
-        raza = form.raza.data
-        enraizado = form.enraizado.data
-        paso1 = form.paso1.data
-        paso2 = form.paso2.data
-        paso3 = form.paso3.data
-        floracion = form.floracion.data
-        cosecha = form.cosecha.data
-        cantidad = form.cantidad.data
-        observaciones = form.observaciones.data
+#     if form.validate_on_submit():
+#         idRaza = form.idraza.data
+#         raza = form.raza.data
+#         enraizado = form.enraizado.data
+#         paso1 = form.paso1.data
+#         paso2 = form.paso2.data
+#         paso3 = form.paso3.data
+#         floracion = form.floracion.data
+#         cosecha = form.cosecha.data
+#         cantidad = form.cantidad.data
+#         observaciones = form.observaciones.data
 
-        planta = Trazabilidad.query.filter(or_(
-            Trazabilidad.idRaza == idRaza, Trazabilidad.raza == raza)).first()
-        if planta:
-            return redirect(url_for('homeplanta'))
+#         planta = Trazabilidad.query.filter(or_(
+#             Trazabilidad.idRaza == idRaza, Trazabilidad.raza == raza)).first()
+#         if planta:
+#             return redirect(url_for('homeplanta'))
 
-        new_planta = Trazabilidad(idRaza=idRaza, raza=raza, enraizado=enraizado,
-                                  paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
-                                  cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
-        db.session.add(new_planta)
-        db.session.commit()
-        return redirect(url_for('otra_pagina')) 
+#         new_planta = Trazabilidad(idRaza=idRaza, raza=raza, enraizado=enraizado,
+#                                   paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
+#                                   cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
+#         db.session.add(new_planta)
+#         db.session.commit()
+#         return redirect(url_for('otra_pagina')) 
 
-    return render_template('registerplanta.html', form=form)  # Renderiza el formulario en la vista
-#############################################################################################################################################
-@app.route('/delete/<idRaza>')
-def delete_planta(idRaza):
-    elimplanta = User.query.filter_by(idRaza=idRaza).first()
+#     return render_template('registerplanta.html', form=form)  # Renderiza el formulario en la vista
+# #############################################################################################################################################
+# @app.route('/delete/<idRaza>')
+# def delete_planta(idRaza):
+#     elimplanta = User.query.filter_by(idRaza=idRaza).first()
     
-    if elimplanta:
-        db.session.delete(elimplanta)
-        db.session.commit()
+#     if elimplanta:
+#         db.session.delete(elimplanta)
+#         db.session.commit()
     
-    return redirect(url_for('homeplantcreo'))
-#############################################################################################################################################
-##########################################################################################################################################
-@app.route('/ventas', methods=['GET', 'POST'])
-def ventosa():
-    form = Ventasform()
-    idventa = form.idventa.data
-    cedula = form.cedula.data
-    raza = form.raza.data
-    cantidad = form.cantidad.data
-    retiro = form.retiro.data
-    if Ventas.cedula == User.cedula & Ventas.raza == Trazabilidad.raza:
-        new_venta = Ventas(idventa=idventa, cedula=cedula, raza=raza, cantidad=cantidad,
-                                  retiro=retiro,)
-        db.session.add(new_venta)
-        db.session.commit()
-        return redirect(url_for('otra_pagina')) 
+#     return redirect(url_for('homeplantcreo'))
+# #############################################################################################################################################
+# ##########################################################################################################################################
+# @app.route('/ventas', methods=['GET', 'POST'])
+# def ventosa():
+#     form = Ventasform()
+#     idventa = form.idventa.data
+#     cedula = form.cedula.data
+#     raza = form.raza.data
+#     cantidad = form.cantidad.data
+#     retiro = form.retiro.data
+#     if Ventas.cedula == User.cedula & Ventas.raza == Trazabilidad.raza:
+#         new_venta = Ventas(idventa=idventa, cedula=cedula, raza=raza, cantidad=cantidad,
+#                                   retiro=retiro,)
+#         db.session.add(new_venta)
+#         db.session.commit()
+#         return redirect(url_for('otra_pagina')) 
     
-    return render_template('registerplanta.html', form=form)
+#     return render_template('registerplanta.html', form=form)
 
 
 
 
 
 
-#######################################
-#########################################################################################################################################################
+# #######################################
+# #########################################################################################################################################################
 
 
-@app.route('/tabla_ventas')
-def tabla_datos():
-    datos = obtener_datos()
-    return render_template('ventas.html', datos=datos)
+# @app.route('/tabla_ventas')
+# def tabla_datos():
+#     datos = obtener_datos()
+#     return render_template('ventas.html', datos=datos)
 
-def obtener_datos():
-    datos = db.session.query(Ventas.idventas, Ventas.cedula, Ventas.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
-    return datos
+# def obtener_datos():
+#     datos = db.session.query(Ventas.idventas, Ventas.cedula, Ventas.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
+#     return datos
 
-#########################################################################################################################################################
-
-
-#############################################################################################################################################
-def obtenemos():
-    atos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
-    datos_dict = [{'idventas': ato.idventas, 'cedula': ato.cedula, 'raza': ato.raza, 'cantidad': ato.cantidad, 'retiro': ato.retiro,} for ato in atos]
-    return datos_dict
+# #########################################################################################################################################################
 
 
-
-@app.route('/datos')
-def mostrar_datos():
-    datos = obtenemos()
-    return render_template('ventas.html', datos=datos)
-
-##############################################################################################################################################
+# #############################################################################################################################################
+# def obtenemos():
+#     atos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
+#     datos_dict = [{'idventas': ato.idventas, 'cedula': ato.cedula, 'raza': ato.raza, 'cantidad': ato.cantidad, 'retiro': ato.retiro,} for ato in atos]
+#     return datos_dict
 
 
 
+# @app.route('/datos')
+# def mostrar_datos():
+#     datos = obtenemos()
+#     return render_template('ventas.html', datos=datos)
+
+# ##############################################################################################################################################
 
 
 
-@app.route('/contact.html')
-def contact():
-    return render_template('/noLog/contact.html')
-
-
-@app.route('/login.html')
-def login():
-    return render_template('/noLog/login.html')
-
-@app.route('/nosotros.html')
-def nosotros():
-    return render_template('/noLog/nosotros.html')
-
-@app.route('/equipo.html')
-def equipo():
-    return render_template('/noLog/equipo.html')
-
-@app.route('/road-map.html')
-def roadMap():
-    return render_template('/noLog/road-map.html')
-
-@app.route('/home-club.html')
-def home_club():
-    return render_template('/logueado/home-club.html')
 
 
 
-@app.route('/ventas.html')
-def ventas():
-    return render_template('/logueado/ventas.html')
-
-@app.route('/trazabilidad.html')
-def trasabilidad():
-    return render_template('/logueado/trasabilidad.html')
-
-@app.route('/ctrplanta.html')
-def ctrplanta():
-    return render_template('/logueado/ctrplanta.html')
+# @app.route('/contact.html')
+# def contact():
+#     return render_template('/noLog/contact.html')
 
 
-@app.route('/graficos.html')
-def graficos():
-    return render_template('/logueado/graficos.html')
+# @app.route('/login.html')
+# def login():
+#     return render_template('/noLog/login.html')
+
+# @app.route('/nosotros.html')
+# def nosotros():
+#     return render_template('/noLog/nosotros.html')
+
+# @app.route('/equipo.html')
+# def equipo():
+#     return render_template('/noLog/equipo.html')
+
+# @app.route('/road-map.html')
+# def roadMap():
+#     return render_template('/noLog/road-map.html')
+
+# @app.route('/home-club.html')
+# def home_club():
+#     return render_template('/logueado/home-club.html')
+
+
+
+# @app.route('/ventas.html')
+# def ventas():
+#     return render_template('/logueado/ventas.html')
+
+# @app.route('/trazabilidad.html')
+# def trasabilidad():
+#     return render_template('/logueado/trasabilidad.html')
+
+# @app.route('/ctrplanta.html')
+# def ctrplanta():
+#     return render_template('/logueado/ctrplanta.html')
+
+
+# @app.route('/graficos.html')
+# def graficos():
+#     return render_template('/logueado/graficos.html')
 
 
 

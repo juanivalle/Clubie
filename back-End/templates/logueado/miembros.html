@@ -12,6 +12,7 @@
             <div class="card card-body">
                 <h2>Nuevo Miembro</h2>
                 <form action="/registerform" method="POST" autocomplete="off">
+                    {{ form.csrf_token }}
                     <div class="form-group">
                         <label for="txtName">Nombre Completo:</label>
                         <input id ="txtName" type="text" name="name" class="form-control">
