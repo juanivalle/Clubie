@@ -16,10 +16,10 @@ body {
 
 .login-box {
     width: 17vw;
-    height: 48vh;
+    height: 53vh;
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 5px 5px 20px rgba(169, 151, 237, 0.5);
-    top: 45%;
+    top: 55%;
     left: 50%;
     position: absolute;
     align-items: center;

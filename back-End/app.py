@@ -221,7 +221,8 @@ def obDatosU():
 
 @app.route('/login.html')
 def login():
-    return render_template('/noLog/login.html')
+    form = LoginForm
+    return render_template('/noLog/login.html', form=form)
 
 # @app.route('/nosotros.html')
 # def nosotros():
