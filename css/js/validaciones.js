@@ -6,11 +6,12 @@ var txtName = document.getElementById("txtName");
 var campotexto = document.getElementById("campotexto");
 var campolargo = document.getElementById("campolargo");
 
-// function validar_form_miembros() {
-//     valortelefono();
-//     valorcedula();
-//     valormail();
-// }
+function validar_form_miembros() {
+    valortelefono();
+    valorcedula();
+    valormail();
+    valorusuario();
+}
 // function validar_form_trazabilidad() {
 //     valortelefono();
 //     valoredad();
@@ -38,7 +39,6 @@ function valormail() {
 function valorusuario(e) {
     var key = e.key;
     var texto = e.target.value;
-
     soloLetras(e);
     var espacios = (texto.match(/\s/g) || []).length;
     var contarespacio = (espacios > 4 || espacios == 0);
@@ -62,8 +62,9 @@ function valortelefono(e) {
 
 
 function valorcedula(e) {
+    var txtCiValue = txtCi.value;
     soloNumeros(e);
-    if (txtCi.value.length >= 9 || txtCi.value.length < 7) {
+    if (txtCiValue.length > 8 || txtCiValue.length < 7) {
         txtCi.disabled = true;
     } else {
         txtCi.disabled = false;

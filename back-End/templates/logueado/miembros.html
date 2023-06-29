@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
 <link rel="stylesheet" href="../../../css/miembros.css">
 <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
-
+<script src="/css/js/validaciones.js"></script>
 
     {% extends 'base-log.html' %}
 
@@ -11,7 +11,7 @@
         <div class="col-md-5">
             <div class="card card-body">
                 <h2>Nuevo Miembro</h2>
-                <form action="/registerform" method="POST" autocomplete="off">
+                <form action="/registerform" method="POST" autocomplete="off" onsubmit="return validar_form_miembros()">
                     {{ form.csrf_token }}
                     <div class="form-group">
                         <label for="txtName">Nombre Completo:</label>
@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group">
                         <label for="txtEmail">Email:</label>
-                        <input id="txtEmail "type="text" name="email"  class="form-control">
+                        <input id="txtEmail"type="text" name="email"  class="form-control">
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block">
