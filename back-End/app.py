@@ -98,48 +98,44 @@ def eliminar_usuario(user_cedula):
     db.session.commit()
     return redirect(url_for('miembros'))
 
-# ########################################################################################################
-# @app.route('/registerplanta', methods=['GET', 'POST'])
-# def registerplanta():
-#     form = PlantForm()
-
-#     if form.validate_on_submit():
-#         idRaza = form.idraza.data
-#         raza = form.raza.data
-#         enraizado = form.enraizado.data
-#         paso1 = form.paso1.data
-#         paso2 = form.paso2.data
-#         paso3 = form.paso3.data
-#         floracion = form.floracion.data
-#         cosecha = form.cosecha.data
-#         cantidad = form.cantidad.data
-#         observaciones = form.observaciones.data
-
-#         planta = Trazabilidad.query.filter(or_(
-#             Trazabilidad.idRaza == idRaza, Trazabilidad.raza == raza)).first()
-#         if planta:
-#             return redirect(url_for('homeplanta'))
-
-#         new_planta = Trazabilidad(idRaza=idRaza, raza=raza, enraizado=enraizado,
-#                                   paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
-#                                   cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
-#         db.session.add(new_planta)
-#         db.session.commit()
-#         return redirect(url_for('otra_pagina')) 
-
-#     return render_template('registerplanta.html', form=form)  # Renderiza el formulario en la vista
-# #############################################################################################################################################
-# @app.route('/delete/<idRaza>')
-# def delete_planta(idRaza):
-#     elimplanta = User.query.filter_by(idRaza=idRaza).first()
-    
-#     if elimplanta:
-#         db.session.delete(elimplanta)
-#         db.session.commit()
-    
-#     return redirect(url_for('homeplantcreo'))
-# #############################################################################################################################################
-# ##########################################################################################################################################
+########################################################################################################
+@app.route('/registerplanta', methods=['GET', 'POST'])
+def registerplanta():
+    form = PlantForm()    
+    if form.validate_on_submit():
+        idRaza = form.idraza.data
+        raza = form.raza.data
+        enraizado = form.enraizado.data
+        paso1 = form.paso1.data
+        paso2 = form.paso2.data
+        paso3 = form.paso3.data
+        floracion = form.floracion.data
+        cosecha = form.cosecha.data
+        cantidad = form.cantidad.data
+        observaciones = form.observaciones.data
+        planta = Trazabilidad.query.filter(or_(
+             Trazabilidad.idRaza == idRaza, Trazabilidad.raza == raza)).first()
+        if planta:
+             return redirect(url_for('homeplanta'))
+        new_planta = Trazabilidad(idRaza=idRaza, raza=raza, enraizado=enraizado,
+                                   paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
+                                   cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
+        db.session.add(new_planta)
+        db.session.commit()
+        return redirect(url_for('otra_pagina')) 
+    return render_template('registerplanta.html', form=form)  # Renderiza el formulario en la vista
+ #############################################################################################################################################
+@app.route('/delete/<idRaza>')
+def delete_planta(idRaza):
+    elimplanta = User.query.filter_by(idRaza=idRaza).first()
+  
+    if elimplanta:
+        db.session.delete(elimplanta)
+        db.session.commit()
+  
+    return redirect(url_for('homeplantcreo'))
+#############################################################################################################################################
+##########################################################################################################################################
 @app.route('/ventas', methods=['GET', 'POST'])
 def ventosa():
     form = Ventasform()
