@@ -241,7 +241,7 @@ def login():
 @app.route('/ventas.html')
 def ventas():
     return render_template('/logueado/ventas.html')
-@app.route('/trazabilidad.html')
+@app.route('/trasabilidad.html')
 def trasabilidad():
     return render_template('/logueado/trasabilidad.html')
 @app.route('/ctrplanta.html')

@@ -98,3 +98,12 @@ body {
   overflow: hidden;
 }
 }
+
+select, select.form-control {
+  padding: 0px 15px 0px 0px;
+  text-align: center;
+}
+
+textarea.form-control{
+  height: 50px;
+}
