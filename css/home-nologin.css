@@ -305,6 +305,7 @@ ul li {
 .card h6 {
     font-size: 13px;
     color: #5e2066;
+    margin-top: 50px;
 }
 
 .card p {
@@ -658,6 +659,7 @@ footer {
   font: bold 16px sans-serif;
   padding: 50px 50px 60px 50px;
   margin-top: 80px;
+  height: 22%;
 }
 
 .footer-distributed .footer-left, .footer-distributed .footer-center, .footer-distributed .footer-right {
