@@ -34,80 +34,25 @@
         <tbody>
         {% for user in users %}
           <tr>
-            <td>{{ user.name }}</td>
-            <td>{{ user.cedula }}</td>
-            <td>{{ user.telefono }}</td>
-            <td>{{ user.email }}</td>
+            <td>{{ trazabilidad.idraza }}</td>
+            <td>{{ trazabilidad.raza }}</td>
+            <td>{{ trazabilidad.enraizado }}</td>
+            <td>{{ trazabilidad.paso1 }}</td>
+            <td>{{ trazabilidad.paso2 }}</td>
+            <td>{{ trazabilidad.paso3 }}</td>
+            <td>{{ trazabilidad.floracion }}</td>
+            <td>{{ trazabilidad.cosecha }}</td>
+            <td>{{ trazabilidad.cantidad }}</td>
+            <td>{{ trazabilidad.observaciones }}</td>
+
             <td>
-            <a href="/edit/{{user.cedula}}" class="btn btn-secondary">Editar</a>
-            <a href="/delete/{{user.cedula}}" class="btn btn-danger">X</a>
+            <a href="/edit/{{trazabilidad.idraza}}" class="btn btn-secondary">Editar</a>
+            <a href="/delete/{{trazabilidad.idraza}}" class="btn btn-danger">X</a>
             </td>
           </tr>
           {% endfor %}
         </tbody>
         </table>
-      </div>
-  <div class="container-form">
-    <h2>Control De Plantas</h2>
-    <div class="tabla-miembro">
-      <table id="miembros">
-        <tr>
-          <th>Planta id</th>
-          <th>Raza</th>
-          <th>1er trasplante</th>
-          <th>2do trasplante</th>
-          <th>3er trasplante</th>
-          <th>Floracion</th>
-          <th>Cosecha</th>
-          <th>Cantidad</th>
-          <th>Observaciones</th>
-        </tr>
-        <tr>
-          <td>15</td>
-          <td>Lemon</td>
-          <td>15/1/2023</td>
-          <td>24/3/2023</td>
-          <td>10/5/2023</td>
-          <td>29/5/2023</td>
-          <td>15/6/2023</td>
-          <td>500Gr</td>
-          <td>Se esta portando mal</td>
-        </tr>
-        <tr>
-          <td>115</td>
-          <td>Hush</td>
-          <td>15/1/2023</td>
-          <td>24/3/2023</td>
-          <td>10/5/2023</td>
-          <td>29/5/2023</td>
-          <td>15/6/2023</td>
-          <td>500Gr</td>
-          <td>sera castigada</td>
-        </tr>
-        <tr>
-          <td>125</td>
-          <td>lelu</td>
-          <td>15/1/2023</td>
-          <td>24/3/2023</td>
-          <td>10/5/2023</td>
-          <td>29/5/2023</td>
-          <td>15/6/2023</td>
-          <td>500Gr</td>
-          <td>en bicho bicho yo me converti</td>
-        </tr>
-        <tr>
-          <td>1115</td>
-          <td>Pium</td>
-          <td>15/1/2023</td>
-          <td>24/3/2023</td>
-          <td>10/5/2023</td>
-          <td>29/5/2023</td>
-          <td>15/6/2023</td>
-          <td>500Gr</td>
-          <td>un cocodrilo soy</td>
-        </tr>
-
-      </table>
     </div>
   </div>
   {% endblock %}
