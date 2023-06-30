@@ -30,39 +30,8 @@ footer {
 header {
   font-size: 16px;
 }
-.container-form{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 90%;
-  margin: 0 auto;
-  justify-content: center;
-  align-content: center;
-  margin-top: 20px;
-}
-.container-form h2{
-  width: 100%;
-  margin-bottom: 15px;
-}
-.form-miembro {
-  width: 25%;
-  border: 2px solid #003E00;
-  text-align: center;
-  background-color: #ce9256be;
-  margin-left: 10px;
-}
-.form-miembro p{
-  font-size: 20px;
-  margin-top: 15px;
-  font-weight: bolder;
-}
-.tabla-miembro {
-  width: 70%;
-  flex-grow: 1;
-  display: flex;
-  border: black solid 1px;
-  margin-right: 10px;
-}
+
+
 table {
   border-collapse: collapse;
   border: 2px solid rgb(200,200,200);
@@ -96,28 +65,7 @@ tr:nth-child(odd) td {
 caption {
   padding: 10px;
 }
-.container-form form .campo{
-  text-align: center;
-  width: 90%;
-  padding: 15px 10px;
-  font-size: 15px;
-  border: 1px solid #034803;
-  margin: 20px;
-  border-radius: 3px;
-  outline: 0px;
-}
-.container-form .btn-miembro{
-  padding: 15px;
-  font-size: 16px;
-  border: none;
-  outline: 0px;
-  background: #034803;
-  color: white;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 300ms ease;
-  margin-bottom: 15px;
-}
+
 .nav-toggle {
 display: none;
 color: #fff;
@@ -127,9 +75,7 @@ cursor: pointer;
 .col-md-7 h2 {
   color: #fff;
 }
-.footer-icons a i {
-  margin-top: 7.5px;
-}
+
 label {
   font-size: 16px;
   font-weight: bolder;
@@ -139,42 +85,16 @@ label {
 .col-md-5 h2 {
   text-align: center;
 }
+
 .container-form h2 {
   color: #fff;
 }
 
+
 @media screen and (max-width: 768px) {
 
-.container-form {
-  display: flex;
-  flex-direction: column;
-  margin-left: 10px;
-  justify-content: center;
-  align-items: center;
-  width: auto;
-  
-}
-.tabla-miembro {
-    justify-content: center;
-    overflow-x: auto;
-}
-th {
-  font-size: 10px;
-}
+
 body {
   overflow: hidden;
-}
-.form-miembro {
-  width: 80%;
-  border: 2px solid #003E00;
-  text-align: center;
-  background-color: #ce9256be;
-  margin-left: 0;
-  height: 50vh;
-}
-.tabla-miembro {
-  width:auto;
-  flex-grow: 1;
-  margin-bottom: 5px;
 }
 }

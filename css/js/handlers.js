@@ -1,4 +1,4 @@
-const enableEventHandlers = coasters => {
+const enableEventHandlers = (coasters) => {
 
     document.querySelector('#featuresOptions').onchange = e => {
 
