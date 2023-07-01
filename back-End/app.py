@@ -116,14 +116,14 @@ def registerplanta():
         planta = Trazabilidad.query.filter(or_(
              Trazabilidad.idRaza == idRaza, Trazabilidad.raza == raza)).first()
         if planta:
-             return redirect(url_for('homeplanta'))
+             return redirect(url_for('trazabilidad'))
         new_planta = Trazabilidad(idRaza=idRaza, raza=raza, enraizado=enraizado,
                                    paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
                                    cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
         db.session.add(new_planta)
         db.session.commit()
-        return redirect(url_for('otra_pagina')) 
-    return render_template('registerplanta.html', form=form)  # Renderiza el formulario en la vista
+        return redirect(url_for('trazabilidad')) 
+    return render_template('/logueado/trazabilidad.html', form=form)  # Renderiza el formulario en la vista
  #############################################################################################################################################
 @app.route('/delete/<idRaza>')
 def delete_planta(idRaza):
@@ -144,9 +144,15 @@ def ventosa():
     raza = form.raza.data
     cantidad = form.cantidad.data
     retiro = form.retiro.data
-    if Ventas.cedula == User.cedula & Ventas.raza == Trazabilidad.raza:
+    usuario = User.query.filter_by(cedula=cedula).first()
+    if usuario:
+            # Verifica si el usuario ha superado el límite de cantidad de compras
+        if usuario.total_ventas + cantidad > 40:
+            flash("alerta de compra eccedida")
+            return redirect(url_for('otra_pagina'))
+        usuario.total_ventas += cantidad        
         new_venta = Ventas(idventa=idventa, cedula=cedula, raza=raza, cantidad=cantidad,
-                                  retiro=retiro,)
+                                    retiro=retiro,)
         db.session.add(new_venta)
         db.session.commit()
         return redirect(url_for('otra_pagina')) 
@@ -241,9 +247,9 @@ def login():
 @app.route('/ventas.html')
 def ventas():
     return render_template('/logueado/ventas.html')
-@app.route('/trasabilidad.html')
-def trasabilidad():
-    return render_template('/logueado/trasabilidad.html')
+@app.route('/trazabilidad.html')
+def trazabilidad():
+    return render_template('/logueado/trazabilidad.html')
 @app.route('/ctrplanta.html')
 def ctrplanta():
     return render_template('/logueado/ctrplanta.html')

@@ -94,15 +94,15 @@ class Trazabilidad(db.Model):
 
 class PlantForm(FlaskForm):
     idraza = IntegerField('idRaza')
-    raza = StringField('Raza')
+    raza = StringField('raza')
     enraizado = StringField('Enraizado')
-    paso1 = DateTimeLocalField('Paso 1')
-    paso2 = DateTimeLocalField('Paso 2')
-    paso3 = DateTimeLocalField('Paso 3')
-    floracion = StringField('Floración')
-    cosecha = StringField('Cosecha' )
-    cantidad = StringField('Cantidad')
-    observaciones = StringField('Observaciones')
+    paso1 = DateTimeLocalField('paso1')
+    paso2 = DateTimeLocalField('paso2')
+    paso3 = DateTimeLocalField('paso3')
+    floracion = StringField('floracion')
+    cosecha = StringField('cosecha' )
+    cantidad = StringField('cantidad')
+    observaciones = StringField('observaciones')
   ##FIJARSE SI LOS CAMPOS ESTAN BIEN, SI ESTAN BIEN PONER VALIDADORES COMO EN "REGISTRATION FORM"
 
 
@@ -123,3 +123,4 @@ class Ventas(db.Model):
     idraza = IntegerField('idRaza')
     cantidad = db.Column(db.String(30), nullable=False)
     retiro = db.Column(db.String(12), default=datetime.now())
+    total_ventas = db.Column(db.Integer, default=0)
