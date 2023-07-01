@@ -1,151 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://bootswatch.com/4/materia/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="../css/miembros.css" />
+    <script
+      src="https://kit.fontawesome.com/eb496ab1a0.js"
+      crossorigin="anonymous"
+    ></script>
+    <title>Trazabilidad</title>
+  </head>
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
-  <link rel="stylesheet" href="../css/miembros.css">
-  <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
-  <title>Trazabilidad</title>
-</head>
+  <body>
+    {% extends 'base-log.html'%} {% block body %}
 
-<body>
-  {% extends 'base-log.html'%}
+    <div class="col-md-7">
+      <h2>Trazabilidad</h2>
+    </div>
+    <div class="form">
+      <div class="row">
+        <div class="col-md-5">
+          <div class="card card-body">
+            <form action="/registerplanta" method="POST" autocomplete="off">
+              <div class="form-group">
+                
+                <label>Raza</label>
+                <input id="raza" type="text" name="raza" class="form-control">
 
-  {% block body %}
+                <label>Riego</label>
+                <input id="riego" type="datetime" name="riego" class="form-control">
 
-  <div class="col-md-7">
-    <h2>Trazabilidad</h2>
-  </div>
-  <div class="form">
-    <div class="row">
-      <div class="col-md-5">
-        <div class="card card-body">
-          <h2>Actualizar Raza</h2>
-          <form method="POST" autocomplete="off">
-            <div class="form-group">
-              <label for="exampleSelect1" class="form-label mt-4">Seleccionar Raza</label>
-                <select class="form-select" id="exampleSelect1">
-                  <option>Raza 1</option>
-                  <option>Raza 2</option>
-                  <option>Raza 3</option>
-                  <option>Raza 4</option>
-                  <option>Raza 5</option>
-                </select>
+                <label>1er transplante</label>
+                <input id="paso1" type="date" name="paso1" class="form-control">
+
+                <label>2do transplante</label>
+                <input id="paso2" type="date" name="paso2" class="form-control">
+
+                <label>3er transplante</label>
+                <input id="paso3" type="date" name="paso3" class="form-control">
+
+                <label>Floración</label>
+                <input id="floracion" type="date" name="floracion" class="form-control">
+
+                <label>Cosecha</label>
+                <input id="cosecha" type="date" name="cosecha" class="form-control">
+
+                <label>Cantidad</label>
+                <input id="cantidad" type="number" name="cantidad" class="form-control">
+
+                <label for="observaciones" class="form-label mt-4">Observaciones</label>
+                <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
               </div>
               <div class="form-group">
-                <fieldset class="form-group">
-                  <legend class="mt-4">Dato a actualizar</legend>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="riegor">
-                      <label class="form-check-label" for="riegor">Riego</label>
-                    </div>
-                    <div class="form-ferti">
-                      <input class="form-ferti-input" type="checkbox" value="" id="fertir">
-                      <label class="form-ferti-label" for="fertir">Fertilizacion</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="trasplanter">
-                      <label class="form-check-label" for="trasplanter">Trasplante</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="podar">
-                      <label class="form-check-label" for="podar">Poda</label>
-                    </div>
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" value="" id="cosechar">
-                      <label class="form-check-label" for="cosechar">Cosecha</label>
-                      <div class="form-group">
-                        <label class="col-form-label col-form-label-sm mt-4" for="grcosechadosr">Cantidad de gramos</label>
-                        <input class="form-control form-control-sm" type="number" placeholder="gr" id="grcosechadosr">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="observacionesplanta" class="form-label mt-4">Observaciones</label>
-                      <textarea class="form-control" id="observacionesraza" rows="3"></textarea>
-                    </div>
-                </fieldset>
+                <input type="submit" value="Actualizar Raza" class="btn btn-primary btn-block"/>
               </div>
-               <div class="form-group">
-                <input type="submit" value="Actualizar Raza" class="btn btn-primary btn-block">
-              </div>
-              </select>
-            </div>
-          </form>
-        </div>
-    </div>
-    </div>
-      <div class="col-md-5">
-        <div class="card card-body">
-          <h2>Actualizar Plantas</h2>
-          <form method="POST" autocomplete="off">
-            <div class="form-group">
-              <label for="txtName">Planta id:</label>
-              <input id="txtName" type="number" name="razaid" class="form-control">
-            </div>
-            <div class="form-group">
-              <fieldset class="form-group">
-                <legend class="mt-4">Dato a actualizar</legend>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="riegop">
-                    <label class="form-check-label" for="riegop">Riego</label>
-                  </div>
-                  <div class="form-ferti">
-                    <input class="form-ferti-input" type="checkbox" value="" id="fertip">
-                    <label class="form-ferti-label" for="fertip">Fertilizacion</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="trasplantep">
-                    <label class="form-check-label" for="trasplantep">Trasplante</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="podap">
-                    <label class="form-check-label" for="podap">Poda</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="florap">
-                    <label class="form-check-label" for="florap">Floracion</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="cosechap">
-                    <label class="form-check-label" for="cosechap">Cosecha</label>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-form-label col-form-label-sm mt-4" for="grcosechadosp">Cantidad de gramos</label>
-                    <input class="form-control form-control-sm" type="number" placeholder="gr" id="grcosechadosp">
-                  </div>
-                  <div class="form-group">
-                    <label for="observacionesplanta" class="form-label mt-4">Observaciones</label>
-                    <textarea class="form-control" id="observacionesplanta" rows="3"></textarea>
-                  </div>
-              </fieldset>
-            </div>
-            <div class="form-group">
-              <input type="submit" value="Actualizar Planta" class="btn btn-primary btn-block">
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-md-5">
-      <div class="card card-body">
-        <h2>Crear Planta</h2>
-        <form method="POST" autocomplete="off">
-      <div class="form-group">
-        <label class="col-form-label col-form-label-sm mt-4" for="razaplantanueva">Raza</label>
-        <input class="form-control form-control-sm" type="text" placeholder="numbre de la raza" id="razaplantanueva">
-      </div>
-      <div class="form-group">
-        <label for="observacionesplanta" class="form-label mt-4">Observaciones</label>
-        <textarea class="form-control" id="observacionesplanta" rows="3"></textarea>
-      </div>
-      <div class="form-group">
-        <input type="submit" value="Crear Planta" class="btn btn-primary btn-block">
-        </div>
-      </form>
-  {% endblock %}
-</body>
-
+    {% endblock %}
+  </body>
 </html>
