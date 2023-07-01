@@ -16,10 +16,11 @@
 
   {% block body %}
 
-  <div class="row">
-    <div class="col-md-7">
-      <h2>Trazabilidad</h2>
-    </div>
+  <div class="col-md-7">
+    <h2>Trazabilidad</h2>
+  </div>
+  <div class="form">
+    <div class="row">
       <div class="col-md-5">
         <div class="card card-body">
           <h2>Actualizar Raza</h2>
@@ -75,6 +76,7 @@
           </form>
         </div>
     </div>
+    </div>
       <div class="col-md-5">
         <div class="card card-body">
           <h2>Actualizar Plantas</h2>
@@ -103,16 +105,16 @@
                     <label class="form-check-label" for="podap">Poda</label>
                   </div>
                   <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="florap">
+                    <label class="form-check-label" for="florap">Floracion</label>
+                  </div>
+                  <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="" id="cosechap">
                     <label class="form-check-label" for="cosechap">Cosecha</label>
                   </div>
                   <div class="form-group">
                     <label class="col-form-label col-form-label-sm mt-4" for="grcosechadosp">Cantidad de gramos</label>
                     <input class="form-control form-control-sm" type="number" placeholder="gr" id="grcosechadosp">
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="florap">
-                    <label class="form-check-label" for="florap">Floracion</label>
                   </div>
                   <div class="form-group">
                     <label for="observacionesplanta" class="form-label mt-4">Observaciones</label>
@@ -126,7 +128,23 @@
           </form>
         </div>
       </div>
-  </div>
+    </div>
+    <div class="col-md-5">
+      <div class="card card-body">
+        <h2>Crear Planta</h2>
+        <form method="POST" autocomplete="off">
+      <div class="form-group">
+        <label class="col-form-label col-form-label-sm mt-4" for="razaplantanueva">Raza</label>
+        <input class="form-control form-control-sm" type="text" placeholder="numbre de la raza" id="razaplantanueva">
+      </div>
+      <div class="form-group">
+        <label for="observacionesplanta" class="form-label mt-4">Observaciones</label>
+        <textarea class="form-control" id="observacionesplanta" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <input type="submit" value="Crear Planta" class="btn btn-primary btn-block">
+        </div>
+      </form>
   {% endblock %}
 </body>
 
