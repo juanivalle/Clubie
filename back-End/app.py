@@ -21,6 +21,12 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
+@app.route('/')
+@app.route('/edit/home.html')
+def editindex():
+    usuarios = User.query.all()
+    return render_template("/noLog/home.html", usuarios=usuarios)
+
 @app.route('/registerform', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -46,6 +52,12 @@ def register():
 
 @app.route('/miembros.html')
 def miembros():
+    form = RegistrationForm()
+    usuarios = User.query.all()
+    return render_template('/logueado/miembros.html',form=form, users=usuarios)
+
+@app.route('/edit/miembros.html')
+def editmiembros():
     form = RegistrationForm()
     usuarios = User.query.all()
     return render_template('/logueado/miembros.html',form=form, users=usuarios)
@@ -227,6 +239,11 @@ def login():
     form = LoginForm
     return render_template('/noLog/login.html', form=form)
 
+@app.route('/edit/login.html')
+def editlogin():
+    form = LoginForm
+    return render_template('/noLog/login.html', form=form)
+
 # @app.route('/nosotros.html')
 # def nosotros():
 #     return render_template('/noLog/nosotros.html')
@@ -248,19 +265,31 @@ def login():
 @app.route('/ventas.html')
 def ventas():
     return render_template('/logueado/ventas.html')
+@app.route('/edit/ventas.html')
+def editventas():
+    return render_template('/logueado/ventas.html')
 
 @app.route('/trazabilidad.html')
 def trazabilidad():
     form = PlantForm()
     return render_template('/logueado/trazabilidad.html', form=form)
+@app.route('/edit/trazabilidad.html')
+def edittrazabilidad():
+    form = PlantForm()
+    return render_template('/logueado/trazabilidad.html', form=form)
 
+@app.route('/edit/ctrplanta.html')
+def editctrplanta():
+    return render_template('/logueado/ctrplanta.html')
 @app.route('/ctrplanta.html')
 def ctrplanta():
     return render_template('/logueado/ctrplanta.html')
 
-
 @app.route('/graficos.html')
 def graficos():
+    return render_template('/logueado/graficos.html')
+@app.route('/edit/graficos.html')
+def editgraficos():
     return render_template('/logueado/graficos.html')
 
 
