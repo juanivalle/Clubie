@@ -300,6 +300,10 @@ ul li {
     color: #1a1919;
     margin-bottom: 5px;
     margin-top: 5px;
+    padding: 10px;
+}
+.card .neo {
+  padding: 19px;
 }
 
 .card h6 {
