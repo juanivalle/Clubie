@@ -2,10 +2,8 @@ from flask import Flask, jsonify, render_template, url_for, redirect, request, f
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, text
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
 from wtforms import *
 from wtforms.validators import *
-from flask_wtf.file import FileField, FileAllowed, FileSize
 from rutas import *
 from clases import *
 from sqlalchemy.orm import joinedload
@@ -101,30 +99,33 @@ def eliminar_usuario(user_cedula):
 ########################################################################################################
 @app.route('/registerplanta', methods=['GET', 'POST'])
 def registerplanta():
-    form = PlantForm()    
-    if form.validate_on_submit():
-        idRaza = form.idraza.data
-        raza = form.raza.data
-        enraizado = form.enraizado.data
-        paso1 = form.paso1.data
-        paso2 = form.paso2.data
-        paso3 = form.paso3.data
-        floracion = form.floracion.data
-        cosecha = form.cosecha.data
-        cantidad = form.cantidad.data
-        observaciones = form.observaciones.data
-        planta = Trazabilidad.query.filter(or_(
-             Trazabilidad.idRaza == idRaza, Trazabilidad.raza == raza)).first()
-        if planta:
-             return redirect(url_for('trazabilidad'))
-        new_planta = Trazabilidad(idRaza=idRaza, raza=raza, enraizado=enraizado,
-                                   paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
-                                   cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
-        db.session.add(new_planta)
-        db.session.commit()
-        return redirect(url_for('trazabilidad')) 
-    return render_template('/logueado/trazabilidad.html', form=form)  # Renderiza el formulario en la vista
- #############################################################################################################################################
+    form = PlantForm()
+    if request.method == "POST":
+        if form.validate_on_submit():  
+            trazabilidad = Trazabilidad.query.order_by(Trazabilidad.idplanta.desc()).first()
+            if trazabilidad:
+                new_idplanta = trazabilidad.idplanta + 1
+            else:
+                new_idplanta = 1
+            raza = form.raza.data
+            Enraizado = form.Enraizado.data
+            Riego = form.Riego.data
+            paso1 = form.paso1.data
+            paso2 = form.paso2.data
+            paso3 = form.paso3.data
+            floracion = form.floracion.data
+            cosecha = form.cosecha.data
+            cantidad = int(form.cantidad.data.replace(',', ''))
+            observaciones = form.observaciones.data
+            new_planta = Trazabilidad(idplanta=new_idplanta, raza=raza, Enraizado=Enraizado, Riego=Riego,
+                                       paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
+                                       cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
+            db.session.add(new_planta)
+            db.session.commit()
+        return redirect(url_for('trazabilidad'))
+    return render_template('/logueado/trazabilidad.html', form=form)
+
+ ###    ##########################################################################################################################################
 @app.route('/delete/<idRaza>')
 def delete_planta(idRaza):
     elimplanta = User.query.filter_by(idRaza=idRaza).first()
@@ -139,7 +140,7 @@ def delete_planta(idRaza):
 @app.route('/ventas', methods=['GET', 'POST'])
 def ventosa():
     form = Ventasform()
-    idventa = form.idventa.data
+    nueva_venta = Ventas.query.order_by(Ventas.idventas.desc()).first().idventas + 1
     cedula = form.cedula.data
     raza = form.raza.data
     cantidad = form.cantidad.data
@@ -151,7 +152,7 @@ def ventosa():
             flash("alerta de compra eccedida")
             return redirect(url_for('otra_pagina'))
         usuario.total_ventas += cantidad        
-        new_venta = Ventas(idventa=idventa, cedula=cedula, raza=raza, cantidad=cantidad,
+        new_venta = Ventas(idventas=nueva_venta, cedula=cedula, raza=raza, cantidad=cantidad,
                                     retiro=retiro,)
         db.session.add(new_venta)
         db.session.commit()
@@ -247,9 +248,12 @@ def login():
 @app.route('/ventas.html')
 def ventas():
     return render_template('/logueado/ventas.html')
+
 @app.route('/trazabilidad.html')
 def trazabilidad():
-    return render_template('/logueado/trazabilidad.html')
+    form = PlantForm()
+    return render_template('/logueado/trazabilidad.html', form=form)
+
 @app.route('/ctrplanta.html')
 def ctrplanta():
     return render_template('/logueado/ctrplanta.html')

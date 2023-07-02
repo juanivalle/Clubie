@@ -11,7 +11,9 @@
   </head>
 
   <body>
-    {% extends 'base-log.html'%} {% block body %}
+{% extends 'base-log.html'%} 
+    
+    {% block body %}
 
     <div class="col-md-7">
       <h2>Trazabilidad</h2>
@@ -21,34 +23,34 @@
         <div class="col-md-5">
           <div class="card card-body">
             <form action="/registerplanta" method="POST" autocomplete="off">
-              <div class="form-group">
-                
-                <label>Raza</label>
-                <input id="raza" type="text" name="raza" class="form-control">
+              {{ form.csrf_token }}
+              <div class="form-group">  
+                  <label>Raza</label>
+                  <input id="raza" type="text" name="raza" class="form-control">
 
                 <label>Enraizado</label>
-                <input id="Enraizado" type="datetime" name="Enraizado" class="form-control">
+                <input id="Enraizado" type="datetime-local" name="Enraizado" class="form-control">
 
                 <label>Riego</label>
-                <input id="riego" type="datetime" name="riego" class="form-control">
+                <input id="Riego" type="datetime-local" name="Riego" class="form-control">
 
                 <label>1er transplante</label>
-                <input id="paso1" type="date" name="paso1" class="form-control">
+                <input id="paso1" type="datetime-local" name="paso1" class="form-control">
 
                 <label>2do transplante</label>
-                <input id="paso2" type="date" name="paso2" class="form-control">
+                <input id="paso2" type="datetime-local" name="paso2" class="form-control">
 
                 <label>3er transplante</label>
-                <input id="paso3" type="date" name="paso3" class="form-control">
+                <input id="paso3" type="datetime-local" name="paso3" class="form-control">
 
                 <label>Floración</label>
-                <input id="floracion" type="date" name="floracion" class="form-control">
+                <input id="floracion" type="datetime-local" name="floracion" class="form-control">
 
                 <label>Cosecha</label>
-                <input id="cosecha" type="date" name="cosecha" class="form-control">
+                <input id="cosecha" type="datetime-local" name="cosecha" class="form-control">
 
                 <label>Cantidad</label>
-                <input id="cantidad" type="number" name="cantidad" class="form-control">
+                <input id="cantidad" type="text" name="cantidad" class="form-control">
 
                 <label for="observaciones" class="form-label mt-4">Observaciones</label>
                 <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
