@@ -31,7 +31,6 @@ def editindex():
 def register():
     form = RegistrationForm()
     if request.method == "POST":
-
         if form.validate_on_submit():
             cedula = form.cedula.data
             name = form.name.data
@@ -44,17 +43,9 @@ def register():
             new_user = User(cedula=cedula, name=name,
                             telefono=telefono, email=email)
             db.session.add(new_user)
-            db.session.commit()
-            
+            db.session.commit()    
         return redirect(url_for('miembros'))
-
     return redirect(url_for('miembros', form=form))
-
-@app.route('/miembros.html')
-def miembros():
-    form = RegistrationForm()
-    usuarios = User.query.all()
-    return render_template('/logueado/miembros.html',form=form, users=usuarios)
 
 @app.route('/edit/miembros.html')
 def editmiembros():
@@ -73,12 +64,10 @@ def delete_socio(cedula):
     
     return redirect(url_for('miembros'))
 
-
-
-def update_user(cedula):
-    form = EditForm()
+@app.route('/edit/<cedula>', methods=['GET', 'POST'])
+def editar_usuario(cedula):
+    form = EditForm(obj=User)
     usuario = User.query.get_or_404(cedula)
-
     if form.validate_on_submit():
         usuario.cedula = form.cedula.data
         usuario.name = form.name.data
@@ -87,28 +76,8 @@ def update_user(cedula):
         db.session.commit()
         return redirect(url_for('miembros'))
 
-    form = EditForm(obj=usuario)
     return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
 
-    
-
-@app.route('/edit/<cedula>', methods=['GET', 'POST'])
-#@login_required
-def editar_usuario(cedula):
-    form = EditForm(obj=User)
-    usuario = User.query.get_or_404(cedula)
-
-    return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
-
-
-@app.route('/eliminar/<string:user_cedula>', methods=['POST'])
-def eliminar_usuario(user_cedula):
-    usuario = User.query.filter_by(cedula=user_cedula).first_or_404()
-    db.session.delete(usuario)
-    db.session.commit()
-    return redirect(url_for('miembros'))
-
-########################################################################################################
 @app.route('/registerplanta', methods=['GET', 'POST'])
 def registerplanta():
     form = PlantForm()
@@ -137,7 +106,6 @@ def registerplanta():
         return redirect(url_for('trazabilidad'))
     return render_template('/logueado/trazabilidad.html', form=form)
 
- ###    ##########################################################################################################################################
 @app.route('/delete/<idRaza>')
 def delete_planta(idRaza):
     elimplanta = User.query.filter_by(idRaza=idRaza).first()
@@ -147,7 +115,7 @@ def delete_planta(idRaza):
         db.session.commit()
   
     return redirect(url_for('homeplantcreo'))
-#############################################################################################################################################
+
 ##########################################################################################################################################
 @app.route('/ventas', methods=['GET', 'POST'])
 def ventosa():
@@ -172,12 +140,6 @@ def ventosa():
   
     return render_template('registerplanta.html', form=form)
 
-
-
-
-
-
-# #######################################
 # #########################################################################################################################################################
 
 
@@ -190,7 +152,6 @@ def obtener_datos():
     return datos
 
 # #########################################################################################################################################################
-
 @app.route('/prueba', methods=['GET', 'POST'])
 def obDatosU():
     users = User.query.all()
@@ -208,7 +169,6 @@ def obDatosU():
 
     # Devolver los datos de los usuarios en formato JSON
     return jsonify(users_data)
-
 # #############################################################################################################################################
 # def obtenemos():
 #     atos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
