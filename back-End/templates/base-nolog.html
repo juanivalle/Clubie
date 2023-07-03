@@ -1,8 +1,8 @@
-<link rel="stylesheet" href="/../../../css/header.css">
-<link rel="stylesheet" href="../../../css/footer.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
 
 <header>
-    <div class="logo"><a href="home.html"><img src="../../../css/media/editado.png" alt="Logo de marca"></a></div>
+    <div class="logo"><a href="home.html"><img src="{{ url_for('static', filename='media/ediatdo.png') }}" alt="Logo de marca"></a></div>
     <nav class="opcion">
         <ul class="nav-links">
             <li><a href="home.html" class="active">Home<span></span></a></li>

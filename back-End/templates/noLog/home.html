@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/../../../css/home-nologin.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home-nologin.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
     <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
@@ -17,7 +17,7 @@
 </head>
 <body>
     <header>
-        <div class="logo"><a href="home.html"><img src="../../../css/media/editado.png" alt="Logo de marca"></a></div>
+        <div class="logo"><a href="home.html"><img src="{{ url_for('static', filename='media/editado.png') }}" alt="Logo de marca"></a></div>
         <nav class="opcion">
             <ul class="nav-links">
                 <li><a href="#home" class="active">Home<span></span></a></li>
@@ -38,10 +38,10 @@
         <section id="home" class="home">
             <div class="video">
                 <!--<video id="myVideo" src="../../../css/media/video.mp4" controls loop></video>-->
-                <img src="/css/media/video-home_AdobeExpress (3).gif" autoplay>
+                <img src="{{ url_for('static', filename='media/video-home_AdobeExpress (3).gif') }}" autoplay>
             </div>
             <div class="logo-movil">
-                <img id="logomovil" src="../../../css/media/Clubie_vt_col_neg (2).webp" alt="">
+                <img id="logomovil" src="{{ url_for('static', filename='media/Clubie_vt_col_neg (2).webp') }}" alt="">
             </div>
         </section>
         <div id="title-road"></div>
@@ -50,7 +50,7 @@
             <div class="contenedor-map">
                 <div class="contenido-map">
                      <div class="imagen-map">
-                         <img src="../../../css/media/Q3responsive.png" alt="Appmovile">
+                         <img src="{{ url_for('static', filename='media/Q3responsive.png') }}" alt="Appmovile">
                     </div>
                     <div class="text-box">
                          <h3>Q3 - 2023</h3>
@@ -63,7 +63,7 @@
             <div class="contenedor-map">
                 <div class="contenido-map">
                      <div class="imagen-map-2">
-                        <img src="../../../css/media/Q4miembros.png" alt="Miembros vinculados">
+                        <img src="{{ url_for('static', filename='media/Q4miembros.png') }}" alt="Miembros vinculados">
                     </div>
                     <div class="text-box2">
                          <h3>Q4 - 2023</h3>
@@ -76,7 +76,7 @@
             <div class="contenedor-map">
                 <div class="contenido-map">
                      <div class="imagen-map">
-                        <img src="../../../css/media/Q1catalogo.png" alt="Catalogo web">
+                        <img src="{{ url_for('static', filename='media/Q1catalogo.png') }}" alt="Catalogo web">
                     </div>
                     <div class="text-box3">
                          <h3>Q1 - 2024</h3>
@@ -89,7 +89,7 @@
             <div class="contenedor-map">
                 <div class="contenido-map">
                      <div class="imagen-map-2">
-                        <img src="../../../css/media/Q2movil.png" alt="Appmovile">
+                        <img src="{{ url_for('static', filename='media/Q2movil.png') }}" alt="Appmovile">
                     </div>
                     <div class="text-box4">
                          <h3>Q2 - 2024</h3>
@@ -102,7 +102,7 @@
             <div class="contenedor-map">
                 <div class="contenido-map">
                      <div class="imagen-map">
-                        <img src="../../../css/media/Delivery.png" alt="delivery weed">
+                        <img src="{{ url_for('static', filename='media/Delivery.png') }}" alt="delivery weed">
                     </div>
                     <div class="text-box5">
                          <h3>Largo plazo</h3>
@@ -118,7 +118,7 @@
             <div class="container-nosotros">
                 <div class="card-nosotros">
                     <figure>
-                        <img src="../../../css/media/mision.webp">
+                        <img src="{{ url_for('static', filename='media/mision.webp') }}">
                     </figure>
                     <div class="contenido">
                         <h3>Misión</h3>
@@ -129,7 +129,7 @@
                 </div>
                 <div class="card-nosotros">
                     <figure>
-                        <img src="../../../css/media/vision.webp">
+                        <img src="{{ url_for('static', filename='media/vision.webp') }}">
                     </figure>
                     <div class="contenido">
                         <h3>Visión</h3>
@@ -140,7 +140,7 @@
                 </div>
                 <div class="card-nosotros">
                     <figure>
-                        <img src="../../../css/media/valores-transformed (1).webp">
+                        <img src="{{ url_for('static', filename='media/valores-transformed (1).webp') }}">
                     </figure>
                     <div class="contenido">
                         <h3>Valores</h3>
@@ -158,7 +158,7 @@
                 <div class="content">
                     <span></span>  
                     <div class="img">
-                        <img src="../../../css/media/IMG_2629.webp" alt="">
+                        <img src="{{ url_for('static', filename='media/IMG_2629.webp') }}" alt="">
                     </div>
                     <h4>Carlos Barrio</h4>
                     <h6>Front-End - Proyect manager</h6>
@@ -174,7 +174,7 @@
                 <div class="content">
                     <span></span>
                     <div class="img">
-                        <img src="../../../css/media/Juan Ignacio Valle 2 git hub.jpg" alt="">
+                        <img src="{{ url_for('static', filename='media/valle.jpg') }}" alt="">
                     </div>
                     <h4>Juan Ignacio Valle</h4>
                     <h6>Front-End</h6>
@@ -190,7 +190,7 @@
                 <div class="content">
                     <span></span>
                     <div class="img">
-                        <img src="../../../css/media/Matias Mancini 1.webp" alt="">
+                        <img src="{{ url_for('static', filename='media/mati.webp') }}" alt="">
                     </div>
                     <h4>Matias Mancini</h4>
                     <h6>Back-End</h6>
@@ -206,7 +206,7 @@
                 <div class="content">
                     <span></span>
                     <div class="img">
-                        <img src="../../../css/media/Agustin_Meriles_2.webp" alt="">
+                        <img src="{{ url_for('static', filename='media/agus.webp') }}" alt="">
                     </div>
                     <h4>Agustin Meriles</h4>
                     <h6>Back-End</h6>
@@ -222,7 +222,7 @@
                 <div class="content">
                     <span></span>
                     <div class="img">
-                        <img src="../../../css/media/IMG_3973.webp" alt="">
+                        <img src="{{ url_for('static', filename='media/neo.webp') }}" alt="">
                     </div>
                     <h4 class="neo">Neo Dau</h4>
                     <h6>Front-End</h6>
