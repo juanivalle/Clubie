@@ -21,16 +21,12 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
-@app.route('/')
-@app.route('/edit/home.html')
-def editindex():
-    usuarios = User.query.all()
-    return render_template("/noLog/home.html", usuarios=usuarios)
 
 @app.route('/registerform', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     if request.method == "POST":
+
         if form.validate_on_submit():
             cedula = form.cedula.data
             name = form.name.data
@@ -43,12 +39,14 @@ def register():
             new_user = User(cedula=cedula, name=name,
                             telefono=telefono, email=email)
             db.session.add(new_user)
-            db.session.commit()    
+            db.session.commit()
+            
         return redirect(url_for('miembros'))
+
     return redirect(url_for('miembros', form=form))
 
-@app.route('/edit/miembros.html')
-def editmiembros():
+@app.route('/miembros.html')
+def miembros():
     form = RegistrationForm()
     usuarios = User.query.all()
     return render_template('/logueado/miembros.html',form=form, users=usuarios)
@@ -57,17 +55,21 @@ def editmiembros():
 @app.route('/delete/<cedula>')
 def delete_socio(cedula):
     socio = User.query.filter_by(cedula=cedula).first()
-
+    
     if socio:
         db.session.delete(socio)
         db.session.commit()
     
     return redirect(url_for('miembros'))
 
-@app.route('/edit/<cedula>', methods=['GET', 'POST'])
+
+
+@app.route('/edit/<cedula>', methods=['GET'])
+#@login_required
 def editar_usuario(cedula):
-    form = EditForm(obj=User)
+    form = EditForm()
     usuario = User.query.get_or_404(cedula)
+
     if form.validate_on_submit():
         usuario.cedula = form.cedula.data
         usuario.name = form.name.data
@@ -76,7 +78,9 @@ def editar_usuario(cedula):
         db.session.commit()
         return redirect(url_for('miembros'))
 
+    form = EditForm(obj=usuario)
     return render_template('/logueado/edit_usuario.html', form=form, usuario=usuario)
+
 
 @app.route('/registerplanta', methods=['GET', 'POST'])
 def registerplanta():
@@ -140,6 +144,7 @@ def ventosa():
   
     return render_template('registerplanta.html', form=form)
 
+# #######################################
 # #########################################################################################################################################################
 
 
@@ -152,6 +157,7 @@ def obtener_datos():
     return datos
 
 # #########################################################################################################################################################
+
 @app.route('/prueba', methods=['GET', 'POST'])
 def obDatosU():
     users = User.query.all()
@@ -169,6 +175,7 @@ def obDatosU():
 
     # Devolver los datos de los usuarios en formato JSON
     return jsonify(users_data)
+
 # #############################################################################################################################################
 # def obtenemos():
 #     atos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
@@ -199,10 +206,6 @@ def login():
     form = LoginForm
     return render_template('/noLog/login.html', form=form)
 
-@app.route('/edit/login.html')
-def editlogin():
-    form = LoginForm
-    return render_template('/noLog/login.html', form=form)
 
 # @app.route('/nosotros.html')
 # def nosotros():
@@ -225,22 +228,15 @@ def editlogin():
 @app.route('/ventas.html')
 def ventas():
     return render_template('/logueado/ventas.html')
-@app.route('/edit/ventas.html')
-def editventas():
-    return render_template('/logueado/ventas.html')
+
 
 @app.route('/trazabilidad.html')
 def trazabilidad():
     form = PlantForm()
     return render_template('/logueado/trazabilidad.html', form=form)
-@app.route('/edit/trazabilidad.html')
-def edittrazabilidad():
-    form = PlantForm()
-    return render_template('/logueado/trazabilidad.html', form=form)
 
-@app.route('/edit/ctrplanta.html')
-def editctrplanta():
-    return render_template('/logueado/ctrplanta.html')
+
+
 @app.route('/ctrplanta.html')
 def ctrplanta():
     return render_template('/logueado/ctrplanta.html')
@@ -248,9 +244,7 @@ def ctrplanta():
 @app.route('/graficos.html')
 def graficos():
     return render_template('/logueado/graficos.html')
-@app.route('/edit/graficos.html')
-def editgraficos():
-    return render_template('/logueado/graficos.html')
+
 
 
 
