@@ -1,7 +1,7 @@
 <meta charset="utf-8">
     <title>Clubie</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../../../css/login.css">
+    <link rel="stylesheet" href="../../static/css/login.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
@@ -10,7 +10,7 @@
 
     <body class="cuerpo">
         <header>
-            <div class="logo"><a href="home.html"><img src="../../../css/media/editado.png" alt="Logo de marca"></a></div>
+            <div class="logo"><a href="home.html"><img src="../../static/media/editado.png" alt="Logo de marca"></a></div>
             <nav class="opcion">
                 <ul class="nav-links">
                     <li><a href="home.html" class="active">Home<span></span></a></li>
@@ -29,7 +29,7 @@
         </div>
         </header>
         <div class="login-box">
-            <img class="avatar" src="../../../css/media/Logo-verde.png" alt="logo">
+            <img class="avatar" src="../../static/media/Logo-verde.png" alt="logo">
             <h1>Ingresar</h1>
             <form class="formulario" action="/loginform" method="POST">
                 {{ form.csrf_token }}
