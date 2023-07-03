@@ -7,6 +7,7 @@
 <div class="col-md-5 offset-md-4">
     <div class="card card-body">
         <form action="/edit/{{ usuario.cedula }}" method="POST">
+            {{ form.csrf_token }}
             <div class="form-group">
                 <label for="txtName">Nombre</label>
                 <input type="text" id="txtName" name="name" placeholder="Nombre completo"

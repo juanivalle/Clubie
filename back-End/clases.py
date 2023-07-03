@@ -77,7 +77,7 @@ class Ventasform(FlaskForm):
     cedula = IntegerField('cedula')
     raza = StringField('raza')
     cantidad = StringField('cantidad')
-    retiro = DateTimeLocalField('retiro')
+    retiro = DateTimeLocalField('retiro', format='%d/%m %H:%M', validators=[Optional()])
 
 class Ventas(db.Model):
     idventas = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)

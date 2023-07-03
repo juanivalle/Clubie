@@ -21,6 +21,12 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
+@app.route('/')
+@app.route('/edit/home.html')
+def editindex():
+    usuarios = User.query.all()
+    return render_template("/noLog/home.html", usuarios=usuarios)
+
 
 @app.route('/registerform', methods=['GET', 'POST'])
 def register():
@@ -51,6 +57,12 @@ def miembros():
     usuarios = User.query.all()
     return render_template('/logueado/miembros.html',form=form, users=usuarios)
 
+@app.route('/edit/miembros.html')
+def editmiembros():
+    form = RegistrationForm()
+    usuarios = User.query.all()
+    return render_template('/logueado/miembros.html',form=form, users=usuarios)
+
 # FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB // FUNCIONA
 @app.route('/delete/<cedula>')
 def delete_socio(cedula):
@@ -64,7 +76,7 @@ def delete_socio(cedula):
 
 
 
-@app.route('/edit/<cedula>', methods=['GET'])
+@app.route('/edit/<cedula>', methods=['GET', 'POST'])
 #@login_required
 def editar_usuario(cedula):
     form = EditForm()
