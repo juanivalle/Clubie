@@ -136,25 +136,28 @@ def delete_planta(idRaza):
 @app.route('/ventas', methods=['GET', 'POST'])
 def ventosa():
     form = Ventasform()
-    nueva_venta = Ventas.query.order_by(Ventas.idventas.desc()).first().idventas + 1
-    cedula = form.cedula.data
-    raza = form.raza.data
-    cantidad = form.cantidad.data
-    retiro = form.retiro.data
-    usuario = User.query.filter_by(cedula=cedula).first()
-    if usuario:
-            # Verifica si el usuario ha superado el límite de cantidad de compras
-        if usuario.total_ventas + cantidad > 40:
-            flash("alerta de compra eccedida")
-            return redirect(url_for('otra_pagina'))
-        usuario.total_ventas += cantidad        
-        new_venta = Ventas(idventas=nueva_venta, cedula=cedula, raza=raza, cantidad=cantidad,
-                                    retiro=retiro,)
-        db.session.add(new_venta)
-        db.session.commit()
-        return redirect(url_for('otra_pagina')) 
-  
-    return render_template('registerplanta.html', form=form)
+    if request.method == "POST":
+        print(form.data)
+        # total_ventas = Ventas.query.order_by(Ventas.idventas.desc()).first().idventas + 1
+        total_ventas = 1
+        cedula = form.cedula.data
+        raza = 1
+        cantidad = form.cantidad.data
+        retiro = form.retiro.data
+        usuario = User.query.filter_by(cedula=cedula).first()
+        if usuario:
+                # Verifica si el usuario ha superado el límite de cantidad de compras
+            if total_ventas + cantidad > 40:
+                flash("alerta de compra eccedida")
+                return redirect(url_for('otra_pagina'))
+            # usuario.total_ventas += cantidad        
+            new_venta = Ventas(cedula=cedula, idraza=raza, cantidad=cantidad,
+                                        retiro=retiro,)
+            db.session.add(new_venta)
+            db.session.commit()
+        return redirect(url_for('ventas'))
+
+    return render_template('logueado/ventas.html', form=form)
 
 # #######################################
 # #########################################################################################################################################################

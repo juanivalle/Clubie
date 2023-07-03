@@ -18,6 +18,7 @@ class User(db.Model):
     name = db.Column(db.String(30), nullable=False)
     telefono = db.Column(db.Integer, nullable=False, unique=True)
     email = db.Column(db.String(30), nullable=False, unique=True)
+    
 
 class RegistrationForm(FlaskForm):
     name = StringField('name', validators=[validators.Length(min=6, max=25)])
