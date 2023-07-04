@@ -2,8 +2,8 @@ fetch('/prueba')
   .then(response => response.json())
   .then(data => {
     // Preparar los datos para el gráfico
-    const labels = data.map(user => user.name);
-    const values = data.map(user => user.telefono);
+    const labels = data.map(venta => venta.retiro);
+    const values = data.map(venta => venta.cantidad);
 
     // Configurar y generar el gráfico utilizando Chart.js
     const ctx = document.getElementById('modelsChart').getContext('2d');
@@ -12,7 +12,7 @@ fetch('/prueba')
       data: {
         labels: labels,
         datasets: [{
-          label: 'Teléfonos',
+          label: 'retiro',
           data: values,
           backgroundColor: getDataColors(),
           borderColor: getDataColors(),

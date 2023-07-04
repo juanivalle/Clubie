@@ -136,28 +136,31 @@ def delete_planta(idRaza):
 @app.route('/ventas', methods=['GET', 'POST'])
 def ventosa():
     form = Ventasform()
+    ventas_db = Ventas.query.all()
     if request.method == "POST":
         print(form.data)
-        # total_ventas = Ventas.query.order_by(Ventas.idventas.desc()).first().idventas + 1
-        total_ventas = 1
-        cedula = form.cedula.data
-        raza = 1
-        cantidad = form.cantidad.data
+        cedula = form.cedulaVenta.data
+        raza = form.razaVenta.data
+        cantidad = form.cantVenta.data
         retiro = form.retiro.data
         usuario = User.query.filter_by(cedula=cedula).first()
         if usuario:
-                # Verifica si el usuario ha superado el límite de cantidad de compras
-            if total_ventas + cantidad > 40:
-                flash("alerta de compra eccedida")
+            total_ventas = Ventas.query.order_by(Ventas.idventas.desc()).first()
+            if total_ventas:
+                total_ventas = total_ventas.idventas + 1
+            else:
+                total_ventas = 1
+            # Verifica si el usuario ha superado el límite de cantidad de compras
+            if total_ventas + int(cantidad) > 40:
+                flash("Alerta de compra excedida")
                 return redirect(url_for('otra_pagina'))
-            # usuario.total_ventas += cantidad        
-            new_venta = Ventas(cedula=cedula, idraza=raza, cantidad=cantidad,
-                                        retiro=retiro,)
+            # usuario.total_ventas += cantidad
+            new_venta = Ventas(cedula=cedula, idraza=raza, cantidad=cantidad, retiro=retiro)
             db.session.add(new_venta)
             db.session.commit()
         return redirect(url_for('ventas'))
 
-    return render_template('logueado/ventas.html', form=form)
+    return render_template('logueado/ventas.html', form=form, ventas=ventas_db)
 
 # #######################################
 # #########################################################################################################################################################
