@@ -161,7 +161,7 @@ def ventosa():
 
     return redirect(url_for('ventas', form=form))
 
-@app.route('/ventas')
+@app.route('/ventas.html')
 def ventas():
     form = Ventasform()
     ventas = Ventas.query.all()
@@ -250,9 +250,7 @@ def login():
 
 
 
-@app.route('/ventas.html')
-def ventas():
-    return render_template('/logueado/ventas.html')
+
 
 
 @app.route('/trazabilidad.html')
