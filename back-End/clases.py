@@ -74,10 +74,9 @@ class PlantForm(FlaskForm):
     observaciones = StringField('observaciones')
 
 class Ventasform(FlaskForm):
-    idventas = IntegerField('idRaza')
-    cedula = IntegerField('cedula')
-    raza = StringField('raza')
-    cantidad = StringField('cantidad')
+    cedulaVenta = IntegerField('cedula')
+    razaVenta = StringField('raza')
+    cantVenta = StringField('cantidad')
     retiro = DateTimeLocalField('retiro', format='%d/%m %H:%M', validators=[Optional()])
 
 class Ventas(db.Model):
