@@ -161,11 +161,12 @@ def ventosa():
 
     return redirect(url_for('ventas', form=form))
 
+@app.route('/ventas.html')
 @app.route('/ventas')
 def ventas():
     form = Ventasform()
     ventas = Ventas.query.all()
-    return render_template('/logueado/ventas.html',form=form, dato=ventas)
+    return render_template('/logueado/ventas.html', form=form, venta=ventas)
 
 # #######################################
 # #########################################################################################################################################################
@@ -248,11 +249,6 @@ def login():
 # def home_club():
 #     return render_template('/logueado/home-club.html')
 
-
-
-@app.route('/ventas.html')
-def ventas():
-    return render_template('/logueado/ventas.html')
 
 
 @app.route('/trazabilidad.html')
