@@ -33,7 +33,7 @@
                         <input id="txtEmail"type="text" name="email"  class="form-control">
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block">
+                        <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block" id="btnmiembro">
                     </div>
                 </form>
             </div>
@@ -59,7 +59,7 @@
                         <td>{{ user.email }}</td>
                         <td>
                             <a href="/edit/{{user.cedula}}" class="btn btn-secondary">Editar</a>
-                            <a href="/delete/{{user.cedula}}" class="btn btn-danger">X</a>
+                            <a href="/delete/{{user.cedula}}" class="btn btn-danger" id="btndelete">X</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -67,5 +67,23 @@
             </table>
         </div>
     </div>
+    <script>
+        let btnMiembro = document.getElementById('btnmiembro');
+        btnMiembro.addEventListener('click', function() {
+            alert('El miembro se cargó correctamente.');
+        });
+
+        let btnDelete = document.getElementById('btndelete');
+        btnDelete.addEventListener('click', function(event) {
+            event.preventDefault();
+            var confirmation = confirm('¿Estás seguro de que deseas eliminar el miembro?');
+            if (confirmation) {
+                window.location.href = btnDelete.getAttribute('href');
+            } else {
+                console.log('La eliminación del miembro fue cancelada.');
+            }
+        });
+
+    </script>
     
     {% endblock %}

@@ -57,13 +57,19 @@
                 <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
               </div>
               <div class="form-group">
-                <input type="submit" value="Agregar planta" class="btn btn-primary btn-block"/>
+                <input type="submit" value="Guardar Datos" class="btn btn-primary btn-block" id="btnTrazabilidad">
               </div>
             </form>
           </div>
         </div>
       </div>
     </div>
+    <script>
+      let btnTrzbld = document.getElementById('btnTrazabilidad');
+      btnTrzbld.addEventListener('click', function() {
+        alert('Datos actualizados.');
+      });
+    </script>
     {% endblock %}
   </body>
 </html>

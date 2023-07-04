@@ -71,13 +71,19 @@
               <input id="fechaVenta" type="datetime-local" name="retiro" class="form-control">
             </div>
             <div class="form-group">
-              <input type="submit" value="Guardar Venta" class="btn btn-primary btn-block">
+              <input type="submit" value="Guardar Venta" class="btn btn-primary btn-block" id="btnsave">
             </div>
           </form>
         </div>
       </div>
 
   </div>
+  <script>
+    let btnSave = document.getElementById('btnsave');
+    btnSave.addEventListener('click', function() {
+      alert('La venta se cargó correctamente.');
+    });
+  </script>
   {% endblock %}
 </body>
 
