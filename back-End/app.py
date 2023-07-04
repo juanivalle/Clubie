@@ -133,34 +133,39 @@ def delete_planta(idRaza):
     return redirect(url_for('homeplantcreo'))
 
 ##########################################################################################################################################
-@app.route('/ventas', methods=['GET', 'POST'])
+@app.route('/registerventas', methods=['GET', 'POST'])
 def ventosa():
     form = Ventasform()
-    ventas_db = Ventas.query.all()
     if request.method == "POST":
-        print(form.data)
         cedula = form.cedulaVenta.data
         raza = form.razaVenta.data
         cantidad = form.cantVenta.data
         retiro = form.retiro.data
         usuario = User.query.filter_by(cedula=cedula).first()
         if usuario:
-            total_ventas = Ventas.query.order_by(Ventas.idventas.desc()).first()
-            if total_ventas:
-                total_ventas = total_ventas.idventas + 1
+            nueva_venta = Ventas.query.order_by(Ventas.idventas.desc()).first()
+            if nueva_venta:
+                nueva_venta = nueva_venta.idventa + 1
             else:
-                total_ventas = 1
+                nueva_venta = 1
+        
             # Verifica si el usuario ha superado el límite de cantidad de compras
-            if total_ventas + int(cantidad) > 40:
+            if usuario.total_ventas + cantidad > 40:
                 flash("Alerta de compra excedida")
-                return redirect(url_for('otra_pagina'))
-            # usuario.total_ventas += cantidad
-            new_venta = Ventas(cedula=cedula, idraza=raza, cantidad=cantidad, retiro=retiro)
+                return redirect(url_for('home'))
+            usuario.total_ventas += cantidad
+            new_venta = Ventas(idventas=nueva_venta, cedula=cedula, raza=raza, cantidad=cantidad, retiro=retiro)
             db.session.add(new_venta)
             db.session.commit()
         return redirect(url_for('ventas'))
 
-    return render_template('logueado/ventas.html', form=form, ventas=ventas_db)
+    return redirect(url_for('ventas', form=form))
+
+@app.route('/ventas')
+def ventas():
+    form = Ventasform()
+    ventas = Ventas.query.all()
+    return render_template('/logueado/ventas.html',form=form, dato=ventas)
 
 # #######################################
 # #########################################################################################################################################################
@@ -178,21 +183,23 @@ def obtener_datos():
 
 @app.route('/prueba', methods=['GET', 'POST'])
 def obDatosU():
-    users = User.query.all()
+    ventas = Ventas.query.all()
 
     # Crear una lista para almacenar los datos de los usuarios
-    users_data = []
-    for user in users:
-        user_data = {
-            'cedula': user.cedula,
-            'name': user.name,
-            'telefono': user.telefono,
-            'email': user.email
+    ventas_data = []
+    for venta in ventas:
+        venta_data = {
+            'idventas': venta.idventas,
+            'cedula': venta.cedula,
+            'raza': venta.raza,
+            'cantidad': venta.cantidad,
+            'retiro': venta.retiro,
+            'total_ventas': venta.total_ventas
         }
-        users_data.append(user_data)
+        ventas_data.append(venta_data)
 
     # Devolver los datos de los usuarios en formato JSON
-    return jsonify(users_data)
+    return jsonify(ventas_data)
 
 # #############################################################################################################################################
 # def obtenemos():

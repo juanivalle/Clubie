@@ -54,6 +54,7 @@
         <div class="card card-body">
           <h2>Nueva Venta</h2>
           <form action="/ventas" method="POST" autocomplete="off">
+            {{ form.csrf_token }}
             <div class="form-group">
               <label for="txtCi">Cedula:</label>
               <input id="txtCi" type="text" name="cedulaVenta" class="form-control">

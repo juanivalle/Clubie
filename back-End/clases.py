@@ -74,15 +74,15 @@ class PlantForm(FlaskForm):
     observaciones = StringField('observaciones')
 
 class Ventasform(FlaskForm):
-    cedulaVenta = IntegerField('cedula')
-    razaVenta = StringField('raza')
-    cantVenta = StringField('cantidad')
+    cedulaVenta = IntegerField('cedulaVenta')
+    razaVenta = StringField('razaVenta')
+    cantVenta = IntegerField('cantVenta')
     retiro = DateTimeLocalField('retiro', format='%d/%m %H:%M', validators=[Optional()])
 
 class Ventas(db.Model):
     idventas = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
-    cedula = StringField('cedula')
-    idraza = IntegerField('idRaza')
-    cantidad = db.Column(db.String(30), nullable=False)
+    cedula = db.Column(db.Integer, nullable=False)
+    raza = db.Column(db.String(30), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
     retiro = db.Column(db.String(12), default=datetime.now())
     total_ventas = db.Column(db.Integer, default=0)
