@@ -189,7 +189,6 @@ def obDatosU():
             'raza': venta.raza,
             'cantidad': venta.cantidad,
             'retiro': venta.retiro,
-            'total_ventas': venta.total_ventas
         }
         ventas_data.append(venta_data)
 
