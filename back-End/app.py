@@ -143,12 +143,6 @@ def ventosa():
         retiro = form.retiro.data
         usuario = User.query.filter_by(cedula=cedula).first()
         if usuario:
-            nueva_venta = Ventas.query.order_by(Ventas.idventas.desc()).first()
-            if nueva_venta:
-                nueva_venta = nueva_venta.idventa + 1
-            else:
-                nueva_venta = 1
-        
             # Verifica si el usuario ha superado el límite de cantidad de compras
             #total_ventas += cantidad
             #if total_ventas + cantidad > 40:
