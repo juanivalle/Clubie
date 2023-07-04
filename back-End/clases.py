@@ -85,4 +85,4 @@ class Ventas(db.Model):
     raza = db.Column(db.String(30), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
     retiro = db.Column(db.String(12), default=datetime.now())
-    total_ventas = db.Column(db.Integer, default=0)
+    #total_ventas = db.Column(db.Integer, default=0)

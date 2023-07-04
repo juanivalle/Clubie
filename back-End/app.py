@@ -150,11 +150,11 @@ def ventosa():
                 nueva_venta = 1
         
             # Verifica si el usuario ha superado el límite de cantidad de compras
-            if usuario.total_ventas + cantidad > 40:
-                flash("Alerta de compra excedida")
-                return redirect(url_for('home'))
-            usuario.total_ventas += cantidad
-            new_venta = Ventas(idventas=nueva_venta, cedula=cedula, raza=raza, cantidad=cantidad, retiro=retiro)
+            #total_ventas += cantidad
+            #if total_ventas + cantidad > 40:
+                #flash("Alerta de compra excedida")
+                #return redirect(url_for('home'))
+            new_venta = Ventas(cedula=cedula, raza=raza, cantidad=cantidad, retiro=retiro)
             db.session.add(new_venta)
             db.session.commit()
         return redirect(url_for('ventas'))
@@ -162,10 +162,11 @@ def ventosa():
     return redirect(url_for('ventas', form=form))
 
 @app.route('/ventas.html')
+@app.route('/ventas')
 def ventas():
     form = Ventasform()
     ventas = Ventas.query.all()
-    return render_template('/logueado/ventas.html',form=form, dato=ventas)
+    return render_template('/logueado/ventas.html', form=form, venta=ventas)
 
 # #######################################
 # #########################################################################################################################################################
@@ -257,8 +258,6 @@ def login():
 def trazabilidad():
     form = PlantForm()
     return render_template('/logueado/trazabilidad.html', form=form)
-
-
 
 @app.route('/ctrplanta.html')
 def ctrplanta():
