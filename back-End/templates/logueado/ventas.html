@@ -28,12 +28,12 @@
             <th>Raza</th>
             <th>Cantidad</th>
             <th>Retiro</th>
-            <th>Operaciones</th>
+            <!-- <th>Operaciones</th> -->
           </tr>
         </thead>
         <tbody>
 
-          <!-- LA TABLA DE ABAJO ES PARA MOSTRAR LAS PLANTAS-->
+          <!-- LA TABLA DE ABAJO ES PARA MOSTRAR LAS VENTAS-->
           {% for venta in ventas %}
           <tr>
             <td>{{ venta.idventas }}</td>
@@ -41,47 +41,47 @@
             <td>{{ venta.raza }}</td>
             <td>{{ venta.cantidad }}</td>
             <td>{{ venta.retiro }}</td>
-            <td>
-              <!--<a href="/edit/{{venta.idventas}}" class="btn btn-secondary">Edit</a>
-              <a href="/delete/{{venta.idventas}}" class="btn btn-danger">Delete</a>-->
-            </td>
+            <!-- <td>
+              <a href="/edit/{{venta.idventas}}" class="btn btn-secondary">Edit</a>
+              <a href="/delete/{{venta.idventas}}" class="btn btn-danger">Delete</a>
+            </td> -->
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-      <div class="col-md-5">
-        <div class="card card-body">
-          <h2>Nueva Venta</h2>
-          <form action="/registerventas" method="POST" autocomplete="off">
-            {{ form.csrf_token }}
-            <div class="form-group">
-              <label for="txtCi">Cedula:</label>
-              <input id="txtCi" type="text" name="cedulaVenta" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="razaVenta">Raza:</label>
-              <input type="text" name="razaVenta" id="razaVenta" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="cantidad">Cantidad:</label>
-              <input type="number" name="cantVenta" id="cantidad" class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Fecha de Retiro</label>
-              <input id="fechaVenta" type="datetime-local" name="retiro" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="submit" value="Guardar Venta" class="btn btn-primary btn-block" id="btnsave">
-            </div>
-          </form>
-        </div>
+    <div class="col-md-5">
+      <div class="card card-body">
+        <h2>Nueva Venta</h2>
+        <form action="/registerventas" method="POST" autocomplete="off">
+          {{ form.csrf_token }}
+          <div class="form-group">
+            <label for="txtCi">Cedula:</label>
+            <input id="txtCi" type="text" name="cedulaVenta" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="razaVenta">Raza:</label>
+            <input type="text" name="razaVenta" id="razaVenta" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantVenta" id="cantidad" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Fecha de Retiro</label>
+            <input id="fechaVenta" type="datetime-local" name="retiro" class="form-control">
+          </div>
+          <div class="form-group">
+            <input type="submit" value="Guardar Venta" class="btn btn-primary btn-block" id="btnsave">
+          </div>
+        </form>
       </div>
+    </div>
 
   </div>
   <script>
     let btnSave = document.getElementById('btnsave');
-    btnSave.addEventListener('click', function() {
+    btnSave.addEventListener('click', function () {
       alert('La venta se cargó correctamente.');
     });
   </script>

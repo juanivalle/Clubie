@@ -160,7 +160,7 @@ def ventosa():
 def ventas():
     form = Ventasform()
     ventas = Ventas.query.all()
-    return render_template('/logueado/ventas.html', form=form, venta=ventas)
+    return render_template('/logueado/ventas.html', form=form, ventas=ventas)
 
 # #######################################
 # #########################################################################################################################################################
