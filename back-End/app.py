@@ -197,8 +197,6 @@ def obDatosU():
     ventas_data = []
     for venta in ventas:
         venta_data = {
-            'idventas': venta.idventas,
-            'cedula': venta.cedula,
             'raza': venta.raza,
             'cantidad': venta.cantidad,
             'retiro': venta.retiro,

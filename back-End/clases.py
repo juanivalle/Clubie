@@ -49,7 +49,7 @@ class LoginForm(FlaskForm):
 
 class Trazabilidad(db.Model):
     idplanta = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    raza = db.Column(db.String(30), nullable=False)
+    raza = db.Column(db.String(30), nullable=False, unique=True)
     Enraizado = db.Column(db.DateTime, nullable=True)
     Riego = db.Column(db.DateTime, nullable=True)
     paso1 = db.Column(db.DateTime, nullable=True)
