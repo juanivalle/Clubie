@@ -2,15 +2,24 @@ fetch('/prueba')
   .then(response => response.json())
   .then(data => {
     // Preparar los datos para el gráfico
-    const labels = data.map(venta => venta.raza);
-    const values = data.map(venta => venta.cantidad);
+    const groupedData = data.reduce((result, venta) => {
+      if (!result[venta.raza]) {
+        result[venta.raza] = 0;
+      }
+      result[venta.raza] += venta.cantidad;
+      return result;
+    }, {});
+
+    // Preparar los datos para el gráfico
+    const uniqueLabels = Object.keys(groupedData);
+    const values = Object.values(groupedData);
 
     // Configurar y generar el gráfico utilizando Chart.js
     const ctx = document.getElementById('modelsChart').getContext('2d');
     new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: uniqueLabels,
         datasets: [{
           label: 'raza',
           data: values,
