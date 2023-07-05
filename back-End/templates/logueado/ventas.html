@@ -40,7 +40,7 @@
             <td>{{ venta.cedula }}</td>
             <td>{{ venta.raza }}</td>
             <td>{{ venta.cantidad }}</td>
-            <td>{{ venta.retiro }}</td>
+            <td>{{ venta.retiro.strftime('%Y-%m-%dT%H:%M') }}</td>
             <!-- <td>
               <a href="/edit/{{venta.idventas}}" class="btn btn-secondary">Edit</a>
               <a href="/delete/{{venta.idventas}}" class="btn btn-danger">Delete</a>
@@ -56,8 +56,12 @@
         <form action="/registerventas" method="POST" autocomplete="off">
           {{ form.csrf_token }}
           <div class="form-group">
-            <label for="txtCi">Cedula:</label>
+            <label>Cédula</label>
             <input id="txtCi" type="text" name="cedulaVenta" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Nombre de Usuario</label>
+            <p id="username-display"></p>
           </div>
           <div class="form-group">
             <label for="razaVenta">Raza:</label>
@@ -75,6 +79,29 @@
             <input type="submit" value="Guardar Venta" class="btn btn-primary btn-block" id="btnsave">
           </div>
         </form>
+        
+        <script>
+        // JavaScript (lado del cliente)
+        
+        // Obtener una referencia al campo "Cédula" y al elemento que muestra el nombre del usuario
+        let cedulaField = document.querySelector('#txtCi');
+        let usernameDisplay = document.querySelector('#username-display');
+        
+        // Agregar un controlador de eventos para detectar cuando el valor del campo "Cédula" cambia
+        cedulaField.addEventListener('input', function() {
+          // Obtener el valor actual del campo "Cédula"
+          let cedula = cedulaField.value;
+        
+          // Enviar una solicitud AJAX al servidor para obtener el nombre del usuario asociado a la cédula ingresada
+          fetch('/get-username?cedula=' + cedula)
+            .then(response => response.text())
+            .then(username => {
+              // Actualizar el contenido del elemento que muestra el nombre del usuario con el valor obtenido
+              usernameDisplay.textContent = username;
+            });
+        });
+        </script>
+        
       </div>
     </div>
 

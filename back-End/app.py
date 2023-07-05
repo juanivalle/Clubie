@@ -153,7 +153,20 @@ def ventosa():
             db.session.commit()
         return redirect(url_for('ventas'))
 
-    return redirect(url_for('ventas', form=form))
+    return render_template('home.html', form=form)
+
+@app.route('/get-username')
+def get_username():
+    cedula = request.args.get('cedula')
+    usuario = User.query.filter_by(cedula=cedula).first()
+    if usuario:
+        username = usuario.name
+    else:
+        username = 'Usuario no encontrado'
+    return username
+
+
+
 
 @app.route('/ventas.html')
 @app.route('/ventas')

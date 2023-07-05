@@ -62,27 +62,28 @@ class Trazabilidad(db.Model):
 
 class PlantForm(FlaskForm):
     idplanta = IntegerField('idplanta')
-    raza = StringField('raza')
-    Enraizado = DateTimeLocalField('Enraizado', format='%d/%m %H', validators=[Optional()])
-    Riego = DateTimeLocalField('Riego', format='%d/%m %H', validators=[Optional()])
-    paso1 = DateTimeLocalField('paso1', format='%d/%m %H', validators=[Optional()])
-    paso2 = DateTimeLocalField('paso2', format='%d/%m %H', validators=[Optional()])
-    paso3 = DateTimeLocalField('paso3', format='%d/%m %H', validators=[Optional()])
-    floracion = DateTimeLocalField('floracion', format='%d/%m %H', validators=[Optional()])
-    cosecha = DateTimeLocalField('cosecha', format='%d/%m %H', validators=[Optional()])
+    raza = StringField('raza')    
+    Enraizado = DateTimeLocalField('Enraizado', format='%Y-%m-%dT%H:%M', validators=[Optional()])
+    Riego = DateTimeLocalField('Riego', format='%Y-%m-%dT%H:%M', validators=[Optional()])
+    paso1 = DateTimeLocalField('paso1', format='%Y-%m-%dT%H:%M', validators=[Optional()])
+    paso2 = DateTimeLocalField('paso2', format='%Y-%m-%dT%H:%M', validators=[Optional()])
+    paso3 = DateTimeLocalField('paso3', format='%Y-%m-%dT%H:%M', validators=[Optional()])
+    floracion = DateTimeLocalField('floracion', format='%Y-%m-%dT%H:%M', validators=[Optional()])
+    cosecha = DateTimeLocalField('cosecha', format='%Y-%m-%dT%H:%M', validators=[Optional()])
+
     cantidad = StringField('cantidad')
     observaciones = StringField('observaciones')
 
 class Ventasform(FlaskForm):
-    cedulaVenta = IntegerField('cedulaVenta')
+    cedulaVenta = SelectField('cedulaVenta')
     razaVenta = StringField('razaVenta')
     cantVenta = IntegerField('cantVenta')
-    retiro = DateTimeLocalField('retiro', format='%d/%m %H:%M', validators=[Optional()])
+    retiro = DateTimeLocalField('retiro', format='%Y-%m-%dT%H:%M')
 
 class Ventas(db.Model):
     idventas = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
-    cedula = db.Column(db.Integer, nullable=False)
+    cedula = db.Column(db.String(20), nullable=False)
     raza = db.Column(db.String(30), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
-    retiro = db.Column(db.String(12), default=datetime.now())
+    retiro = db.Column(db.DateTime, default=datetime.now())
     #total_ventas = db.Column(db.Integer, default=0)
