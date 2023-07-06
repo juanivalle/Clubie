@@ -256,8 +256,8 @@
                         <input type="text" name="subject" id="subject" placeholder="Asunto de su consulta" class="campo">
                         <label for="coments">Comentario:</label>
                         <textarea type="coments" name="coments" id="coments" placeholder="Ingresa tu mensaje"></textarea>
-                        <input type="submit" value="Enviar mensaje" class="btn">
-                        <input type="hidden" name="_next" value="http://127.0.0.1:5000/contact.html">
+                        <input type="submit" value="Enviar mensaje" class="btn" id="btnok">
+                        <input type="hidden" name="_next" value="http://127.0.0.1:5000/home.html">
                         <input type="hidden" name="_captcha" value="false">
                     </form>
                 </div>
@@ -316,4 +316,10 @@
         </footer>
     </div>
 </body>
+<script>
+    let btnOk = document.getElementById('btnok');
+    btnOk.addEventListener('click', function() {
+        alert('Mensaje enviado correctamentes');
+    });
+</script>
 </html>

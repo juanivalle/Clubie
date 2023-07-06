@@ -8,7 +8,12 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/miembros.css') }}">
   <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
   <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+  <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
   <title>Control de plantas</title>
+  <style>
+    body {background-color: #111222;}
+    h2{ color: white;}
+  </style>
 </head>
 
 <body>
@@ -16,7 +21,7 @@
 
   {% block body %}
 
-  <div class="col-md-7">
+  <div class="col-md-12">
     <h2>Control de plantas</h2>
       <table id="miembros" class="table table-stripped table-bordered bg-white table-sm">
         <thead>
@@ -32,7 +37,7 @@
             <th>Cosecha</th>
             <th>Cantidad</th>
             <th>Observaciones</th>
-            <th>Operaciones</th>
+            <th style="height: 40px;">Operaciones</th>
           </tr>
         </thead>
         <tbody>
@@ -51,8 +56,8 @@
             <td>{{ trazabilidad.observaciones }}</td>
 
             <td>
-            <a href="/edit/{{trazabilidad.idraza}}" class="btn btn-secondary">Editar</a>
-            <a href="/delete/{{trazabilidad.idraza}}" class="btn btn-danger">X</a>
+              <a href="/edit/{{trazabilidad.idraza}}" class="btn btn-secondary" id="btndit">Editar</a>
+              <a href="/delete/{{trazabilidad.idraza}}" class="btn btn-danger" id="btndlete">X</a>
             </td>
           </tr>
           {% endfor %}
@@ -62,5 +67,20 @@
   </div>
   {% endblock %}
 </body>
+<script>
+  let btnEdit = document.getElementById('btndit');
+  btnEdit.addEventListener('click', function() {
+    alert('Seguro que desea editar el miembro?');
+  });
+
+  let btnDelete = document.getElementById('btndlete');
+  btnDelete.addEventListener('click', function(event) {
+    var confirmation = confirm('¿Estás seguro de que deseas eliminar el miembro?');
+    if (!confirmation) {
+      event.preventDefault();
+      console.log('La eliminación del miembro fue cancelada.');
+    }
+  });
+</script>
 
 </html>

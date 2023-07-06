@@ -58,7 +58,7 @@
                         <td>{{ user.telefono }}</td>
                         <td>{{ user.email }}</td>
                         <td>
-                            <a href="/edit/{{user.cedula}}" class="btn btn-secondary">Editar</a>
+                            <a href="/edit/{{user.cedula}}" class="btn btn-secondary" id="btnedit">Editar</a>
                             <a href="/delete/{{user.cedula}}" class="btn btn-danger" id="btndelete">X</a>
                         </td>
                     </tr>
@@ -73,17 +73,20 @@
             alert('El miembro se cargó correctamente.');
         });
 
+        
+        let btnEdit = document.getElementById('btnedit');
+        btnEdit.addEventListener('click', function() {
+            alert('Seguro que desea editar el miembro?');
+        });
+        
         let btnDelete = document.getElementById('btndelete');
         btnDelete.addEventListener('click', function(event) {
-            event.preventDefault();
             var confirmation = confirm('¿Estás seguro de que deseas eliminar el miembro?');
-            if (confirmation) {
-                window.location.href = btnDelete.getAttribute('href');
-            } else {
+            if (!confirmation) {
+                event.preventDefault();
                 console.log('La eliminación del miembro fue cancelada.');
             }
         });
-
-    </script>
+        </script>
     
     {% endblock %}

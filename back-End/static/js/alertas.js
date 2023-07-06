@@ -7,13 +7,16 @@ btnMiembro.addEventListener('click', function() {
 
 let btnDelete = document.getElementById('btndelete');
 btnDelete.addEventListener('click', function(event) {
-    event.preventDefault();
     var confirmation = confirm('¿Estás seguro de que deseas eliminar el miembro?');
-    if (confirmation) {
-        window.location.href = btnDelete.getAttribute('href');
-    } else {
+    if (!confirmation) {
+        event.preventDefault();
         console.log('La eliminación del miembro fue cancelada.');
     }
+});
+
+let btnEdit = document.getElementById('btnedit');
+btnEdit.addEventListener('click', function() {
+    alert('Seguro que desea editar el miembro?');
 });
 
 //VENTAS
@@ -28,6 +31,30 @@ btnSave.addEventListener('click', function() {
 let btnTrzbld = document.getElementById('btnTrazabilidad');
 btnTrzbld.addEventListener('click', function() {
   alert('Datos actualizados.');
+});
+
+//CONTROL PLANTAS misma funcion que se usa para editar y borrar miembros
+/*
+let btnDelete = document.getElementById('btndelete');
+btnDelete.addEventListener('click', function(event) {
+  var confirmation = confirm('¿Estás seguro de que deseas eliminar el miembro?');
+  if (!confirmation) {
+    event.preventDefault();
+    console.log('La eliminación del miembro fue cancelada.');
+  }
+});
+
+let btnEdit = document.getElementById('btnedit');
+btnEdit.addEventListener('click', function() {
+  alert('Seguro que desea editar el miembro?');
+});
+*/
+
+//HOME - CONTACTOS
+
+let btnOk = document.getElementById('btnok');
+btnOk.addEventListener('click', function() {
+    alert('Mensaje enviado correctamentes');
 });
 
 
