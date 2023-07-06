@@ -122,6 +122,13 @@ def registerplanta():
         return redirect(url_for('trazabilidad'))
     return render_template('/logueado/trazabilidad.html', form=form)
 
+@app.route('/ctrplanta.html')
+@app.route('/plantas')
+def ctrPlantas():
+    form = PlantForm()
+    control = Trazabilidad.query.all()
+    return render_template('/logueado/ctrplanta.html', form=form, control=control)
+
 @app.route('/delete/<idRaza>')
 def delete_planta(idRaza):
     elimplanta = User.query.filter_by(idRaza=idRaza).first()

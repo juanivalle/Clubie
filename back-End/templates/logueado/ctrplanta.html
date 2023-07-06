@@ -24,6 +24,7 @@
             <th>Planta id</th>
             <th>Raza</th>
             <th>Riego</th>
+            <th>Enraizado</th>
             <th>1er trasplante</th>
             <th>2do trasplante</th>
             <th>3er trasplante</th>
@@ -31,10 +32,11 @@
             <th>Cosecha</th>
             <th>Cantidad</th>
             <th>Observaciones</th>
+            <th>Operaciones</th>
           </tr>
         </thead>
         <tbody>
-        {% for user in users %}
+        {% for trazabilidad in control %}
           <tr>
             <td>{{ trazabilidad.idplanta }}</td>
             <td>{{ trazabilidad.raza }}</td>
