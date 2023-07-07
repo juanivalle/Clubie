@@ -273,15 +273,16 @@ ul li {
 
 .card .content .img {
     height: 50%;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
+
 
 .card .content .img img {
     position: relative;
     width: 150px;
-    height: 150px;
+    height: 190px;
     border-radius: 50%;
-    object-fit: cover;
+    object-fit:cover;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
 }
 
@@ -309,7 +310,7 @@ ul li {
 .card h6 {
     font-size: 13px;
     color: #5e2066;
-    margin-top: 50px;
+    margin-top: 48px;
 }
 
 .card p {

@@ -44,6 +44,8 @@ table {
 td, th {
   border: 1px solid rgb(190,190,190);
   padding: 10px 20px;
+  font-size: 12px;
+  
 }
 th {
   background-color: #3C3C3B;
@@ -106,4 +108,21 @@ select, select.form-control {
 
 textarea.form-control{
   height: 50px;
+}
+
+@media (max-height:800px) {
+  td {
+    border: 1px solid rgb(190,190,190);
+    padding: 10px 20px;
+    font-size: 12px;
+    overflow: scroll; 
+  }
+  th {
+    font-size: 12px;
+  }
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 6px;
+  }
+
 }
