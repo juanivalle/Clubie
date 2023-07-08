@@ -63,6 +63,17 @@ def editmiembros():
     usuarios = User.query.all()
     return render_template('/logueado/miembros.html',form=form, users=usuarios)
 
+#Funcion que verifica si la cedula esta repetida.
+@app.route('/cedula', methods=['POST'])
+def verificar_cedula():
+    cedula = request.form.get('cedula')
+
+    user = User.query.filter_by(cedula=cedula).first()
+    existe_cedula = user is not None
+
+    response = {'existe': existe_cedula}
+    return jsonify(response)
+
 # FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB // FUNCIONA
 @app.route('/delete/<cedula>')
 def delete_socio(cedula):

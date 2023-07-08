@@ -14,7 +14,7 @@
         <div class="col-md-5">
             <div class="card card-body">
                 <h2>Nuevo Miembro</h2>
-                <form action="/registerform" method="POST" autocomplete="off">
+                <form action="/registerform" method="POST" autocomplete="off" id="miembroForm">
                     {{ form.csrf_token }}
                     <div class="form-group">
                         <label for="txtName">Nombre Completo:</label>
@@ -69,8 +69,35 @@
     </div>
     <script>
         let btnMiembro = document.getElementById('btnmiembro');
-        btnMiembro.addEventListener('click', function() {
-            alert('El miembro se cargó correctamente.');
+        btnMiembro.addEventListener('click', function(event) {
+            event.preventDefault(); // Evitar el envío automático del formulario
+
+            let form = document.getElementById('miembroForm');
+            let formData = new FormData(form);
+
+            // Crear una solicitud XMLHttpRequest
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', '/cedula'); // Ruta en tu servidor para verificar la cédula
+
+            // Configurar el controlador de eventos para la respuesta de la solicitud
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    let response = JSON.parse(xhr.responseText);
+                    if (response.existe) {
+                        // La cédula ya existe, mostrar una alerta de error
+                        alert('El miembro con la cédula ingresada ya está registrado.');
+                    } else {
+                        // El miembro no existe, enviar el formulario para cargar el miembro
+                        form.submit();
+                    }
+                } else {
+                    // Error al realizar la solicitud AJAX, mostrar una alerta de error genérica
+                    alert('Se produjo un error al verificar la cédula.');
+                }
+            };
+
+            // Enviar la solicitud con los datos del formulario en el cuerpo como datos del formulario
+            xhr.send(formData);
         });
 
         
