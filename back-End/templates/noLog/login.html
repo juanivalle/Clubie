@@ -31,20 +31,14 @@
         <div class="login-box">
             <img class="avatar" src="../../static/media/Logo-verde.png" alt="logo">
             <h1>Ingresar</h1>
-            <form class="formulario" action="/loginform" method="POST">
-                {{ form.csrf_token }}
-                <label for="username">Username</label>
-                <input type="text" id="username" placeholder="Ingresar Username">
-
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" placeholder="Ingresar Contraseña"> 
-                <a href="miembros.html"><button>freeCodeCamp</button></a>                
-                <a href="#">Olvide mi Contraseña </a><br>
-                <a href="#">No tengo cuenta, <b>Contactanos</b></a>
-                
-                <div id="alerta" class="alerta oculto">
-                    <span class="mensaje">registro con exito!</span>
-                </div>
+            <form action="../miembros.html">
+                <label for="username">Nombre de usuario:</label>
+                <input type="text" id="username" name="username" required><br><br>
+        
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required><br><br>
+        
+                <input type="submit" value="Log in">
             </form>
         </div>
         <script>
