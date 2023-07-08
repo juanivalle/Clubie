@@ -136,7 +136,7 @@ def delete_planta(idRaza):
     if elimplanta:
         db.session.delete(elimplanta)
         db.session.commit()
-  
+
     return redirect(url_for('homeplantcreo'))
 
 ##########################################################################################################################################
@@ -238,7 +238,7 @@ def obDatosU():
 #     return render_template('/noLog/contact.html')
 
 
-@app.route('/login.html')
+@app.route('/login.html', methods=['POST', 'GET'])
 def login():
     form = LoginForm
     return render_template('/noLog/login.html', form=form)
