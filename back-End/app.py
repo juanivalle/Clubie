@@ -21,13 +21,6 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
-@app.route('/')
-@app.route('/edit/home.html')
-def editindex():
-    usuarios = User.query.all()
-    return render_template("/noLog/home.html", usuarios=usuarios)
-
-
 @app.route('/registerform', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
@@ -57,11 +50,7 @@ def miembros():
     usuarios = User.query.all()
     return render_template('/logueado/miembros.html',form=form, users=usuarios)
 
-@app.route('/edit/miembros.html')
-def editmiembros():
-    form = RegistrationForm()
-    usuarios = User.query.all()
-    return render_template('/logueado/miembros.html',form=form, users=usuarios)
+
 
 #Funcion que verifica si la cedula esta repetida.
 @app.route('/cedula', methods=['POST'])
@@ -137,18 +126,42 @@ def registerplanta():
 @app.route('/plantas')
 def ctrPlantas():
     form = PlantForm()
-    control = Trazabilidad.query.all()
-    return render_template('/logueado/ctrplanta.html', form=form, control=control)
+    planta = Trazabilidad.query.all()
+    return render_template('/logueado/ctrplanta.html', form=form, planta=planta)
 
-@app.route('/delete/<idRaza>')
-def delete_planta(idRaza):
-    elimplanta = User.query.filter_by(idRaza=idRaza).first()
+@app.route('/editplanta/<idplanta>', methods=['GET', 'POST'])
+#@login_required
+def editar_planta(idplanta):
+    form = Trazabilidad()
+    planta = User.query.get_or_404(idplanta)
+
+    if form.validate_on_submit():
+        planta.raza = form.raza.data
+        planta.Enraizado = form.Enraizado.data
+        planta.Riego = form.Riego.data
+        planta.paso1 = form.paso1.data
+        planta.paso2 = form.paso2.data
+        planta.paso3 = form.paso3.data
+        planta.floracion = form.floracion.data
+        planta.cosecha = form.cosecha.data
+        planta.cantidad = int(form.cantidad.data.replace(',', ''))
+        planta.observaciones = form.observaciones.data
+        db.session.commit()
+        return redirect(url_for('plantas'))
+
+    form = Trazabilidad(obj=planta)
+    return render_template('/logueado/edit_planta.html', form=form, planta=planta)
+
+@app.route('/deleteplanta/<idplanta>')
+def delete_planta(idplanta):
+    elplant = Trazabilidad.query.filter_by(idplanta=idplanta).first()
   
-    if elimplanta:
-        db.session.delete(elimplanta)
+    if elplant:
+        db.session.delete(elplant)
         db.session.commit()
 
-    return redirect(url_for('ctrplanta.html'))
+    return redirect(url_for('ctrplanta'))
+
 
 ##########################################################################################################################################
 @app.route('/registerventas', methods=['GET', 'POST'])
@@ -225,55 +238,12 @@ def obDatosU():
     return jsonify(ventas_data)
 
 # #############################################################################################################################################
-# def obtenemos():
-#     atos = db.session.query(Ventas.idventas, User.cedula, Trazabilidad.raza, Ventas.cantidad, Ventas.retiro).join(User).join(Trazabilidad).all()
-#     datos_dict = [{'idventas': ato.idventas, 'cedula': ato.cedula, 'raza': ato.raza, 'cantidad': ato.cantidad, 'retiro': ato.retiro,} for ato in atos]
-#     return datos_dict
-
-
-
-# @app.route('/datos')
-# def mostrar_datos():
-#     datos = obtenemos()
-#     return render_template('ventas.html', datos=datos)
-
 # ##############################################################################################################################################
-
-
-
-
-
-
-# @app.route('/contact.html')
-# def contact():
-#     return render_template('/noLog/contact.html')
-
 
 @app.route('/login.html', methods=['POST', 'GET'])
 def login():
     
     return render_template('/noLog/login.html')
-
-
-# @app.route('/nosotros.html')
-# def nosotros():
-#     return render_template('/noLog/nosotros.html')
-
-# @app.route('/equipo.html')
-# def equipo():
-#     return render_template('/noLog/equipo.html')
-
-# @app.route('/road-map.html')
-# def roadMap():
-#     return render_template('/noLog/road-map.html')
-
-# @app.route('/home-club.html')
-# def home_club():
-#     return render_template('/logueado/home-club.html')
-
-
-
-
 
 
 @app.route('/trazabilidad.html')
@@ -288,74 +258,6 @@ def ctrplanta():
 @app.route('/graficos.html')
 def graficos():
     return render_template('/logueado/graficos.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Es importante tener en cuenta que, para que el formulario se muestre correctamente en la vista, es necesario
-# renderizarlo usando una plantilla de Jinja2 y agregar el atributo enctype="multipart/form-data" al formulario para permitir la carga de archivos.
-
-
-# @app.route('/register', methods=['GET', 'POST'])
-# def clubes():
-#     form = ClubForm()
-
-#     if form.validate_on_submit():
-
-#       # procesa el formulario y guarda los datos en la base de datos
-
-#         # Si todo va bien, redirige a otra página que seria la del registro del club como puede ser el login
-#         return redirect(url_for('otra_pagina'))
-
-#     # Si hay algún error en la validación del formulario, muestra una SweetAlert como la de arriba
-#     errors = form.errors.items()
-#     if errors:
-#         response = jsonify({'message': 'El usuario ya existe'})
-#         response.headers['Fail-SweetAlert'] = 'error'
-#         return render_template('clubes.html', form=form)
-
-
-
-# @app.route('/loginform', methods=['GET', 'POST'])
-# def login():
-#     form = LoginForm()
-#     if form.validate_on_submit():
-#         nombre = request.form['nombre']  # Obtiene el valor del campo "nombre"
-#     edad = request.form['edad'] 
-
-#     if request.method == 'POST':
-#         print(request.form['username'])
-#         print(request.form['password'])
-#         return render_template('login.html')
-#     else:
-#         return render_template('login.html')
 
 
 if __name__ == '__main__':

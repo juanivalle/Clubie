@@ -41,23 +41,23 @@
           </tr>
         </thead>
         <tbody>
-        {% for trazabilidad in control %}
+        {% for planta in planta %}
           <tr>
-            <td>{{ trazabilidad.idplanta }}</td>
-            <td>{{ trazabilidad.raza }}</td>
-            <td>{{ trazabilidad.Riego }}</td>
-            <td>{{ trazabilidad.Enraizado }}</td>
-            <td>{{ trazabilidad.paso1 }}</td>
-            <td>{{ trazabilidad.paso2 }}</td>
-            <td>{{ trazabilidad.paso3 }}</td>
-            <td>{{ trazabilidad.floracion }}</td>
-            <td>{{ trazabilidad.cosecha }}</td>
-            <td>{{ trazabilidad.cantidad }}</td>
-            <td>{{ trazabilidad.observaciones }}</td>
+            <td>{{ planta.idplanta }}</td>
+            <td>{{ planta.raza }}</td>
+            <td>{{ planta.Riego }}</td>
+            <td>{{ planta.Enraizado }}</td>
+            <td>{{ planta.paso1 }}</td>
+            <td>{{ planta.paso2 }}</td>
+            <td>{{ planta.paso3 }}</td>
+            <td>{{ planta.floracion }}</td>
+            <td>{{ planta.cosecha }}</td>
+            <td>{{ planta.cantidad }}</td>
+            <td>{{ planta.observaciones }}</td>
 
             <td>
-              <a href="/edit/{{trazabilidad.idraza}}" class="btn btn-secondary" id="btndit">Editar</a>
-              <a href="/delete/{{trazabilidad.idraza}}" class="btn btn-danger" id="btndlete">X</a>
+              <a href="/editplanta/{{planta.idplanta}}" class="btn btn-secondary" id="btndit">Editar</a>
+              <a href="/deleteplanta/{{planta.idplanta}}" class="btn btn-danger" id="btndlete">Borrar</a>
             </td>
           </tr>
           {% endfor %}
