@@ -818,8 +818,8 @@ color: #3F71EA;
 
 @media screen and (max-width: 768px) {
   #title-road {
-    margin-top: 90vh;
-    margin-bottom: 12%;
+    margin-top: 105vh;
+    margin-bottom: 16%;
   }
   .contenido-map {
     flex-direction: column;
@@ -828,7 +828,7 @@ color: #3F71EA;
     margin-top: 5%;
   }
   .sec-5 .contenido-map {
-    margin-bottom: 10vh;
+    margin-bottom: 2vh;
   }
   .imagen-map,
   .imagen-map-2 {
@@ -969,17 +969,15 @@ textarea {
 }
 
 #home {
-  padding-top: 80px;
+  justify-content: center;
 }
 .logo-movil {
   position: absolute;
-  top: 25vh;
-  left: 23vw;
-
+  margin-top: 20vh;
+  
 }
 
 .home .video img {
-  max-width: 100%;
   height: 100vh;
 }
 
