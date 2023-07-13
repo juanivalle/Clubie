@@ -148,7 +148,7 @@ def delete_planta(idRaza):
         db.session.delete(elimplanta)
         db.session.commit()
 
-    return redirect(url_for('homeplantcreo'))
+    return redirect(url_for('ctrplanta.html'))
 
 ##########################################################################################################################################
 @app.route('/registerventas', methods=['GET', 'POST'])
