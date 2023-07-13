@@ -992,10 +992,11 @@ footer {
     position: relative;
     display: flex;
     flex-wrap: nowrap;
-    justify-content: start;
-    gap: 20px;
-    margin: 0 auto;
+    justify-content: flex-start;
+    gap: 35px;
+    margin: 10vw auto;
     overflow: scroll;
+    scroll-snap-type: x mandatory;
   }
   .equipo::-webkit-scrollbar-thumb {
     background-color: transparent;
@@ -1007,6 +1008,7 @@ footer {
   
   .card  {
     position: relative;
+    justify-content: center;
     flex: 1 0 auto;
     width: 20%;
     min-width: 250px;
@@ -1016,6 +1018,7 @@ footer {
     cursor: default;
     transition: all 400ms ease;
     height: 50vh;
+    scroll-snap-align: start;
   }
   
   .card:hover {
@@ -1098,33 +1101,33 @@ footer {
     right: 10px;
     top: 15px;
     transition: .5s;
-  }
-  
-  .card:hover .links-iconos {
+}
+
+.card:hover .links-iconos {
     right: -50px;
     border-radius: 0 10px 10px 0;
-  }
-  
-  .card .links-iconos a {
+}
+
+
+.card .links-iconos a {
     font-size: 20px;
     color: #646069;
-  }
-  
-  .card .links-iconos a:nth-child(1):hover {
+}
+
+.card .links-iconos a:nth-child(1):hover {
     color: #0158ca;
-  }
-  
-  .card .links-iconos a:nth-child(2):hover {
+}
+.card .links-iconos a:nth-child(2):hover {
     color: #1C93E4;
-  }
-  
-  .card .links-iconos a:nth-child(3):hover {
+}
+
+.card .links-iconos a:nth-child(3):hover {
     color: #5D277D;
-  }
-  
-  .card .links-iconos a:nth-child(4):hover {
+}
+
+.card .links-iconos a:nth-child(4):hover {
     color: #FE0000;
-  }
+}
 
   #title-contacto {
     margin-top: 80px;
