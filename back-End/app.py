@@ -206,6 +206,14 @@ def ventas():
     ventas = Ventas.query.all()
     return render_template('/logueado/ventas.html', form=form, ventas=ventas)
 
+@app.route('/delete/<int:idventas>')
+def eliminar_venta(idventas):
+    venta = Ventas.query.filter_by(idventas=idventas).first()
+    if venta:
+        db.session.delete(venta)
+        db.session.commit()
+        return redirect(url_for('ventas'))
+
 # #######################################
 # #########################################################################################################################################################
 

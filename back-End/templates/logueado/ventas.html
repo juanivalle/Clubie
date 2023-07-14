@@ -28,6 +28,7 @@
             <th>Raza</th>
             <th>Cantidad</th>
             <th>Retiro</th>
+            <th>Operación</th>
             <!-- <th>Operaciones</th> -->
           </tr>
         </thead>
@@ -41,10 +42,10 @@
             <td>{{ venta.raza }}</td>
             <td>{{ venta.cantidad }}</td>
             <td>{{ venta.retiro.strftime('%Y-%m-%dT%H:%M') }}</td>
-            <!-- <td>
-              <a href="/edit/{{venta.idventas}}" class="btn btn-secondary">Edit</a>
+            <td>
+              <!-- <a href="/edit/{{venta.idventas}}" class="btn btn-secondary">Edit</a> -->
               <a href="/delete/{{venta.idventas}}" class="btn btn-danger">Delete</a>
-            </td> -->
+            </td>
           </tr>
           {% endfor %}
         </tbody>
