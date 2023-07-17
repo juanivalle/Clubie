@@ -69,12 +69,18 @@ El sitio web incluye las siguientes funcionalidades:
 ## Dependencias
 Asegúrate de tener los siguientes requisitos instalados en tu entorno de desarrollo:
 ````
-- Python 3.x
-- Flask
-- Flask-WTF
-- Flask-Login
-- Flask-Bcrypt
-- SQLAlchemy
+- Flask                2.2.3
+- Flask-Bcrypt         1.0.1
+- Flask-Cors           4.0.0
+- Flask-Login          0.6.2
+- Flask-Migrate        4.0.4
+- Flask-SQLAlchemy     3.0.3
+- Flask-WTF            1.1.1
+- Jinja2               3.1.2
+- SQLAlchemy           2.0.9
+- sqlparse             0.4.4
+- WTForms              3.0.1
+- bcrypt               4.0.1
 ````
 [Back to the top](#clubie)
 
