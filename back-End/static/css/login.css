@@ -70,7 +70,7 @@ body {
     font-size: 16px;
 }
 
-.login-box input[type="submit"]{
+.login-box input[type="button"]{
     border: none;
     outline: none;
     height: 40px;
@@ -119,7 +119,7 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    z-index: 100;
+    
     background-color: rgba(0, 0, 0, 0.8);
 }
 
@@ -178,182 +178,143 @@ ul li {
     color: #333;
 
 }
+.popup {
+  display: none;
+  position: absolute;
+  text-align: center;
+  left: 50%;
+  top: -10vh;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  padding: 20px;
+  background-color: #2a2b49;
+  color: #0FE6A1;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  z-index: 200;
+}
+.popup button {
+  border: none;
+  outline: none;
+  height: 40px;
+  width: 5vw;
+  background: #0FE6A1;
+  color: #000;
+  font-weight: bold;
+  font-size: 15px;
+  border-radius: 20px;
+}
+@media screen and (max-width: 1200px) {
+  header {
+    padding: 30px 5%;
+  }
+  
+  .nav-links {
+    display: none;
+  }
 
-footer {
-    bottom: 0;
-    margin-top: 10vh;
-    overflow:hidden;
-    font-family: "Roboto", sans-serif;
-    position: fixed;
-    height: 23.4vh;
+  .popup button {
+    width: 15vw;
+    z-index: 200;
   }
-  
-  @media (max-height:800px) {
-    footer {
-        position: absolute;
-        bottom: 0;
-        height: 25vh;
-    }
+  .login-box {
+    padding: 20px;
   }
-  
-  .footer-distributed {
-    background-color: #2d2a30;
+  .opciones {
+    display: none;
+  }
+  .login-box {
+    width: 80%;
+    max-width: 80%;
+    height: auto;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 5px 5px 20px rgba(169, 151, 237, 0.5);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     box-sizing: border-box;
-    width: 100%;
-    text-align: left;
-    font: bold 16px sans-serif;
-    padding: 50px 50px 60px 50px;
-    margin-top: 80px;
+    padding: 40px 20px; /* Ajusta el padding vertical en dispositivos móviles */
   }
   
-  .footer-distributed .footer-left, .footer-distributed .footer-center, .footer-distributed .footer-right {
-    display: inline-block;
-    vertical-align: top;
-    margin-top: -20px;
-  }
-  
-  /* Footer left */
-  
-  .footer-distributed .footer-left {
-    width: 30%;
-  }
-  
-  .footer-distributed h3 {
-    color: #ffffff;
-    font: normal 36px "Roboto", sans-serif;
-    margin: 0;
-  }
-  
-  
-  .footer-distributed h3 span {
-    color: #e0ac1c;
-  }
-  
-  /* Footer links */
-  
-  .footer-distributed .footer-links {
-    color: #ffffff;
-    margin: 20px 0 12px;
-  }
-  
-  .footer-distributed .footer-links a {
-    display: inline-block;
-    line-height: 1.8;
-    text-decoration: none;
-    color: inherit;
-  }
-  .footer-icons a i {
-    margin-top: 7.5px;
-  }
-  
-  .footer-distributed .footer-company-name {
-    color: #8f9296;
-    font-size: 14px;
-    font-weight: normal;
-    margin: 0;
-  }
-  
-  /* Footer Center */
-  
-  .footer-distributed .footer-center {
-    width: 35%;
-  }
-  
-  .footer-distributed .footer-center i {
-    background-color: #33383b;
-    color: #ffffff;
-    font-size: 25px;
-    width: 38px;
-    height: 38px;
+  .login-box .avatar {
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
+    position: absolute;
+    top: -8vh;
+    left: calc(50% - 50px);
+    box-shadow: 5px 5px 20px rgba(169, 151, 237, 0.5);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 1) 22%, rgba(17, 18, 34, 1) 50%, rgba(20, 21, 29, 1) 77%, rgba(17, 18, 34, 1) 100%);
+  }
+  
+  .login-box h1 {
+    margin: 0;
+    padding: 0 0 20px;
     text-align: center;
-    line-height: 42px;
-    margin: 10px 15px;
-    vertical-align: middle;
+    font-size: 22px;
   }
   
-  .footer-distributed .footer-center i.fa-envelope {
-    font-size: 17px;
-    line-height: 38px;
-  }
-  
-  .footer-distributed .footer-center p {
-    display: inline-block;
-    color: #ffffff;
-    vertical-align: middle;
+  .login-box label {
     margin: 0;
-  }
-  
-  .footer-distributed .footer-center p span {
-    display: block;
-    font-weight: normal;
-    font-size: 14px;
-    line-height: 2;
-  }
-  
-  .footer-distributed .footer-center p a {
-    color: #e0ac1c;
-    text-decoration: none;
-    ;
-  }
-  
-  /* Footer Right */
-  
-  .footer-distributed .footer-right {
-    width: 30%;
-  }
-  
-  .footer-distributed .footer-company-about {
-    line-height: 20px;
-    color: #92999f;
-    font-size: 13px;
-    font-weight: normal;
-    margin: 0;
-  }
-  
-  .footer-distributed .footer-company-about span {
-    display: block;
-    color: #ffffff;
-    font-size: 18px;
+    padding: 0;
     font-weight: bold;
+    display: block;
+  }
+  
+  .login-box input {
+    width: 100%;
     margin-bottom: 20px;
   }
   
-  .footer-distributed .footer-icons {
-    margin-top: 25px;
+  .login-box input[type="text"],
+  .login-box input[type="password"] {
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
   }
   
-  .footer-distributed .footer-icons a {
-    display: inline-block;
-    width: 35px;
-    height: 35px;
-    cursor: pointer;
-    background-color: #33383b;
-    border-radius: 2px;
-    font-size: 20px;
-    color: #ffffff;
+  .login-box input[type="submit"] {
+    border: none;
+    outline: none;
+    height: 40px;
+    background: #0FE6A1;
+    color: #000;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 20px;
+  }
+  
+  .alerta {
+    background-color: #0fe6a2dd;
+    color: #000;
+    padding: 10px;
+    border: 1px solid #0fe6a2dd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    margin-top: 25%;
     text-align: center;
-    line-height: 35px;
-    margin-right: 3px;
-    margin-bottom: 5px;
   }
   
-  .footer-distributed .footer-icons a:hover {
-    background-color: #3F71EA;
+  .oculto {
+    display: none;
   }
   
-  .footer-links a:hover {
-    color: #3F71EA;
+  .mensaje {
+    font-weight: bold;
   }
   
-  @media (max-width: 880px) {
-    .footer-distributed .footer-left, .footer-distributed .footer-center, .footer-distributed .footer-right {
-        display: block;
-        width: 100%;
-        margin-bottom: 40px;
-        text-align: center;
-    }
-    .footer-distributed .footer-center i {
-        margin-left: 0;
-    }
-  }       
+  .login-box a {
+    text-decoration: none;
+    font-size: 12px;
+    color: rgb(136, 129, 129);
+  }
+  
+  .login-box a:hover {
+    color: #fff;
+  }
+}
+
