@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graficos</title>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300" rel="stylesheet"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/graficos.css') }}">
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+    <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+</head>
+    <header class="header">
+        <div class="logo"><a href="home.html"><img src="{{ url_for('static', filename='media/editado.png') }}" alt="Logo de marca"></a></div>
+        <nav class="opcion">
+            <ul class="nav-links">
+                <li><a href="miembros.html">Miembros<span></span></a></li>
+                <li><a href="ventas.html">Ventas<span></span></a></li>
+                <li><a href="trazabilidad.html">Trazabildiad<span></span></a></li>
+                <li><a href="ctrplanta.html">Control de plantas<span></span></a></li>
+                <li><a href="graficos.html">Graficos<span></span></a>
+            </ul>
+        </nav>
+        </div>
+    </header>
+    <main>
+
+        <h1>Informacion de la empresa</h1>
+        <p>Visualización de estadísticas</p>
+
+        <hr>
+
+        <section class="cols-2">
+
+            <figure>
+                <h2>Comparativa ventas segun razas</h2>
+                <canvas id="modelsChart" height="650px"></canvas>
+            </figure>
+
+            <!--<figure>
+                <h2>Comparativa de características:
+                    <select id="featuresOptions">
+                        <option value="height">Altura (m)</option>
+                        <option value="length">Longitud (m)</option>
+                        <option value="speed">Velocidad (km/h)</option>
+                    </select>
+                </h2>
+                <canvas id="featuresChart"></canvas>
+            </figure>-->
+
+        </section>
+
+        <section class="cols-1">
+            <figure>
+                <h2>Ventas por año</h2>
+                <canvas id="yearsChart" height="300px"></canvas>
+            </figure>
+        </section>
+
+    </main>
+    <footer id="myFooter" class="footer-distributed">
+
+        <div class="footer-left">
+            <h3>Clubie</h3>
+
+            <p class="footer-links">
+                <a href="#">Home</a>
+                |
+                <a href="#">Nosotros</a>
+                |
+                <a href="#">Equipo</a>
+                |
+                <a href="#">Contacto</a>
+            </p>
+
+            <p class="footer-company-name">Copyright © 2023 <strong>Clubie</strong> All rights reserved</p>
+        </div>
+
+        <div class="footer-center">
+            <div>
+                <i class="fa fa-map-marker"></i>
+                <p><span>Zonamerica</span>
+                    Montevideo</p>
+            </div>
+
+            <div>
+                <i class="fa fa-phone"></i>
+                <p>Numero de telefono</p>
+            </div>
+            <div>
+                <i class="fa fa-envelope"></i>
+                <p><a href="adm.clubie@gmail.com">adm.clubie@gmail.com</a></p>
+            </div>
+        </div>
+        <div class="footer-right">
+            <p class="footer-company-about">
+                <span>Sobre nosotros</span>
+                <strong>Clubie</strong>
+            </p>
+            <div class="footer-icons">
+                <a href="#"><i class="fa fa-facebook"></i></a>
+                <a href="#"><i class="fa fa-instagram"></i></a>
+                <a href="#"><i class="fa fa-linkedin"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="../../static/js/handlers.js"></script>
+    <script src="../../static/js/helpers.js"></script>
+    <script src="../../static/js/grafico.js"></script>
+</html>

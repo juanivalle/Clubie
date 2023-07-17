@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Frontend-Ex"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "GGP"
+	}
+}

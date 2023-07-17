@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+</head>
+
+
+<header class="header">
+    <div class="logo"><a href="home.html"><img src="{{ url_for('static', filename='media/editado.png') }}" alt="Logo de marca"></a></div>
+    <nav class="opcion">
+        <ul class="nav-links">
+            <li><a href="miembros.html">Miembros<span></span></a></li>
+            <li><a href="ventas.html">Ventas<span></span></a></li>
+            <li><a href="trazabilidad.html">Trazabildiad<span></span></a></li>
+            <li><a href="ctrplanta.html">Control de plantas<span></span></a></li>
+            <li><a href="graficos.html">Graficos<span></span></a>
+        </ul>
+    </nav>
+    </div>
+</header>
+
+<body>
+    <div class="p-5">
+        {% block body %}
+
+        {% endblock %}
+    </div>
+</body>
+
+</html>

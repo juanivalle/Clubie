@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/miembros.css') }}">
+  <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+  <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+  <title>Ventas</title>
+</head>
+
+<body>
+  {% extends 'base-log.html'%}
+
+  {% block body %}
+
+  <div class="row">
+    <div class="col-md-7">
+      <h2>Ventas</h2>
+      <table>
+        <thead class="table table-stripped table-bordered bg-white table-sm">
+          <tr>
+            <th>ID Venta</th>
+            <th>Cédula</th>
+            <th>Raza</th>
+            <th>Cantidad</th>
+            <th>Retiro</th>
+            <th>Operación</th>
+            <!-- <th>Operaciones</th> -->
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- LA TABLA DE ABAJO ES PARA MOSTRAR LAS VENTAS-->
+          {% for venta in ventas %}
+          <tr>
+            <td>{{ venta.idventas }}</td>
+            <td>{{ venta.cedula }}</td>
+            <td>{{ venta.raza }}</td>
+            <td>{{ venta.cantidad }}</td>
+            <td>{{ venta.retiro.strftime('%Y-%m-%dT%H:%M') }}</td>
+            <td>
+              <!-- <a href="/edit/{{venta.idventas}}" class="btn btn-secondary">Edit</a> -->
+              <a href="/delete/{{venta.idventas}}" class="btn btn-danger">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-md-5">
+      <div class="card card-body">
+        <h2>Nueva Venta</h2>
+        <form action="/registerventas" method="POST" autocomplete="off">
+          {{ form.csrf_token }}
+          <div class="form-group">
+            <label>Cédula</label>
+            <input id="txtCi" type="text" name="cedulaVenta" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Nombre de Usuario</label>
+            <p id="username-display"></p>
+          </div>
+          <div class="form-group">
+            <label for="razaVenta">Raza:</label>
+            <input type="text" name="razaVenta" id="razaVenta" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="cantidad">Cantidad:</label>
+            <input type="number" name="cantVenta" id="cantidad" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Fecha de Retiro</label>
+            <input id="fechaVenta" type="datetime-local" name="retiro" class="form-control">
+          </div>
+          <div class="form-group">
+            <input type="submit" value="Guardar Venta" class="btn btn-primary btn-block" id="btnsave">
+          </div>
+        </form>
+        
+        <script>
+        // JavaScript (lado del cliente)
+        
+        // Obtener una referencia al campo "Cédula" y al elemento que muestra el nombre del usuario
+        let cedulaField = document.querySelector('#txtCi');
+        let usernameDisplay = document.querySelector('#username-display');
+        
+        // Agregar un controlador de eventos para detectar cuando el valor del campo "Cédula" cambia
+        cedulaField.addEventListener('input', function() {
+          // Obtener el valor actual del campo "Cédula"
+          let cedula = cedulaField.value;
+        
+          // Enviar una solicitud AJAX al servidor para obtener el nombre del usuario asociado a la cédula ingresada
+          fetch('/get-username?cedula=' + cedula)
+            .then(response => response.text())
+            .then(username => {
+              // Actualizar el contenido del elemento que muestra el nombre del usuario con el valor obtenido
+              usernameDisplay.textContent = username;
+            });
+        });
+        </script>
+        
+      </div>
+    </div>
+
+  </div>
+  <script>
+    let btnSave = document.getElementById('btnsave');
+    btnSave.addEventListener('click', function () {
+      alert('La venta se cargó correctamente.');
+    });
+  </script>
+  {% endblock %}
+</body>
+
+</html>
