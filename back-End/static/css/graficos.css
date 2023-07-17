@@ -75,7 +75,7 @@ footer {
     position: static;
   }
   
-  @media (max-height:800px) {
+  @media (max-height:880px) {
     footer {
         position: relative;
         bottom: 0;
@@ -312,7 +312,7 @@ ul li {
 
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1200px) {
     header {
         padding: 20px;
     }
@@ -360,7 +360,7 @@ ul li {
   ::-webkit-scrollbar-thumb:hover {
     background-color: #555;
   }
-@media  (max-width: 800px) {
+@media  (max-width: 1200px) {
 
     main {
         padding: 0;
