@@ -41,5 +41,30 @@ def create_app(config_object: str | None = None) -> Flask:
     def _create_tables_if_needed():
         db.create_all()
 
+    @app.cli.command('create-admin')
+    def create_admin():
+        from models import User
+        import os
+        admin_email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'admin1234')
+        admin_cedula = int(os.environ.get('ADMIN_CEDULA', '1'))
+        admin_name = os.environ.get('ADMIN_NAME', 'Admin')
+        admin_phone = os.environ.get('ADMIN_PHONE', '000000')
+        user = User.query.filter_by(email=admin_email).first()
+        if not user:
+            user = User(
+                cedula=admin_cedula,
+                name=admin_name,
+                telefono=admin_phone,
+                email=admin_email,
+                is_admin=True,
+            )
+            user.set_password(admin_password)
+            db.session.add(user)
+            db.session.commit()
+            print('Admin creado:', admin_email)
+        else:
+            print('Admin ya existe:', admin_email)
+
     return app
 

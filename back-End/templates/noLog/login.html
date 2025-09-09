@@ -40,4 +40,20 @@
                 {{ form.password(id='password') }}
                 {{ form.submit() }}
             </form>
+            <hr>
+            <h3>Crear cuenta</h3>
+            <form method="POST" action="{{ url_for('auth.register') }}">
+                {{ form.csrf_token }}
+                <label for="name">Nombre:</label>
+                <input type="text" name="name" id="name">
+                <label for="cedula">Cédula:</label>
+                <input type="number" name="cedula" id="cedula">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" name="telefono" id="telefono">
+                <label for="email_reg">Email:</label>
+                <input type="email" name="email" id="email_reg">
+                <label for="password_reg">Contraseña:</label>
+                <input type="password" name="password" id="password_reg">
+                <button type="submit">Registrarse</button>
+            </form>
     </body>

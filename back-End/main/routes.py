@@ -112,6 +112,12 @@ def ctrPlantas():
     return render_template('logueado/ctrplanta.html', form=form, planta=planta)
 
 
+@bp.route('/graficos.html')
+@login_required
+def graficos():
+    return render_template('logueado/graficos.html')
+
+
 @bp.route('/editplanta/<int:planta_id>', methods=['GET', 'POST'])
 @login_required
 def editar_planta(planta_id: int):

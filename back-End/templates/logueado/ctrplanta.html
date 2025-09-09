@@ -43,7 +43,7 @@
         <tbody>
         {% for planta in planta %}
           <tr>
-            <td>{{ planta.idplanta }}</td>
+            <td>{{ planta.id }}</td>
             <td>{{ planta.raza }}</td>
             <td>{{ planta.Riego }}</td>
             <td>{{ planta.Enraizado }}</td>
@@ -56,8 +56,11 @@
             <td>{{ planta.observaciones }}</td>
 
             <td>
-              <a href="/editplanta/{{planta.idplanta}}" class="btn btn-secondary" id="btndit">Editar</a>
-              <a href="/deleteplanta/{{planta.idplanta}}" class="btn btn-danger" id="btndlete">Borrar</a>
+              <a href="/editplanta/{{planta.id}}" class="btn btn-secondary" id="btndit">Editar</a>
+              <form method="POST" action="/deleteplanta/{{planta.id}}" style="display:inline;">
+                {{ form.csrf_token }}
+                <button type="submit" class="btn btn-danger" id="btndlete">Borrar</button>
+              </form>
             </td>
           </tr>
           {% endfor %}
