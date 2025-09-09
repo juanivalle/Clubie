@@ -59,7 +59,10 @@
                         <td>{{ user.email }}</td>
                         <td>
                             <a href="/edit/{{user.cedula}}" class="btn btn-secondary" id="btnedit">Editar</a>
-                            <a href="/delete/{{user.cedula}}" class="btn btn-danger" id="btndelete">X</a>
+                            <form method="POST" action="/delete/{{user.cedula}}" style="display:inline;">
+                                {{ form.csrf_token }}
+                                <button type="submit" class="btn btn-danger" id="btndelete">X</button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}
