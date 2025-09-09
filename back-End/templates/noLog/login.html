@@ -32,33 +32,28 @@
         <div class="login-box">
             <img class="avatar" src="../../static/media/Logo-verde.png" alt="logo">
             <h1>Ingresar</h1>
-            <form>
-                <label for="username">Nombre de usuario:</label>
-                <input type="text" id="username" name="username" required><br><br>
-            
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                {{ form.csrf_token }}
+                <label for="email">Email:</label>
+                {{ form.email(id='email') }}
                 <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required><br><br>
-            
-                <input type="button" value="Log in" onclick="mostrarPopup()">
-              </form>
-            
-              <div id="popup" class="popup">
-                <h2>¡Usuario incorrecto!</h2>
-                <p>Por favor, verifica tus credenciales.</p>
-                <button onclick="cerrarPopup()">Cerrar</button>
-              </div>
-            
-              <script>
-                // Función para mostrar el popup
-                function mostrarPopup() {
-                  var popup = document.getElementById("popup");
-                  popup.style.display = "block";
-                }
-            
-                // Función para cerrar el popup
-                function cerrarPopup() {
-                  var popup = document.getElementById("popup");
-                  popup.style.display = "none";
-                }
-              </script>
+                {{ form.password(id='password') }}
+                {{ form.submit() }}
+            </form>
+            <hr>
+            <h3>Crear cuenta</h3>
+            <form method="POST" action="{{ url_for('auth.register') }}">
+                {{ form.csrf_token }}
+                <label for="name">Nombre:</label>
+                <input type="text" name="name" id="name">
+                <label for="cedula">Cédula:</label>
+                <input type="number" name="cedula" id="cedula">
+                <label for="telefono">Teléfono:</label>
+                <input type="text" name="telefono" id="telefono">
+                <label for="email_reg">Email:</label>
+                <input type="email" name="email" id="email_reg">
+                <label for="password_reg">Contraseña:</label>
+                <input type="password" name="password" id="password_reg">
+                <button type="submit">Registrarse</button>
+            </form>
     </body>
