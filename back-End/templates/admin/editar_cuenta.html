@@ -1,0 +1,116 @@
+{% extends 'admin/base-admin.html' %}
+
+{% block body %}
+<style>
+    .edit-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 500px;
+        border: 1px solid rgba(155, 89, 182, 0.2);
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #ccc;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background: #1a1a2e;
+        color: #fff;
+        font-size: 1em;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #9b59b6;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1em;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    .btn-primary {
+        background: #9b59b6;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #8e44ad;
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    .back-link {
+        color: #9b59b6;
+        text-decoration: none;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<a href="{{ url_for('admin_cuentas') }}" class="back-link">
+    <i class="fas fa-arrow-left"></i> Volver a Cuentas
+</a>
+
+<h1 class="page-title"><i class="fas fa-edit"></i> Editar Cuenta</h1>
+
+<div class="edit-card">
+    <form method="POST" action="{{ url_for('admin_editar_cuenta', id=club.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group">
+            <label>ID</label>
+            <input type="text" value="{{ club.id }}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label>Usuario</label>
+            <input type="text" name="username" value="{{ club.username }}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ club.email or '' }}" placeholder="email@ejemplo.com">
+        </div>
+
+        <div style="margin-top: 30px;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+            <a href="{{ url_for('admin_cuentas') }}" class="btn btn-secondary">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

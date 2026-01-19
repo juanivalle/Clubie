@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portal - Clubie</title>
+    <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            background-color: #0a0a1a;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            background: rgba(40, 167, 69, 0.15);
+            border-bottom: 1px solid rgba(40, 167, 69, 0.3);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo img {
+            height: 40px;
+        }
+
+        header nav a {
+            color: #28a745;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        header nav a:hover {
+            text-decoration: underline;
+        }
+
+        header .user-info {
+            color: #28a745;
+        }
+
+        header .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        main {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, rgba(40, 167, 69, 0.2), rgba(40, 167, 69, 0.05));
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .welcome-card h1 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .welcome-card p {
+            color: #aaa;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: #28a745;
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #888;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+
+        .card a {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .info-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .info-table h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-row .label {
+            color: #888;
+            width: 150px;
+        }
+
+        .info-row .value {
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='media/editado.png') }}" alt="Clubie">
+            </a>
+        </div>
+        <nav>
+            <a href="{{ url_for('portal_miembro') }}"><i class="fas fa-home"></i> Mi Portal</a>
+            <a href="{{ url_for('portal_catalogo') }}"><i class="fas fa-cannabis"></i> Catálogo</a>
+            <a href="{{ url_for('portal_compras') }}"><i class="fas fa-shopping-cart"></i> Mis Compras</a>
+            <a href="{{ url_for('portal_mis_pedidos') }}"><i class="fas fa-clipboard-list"></i> Mis Pedidos</a>
+            <a href="{{ url_for('portal_contacto') }}"><i class="fas fa-envelope"></i> Contacto</a>
+        </nav>
+        <div>
+            <span class="user-info">
+                <a href="{{ url_for('portal_miembro') }}" style="color: #28a745; text-decoration: none;">
+                    <i class="fas fa-user"></i> {{ usuario.name }}
+                </a>
+            </span>
+            <a href="{{ url_for('logout_miembro') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="welcome-card">
+            <h1><i class="fas fa-hand-wave"></i> ¡Hola, {{ usuario.name.split()[0] }}!</h1>
+            <p>Bienvenido a tu portal de miembro. Aquí puedes ver tu historial de compras y contactar al club.</p>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-cannabis"></i></div>
+                <h3>Catálogo</h3>
+                <p>Explora los productos disponibles y coordina tu pedido.</p>
+                <a href="{{ url_for('portal_catalogo') }}">Ver catálogo →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-clipboard-list"></i></div>
+                <h3>Mis Pedidos</h3>
+                <p>Revisa el estado de tus pedidos coordinados.</p>
+                <a href="{{ url_for('portal_mis_pedidos') }}">Ver pedidos →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-shopping-cart"></i></div>
+                <h3>Mis Compras</h3>
+                <p>Revisa tu historial completo de compras y retiros.</p>
+                <a href="{{ url_for('portal_compras') }}">Ver historial →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-envelope"></i></div>
+                <h3>Contactar al Club</h3>
+                <p>¿Tienes alguna consulta? Envía un mensaje al club.</p>
+                <a href="{{ url_for('portal_contacto') }}">Enviar mensaje →</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon"><i class="fas fa-chart-bar"></i></div>
+                <h3>Resumen</h3>
+                <p>Total de compras: <strong>{{ total_compras }}</strong></p>
+                <p>Total consumido: <strong>{{ total_gramos }}g</strong></p>
+            </div>
+        </div>
+
+        <div class="info-table">
+            <h2><i class="fas fa-id-card"></i> Mis Datos</h2>
+            <div class="info-row">
+                <span class="label">Nombre:</span>
+                <span class="value">{{ usuario.name }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Cédula:</span>
+                <span class="value">{{ usuario.cedula }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Teléfono:</span>
+                <span class="value">{{ usuario.telefono }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Email:</span>
+                <span class="value">{{ usuario.email }}</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Miembro desde:</span>
+                <span class="value">{{ usuario.fecha_registro.strftime('%d/%m/%Y') if usuario.fecha_registro else 'N/A'
+                    }}</span>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

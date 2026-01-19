@@ -1,0 +1,257 @@
+{% extends 'base-log.html'%}
+
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/miembros.css') }}">
+<title>Stock de Productos</title>
+
+<style>
+    .stock-container {
+        padding: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    h1 {
+        color: #28a745;
+        margin-bottom: 30px;
+    }
+
+    .totales-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .total-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .total-card h3 {
+        color: #888;
+        font-size: 0.9em;
+        margin-bottom: 10px;
+    }
+
+    .total-card .value {
+        font-size: 2em;
+        font-weight: 700;
+    }
+
+    .total-card.cosechado .value {
+        color: #3498db;
+    }
+
+    .total-card.vendido .value {
+        color: #e74c3c;
+    }
+
+    .total-card.reservado .value {
+        color: #f39c12;
+    }
+
+    .total-card.disponible .value {
+        color: #28a745;
+    }
+
+    .stock-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .stock-table th,
+    .stock-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stock-table th {
+        background: rgba(40, 167, 69, 0.2);
+        color: #28a745;
+    }
+
+    .stock-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stock-bar {
+        height: 10px;
+        background: #333;
+        border-radius: 5px;
+        overflow: hidden;
+        display: flex;
+    }
+
+    .stock-bar .vendido {
+        background: #e74c3c;
+    }
+
+    .stock-bar .reservado {
+        background: #f39c12;
+    }
+
+    .stock-bar .disponible {
+        background: #28a745;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 0.85em;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: rgba(40, 167, 69, 0.3);
+        color: #28a745;
+    }
+
+    .badge-warning {
+        background: rgba(243, 156, 18, 0.3);
+        color: #f39c12;
+    }
+
+    .badge-danger {
+        background: rgba(231, 76, 60, 0.3);
+        color: #e74c3c;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 50px;
+        color: #888;
+    }
+
+    .legend {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 3px;
+    }
+
+    .legend-dot.vendido {
+        background: #e74c3c;
+    }
+
+    .legend-dot.reservado {
+        background: #f39c12;
+    }
+
+    .legend-dot.disponible {
+        background: #28a745;
+    }
+</style>
+
+<div class="stock-container">
+    <h1><i class="fas fa-warehouse"></i> Stock de Productos</h1>
+
+    <!-- Totales -->
+    <div class="totales-grid">
+        <div class="total-card cosechado">
+            <h3><i class="fas fa-seedling"></i> Total Cosechado</h3>
+            <div class="value">{{ total_cosechado }}g</div>
+        </div>
+        <div class="total-card vendido">
+            <h3><i class="fas fa-shopping-cart"></i> Vendido</h3>
+            <div class="value">{{ total_vendido }}g</div>
+        </div>
+        <div class="total-card reservado">
+            <h3><i class="fas fa-clock"></i> Reservado</h3>
+            <div class="value">{{ total_reservado }}g</div>
+        </div>
+        <div class="total-card disponible">
+            <h3><i class="fas fa-check-circle"></i> Disponible</h3>
+            <div class="value">{{ total_disponible }}g</div>
+        </div>
+    </div>
+
+    <!-- Leyenda -->
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-dot vendido"></div>
+            <span>Vendido</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot reservado"></div>
+            <span>Reservado (Pedidos pendientes)</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot disponible"></div>
+            <span>Disponible</span>
+        </div>
+    </div>
+
+    {% if productos %}
+    <table class="stock-table">
+        <thead>
+            <tr>
+                <th>Raza</th>
+                <th>Total Cosechado</th>
+                <th>Vendido</th>
+                <th>Reservado</th>
+                <th>Disponible</th>
+                <th style="width: 200px;">Distribución</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in productos %}
+            <tr>
+                <td><strong>{{ p.raza }}</strong></td>
+                <td>{{ p.total }}g</td>
+                <td style="color: #e74c3c;">{{ p.vendido }}g</td>
+                <td style="color: #f39c12;">{{ p.reservado }}g</td>
+                <td>
+                    {% if p.stock > 50 %}
+                    <span class="badge badge-success">{{ p.stock }}g</span>
+                    {% elif p.stock > 20 %}
+                    <span class="badge badge-warning">{{ p.stock }}g</span>
+                    {% elif p.stock > 0 %}
+                    <span class="badge badge-danger">{{ p.stock }}g</span>
+                    {% else %}
+                    <span class="badge badge-danger">Agotado</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if p.total > 0 %}
+                    <div class="stock-bar">
+                        <div class="vendido" style="width: {{ (p.vendido / p.total * 100)|round }}%;"></div>
+                        <div class="reservado" style="width: {{ (p.reservado / p.total * 100)|round }}%;"></div>
+                        <div class="disponible" style="width: {{ (p.stock / p.total * 100)|round }}%;"></div>
+                    </div>
+                    {% else %}
+                    <span style="color: #666;">-</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-warehouse" style="font-size: 3em; color: #444; margin-bottom: 20px;"></i>
+        <h3>No hay productos cosechados</h3>
+        <p>Cuando registres cosechas en Trazabilidad, aparecerán aquí.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

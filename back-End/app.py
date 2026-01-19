@@ -1,19 +1,33 @@
 from flask import Flask, jsonify, render_template, url_for, redirect, request, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import or_, text
+from sqlalchemy import or_, text, extract
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
 from wtforms import *
 from wtforms.validators import *
 from rutas import *
 from clases import *
 from sqlalchemy.orm import joinedload
+from functools import wraps
+from flask_wtf.csrf import generate_csrf
+import random
+import string
 
 
 login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+login_manager.login_message = 'Por favor inicia sesión para acceder a esta página.'
+login_manager.login_message_category = 'info'
+
+# Exponer csrf_token() como función global de Jinja
+app.jinja_env.globals['csrf_token'] = generate_csrf
 
 @login_manager.user_loader
-def load_user(cedula):
-    return User.query.get(int(cedula))
+def load_user(user_id):
+    # Soportar tanto Club como Member
+    if isinstance(user_id, str) and user_id.startswith('member_'):
+        member_id = int(user_id.replace('member_', ''))
+        return Member.query.get(member_id)
+    return Club.query.get(int(user_id))
 
 @app.route('/')
 @app.route('/home.html')
@@ -45,6 +59,7 @@ def register():
     return redirect(url_for('miembros', form=form))
 
 @app.route('/miembros.html')
+@login_required
 def miembros():
     form = RegistrationForm()
     usuarios = User.query.all()
@@ -64,7 +79,8 @@ def verificar_cedula():
     return jsonify(response)
 
 # FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB // FUNCIONA
-@app.route('/delete/<cedula>')
+@app.route('/delete-socio/<cedula>')
+@login_required
 def delete_socio(cedula):
     socio = User.query.filter_by(cedula=cedula).first()
     
@@ -77,7 +93,7 @@ def delete_socio(cedula):
 
 
 @app.route('/edit/<cedula>', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def editar_usuario(cedula):
     form = EditForm()
     usuario = User.query.get_or_404(cedula)
@@ -95,6 +111,7 @@ def editar_usuario(cedula):
 
 
 @app.route('/registerplanta', methods=['GET', 'POST'])
+@login_required
 def registerplanta():
     form = PlantForm()
     if request.method == "POST":
@@ -124,16 +141,17 @@ def registerplanta():
 
 @app.route('/ctrplanta.html')
 @app.route('/plantas')
+@login_required
 def ctrPlantas():
     form = PlantForm()
     planta = Trazabilidad.query.all()
     return render_template('/logueado/ctrplanta.html', form=form, planta=planta)
 
 @app.route('/editplanta/<idplanta>', methods=['GET', 'POST'])
-#@login_required
+@login_required
 def editar_planta(idplanta):
-    form = Trazabilidad()
-    planta = User.query.get_or_404(idplanta)
+    planta = Trazabilidad.query.get_or_404(idplanta)
+    form = PlantForm(obj=planta)
 
     if form.validate_on_submit():
         planta.raza = form.raza.data
@@ -144,15 +162,16 @@ def editar_planta(idplanta):
         planta.paso3 = form.paso3.data
         planta.floracion = form.floracion.data
         planta.cosecha = form.cosecha.data
-        planta.cantidad = int(form.cantidad.data.replace(',', ''))
+        if form.cantidad.data:
+            planta.cantidad = str(form.cantidad.data).replace(',', '')
         planta.observaciones = form.observaciones.data
         db.session.commit()
-        return redirect(url_for('plantas'))
+        return redirect(url_for('ctrPlantas'))
 
-    form = Trazabilidad(obj=planta)
     return render_template('/logueado/edit_planta.html', form=form, planta=planta)
 
 @app.route('/deleteplanta/<idplanta>')
+@login_required
 def delete_planta(idplanta):
     elplant = Trazabilidad.query.filter_by(idplanta=idplanta).first()
   
@@ -160,11 +179,12 @@ def delete_planta(idplanta):
         db.session.delete(elplant)
         db.session.commit()
 
-    return redirect(url_for('ctrplanta'))
+    return redirect(url_for('ctrPlantas'))
 
 
 ##########################################################################################################################################
 @app.route('/registerventas', methods=['GET', 'POST'])
+@login_required
 def ventosa():
     form = Ventasform()
     if request.method == "POST":
@@ -201,18 +221,20 @@ def get_username():
 
 @app.route('/ventas.html')
 @app.route('/ventas')
+@login_required
 def ventas():
     form = Ventasform()
     ventas = Ventas.query.all()
     return render_template('/logueado/ventas.html', form=form, ventas=ventas)
 
-@app.route('/delete/<int:idventas>')
+@app.route('/delete-venta/<int:idventas>')
+@login_required
 def eliminar_venta(idventas):
     venta = Ventas.query.filter_by(idventas=idventas).first()
     if venta:
         db.session.delete(venta)
         db.session.commit()
-        return redirect(url_for('ventas'))
+    return redirect(url_for('ventas'))
 
 # #######################################
 # #########################################################################################################################################################
@@ -230,42 +252,656 @@ def obtener_datos():
 
 @app.route('/prueba', methods=['GET', 'POST'])
 def obDatosU():
-    ventas = Ventas.query.all()
+    # Obtener parámetros de filtro
+    tipo_filtro = request.args.get('tipo', 'anual')  # anual, mes, rango
+    mes = request.args.get('mes', None)  # 1-12
+    desde = request.args.get('desde', None)  # YYYY-MM-DD
+    hasta = request.args.get('hasta', None)  # YYYY-MM-DD
+    anio = request.args.get('anio', None)  # YYYY
+    
+    # Query base
+    query = Ventas.query
+    
+    # Aplicar filtros según el tipo
+    if tipo_filtro == 'mes' and mes and anio:
+        # Filtrar por mes específico
+        mes_int = int(mes)
+        anio_int = int(anio)
+        from datetime import datetime
+        fecha_inicio = datetime(anio_int, mes_int, 1)
+        if mes_int == 12:
+            fecha_fin = datetime(anio_int + 1, 1, 1)
+        else:
+            fecha_fin = datetime(anio_int, mes_int + 1, 1)
+        query = query.filter(Ventas.retiro >= fecha_inicio, Ventas.retiro < fecha_fin)
+    
+    elif tipo_filtro == 'rango' and desde and hasta:
+        # Filtrar por rango de fechas
+        from datetime import datetime, timedelta
+        fecha_desde = datetime.strptime(desde, '%Y-%m-%d')
+        fecha_hasta = datetime.strptime(hasta, '%Y-%m-%d') + timedelta(days=1)
+        query = query.filter(Ventas.retiro >= fecha_desde, Ventas.retiro < fecha_hasta)
+    
+    elif tipo_filtro == 'anual' and anio:
+        # Filtrar por año específico
+        from datetime import datetime
+        anio_int = int(anio)
+        fecha_inicio = datetime(anio_int, 1, 1)
+        fecha_fin = datetime(anio_int + 1, 1, 1)
+        query = query.filter(Ventas.retiro >= fecha_inicio, Ventas.retiro < fecha_fin)
+    
+    # Si no hay filtros, devolver todas las ventas (comportamiento original)
+    ventas = query.all()
 
-    # Crear una lista para almacenar los datos de los usuarios
+    # Crear lista de datos
     ventas_data = []
     for venta in ventas:
         venta_data = {
             'raza': venta.raza,
             'cantidad': venta.cantidad,
-            'retiro': venta.retiro,
+            'retiro': venta.retiro.isoformat() if venta.retiro else None,
         }
         ventas_data.append(venta_data)
 
-    # Devolver los datos de los usuarios en formato JSON
+    # Devolver los datos en formato JSON
     return jsonify(ventas_data)
 
 # #############################################################################################################################################
 # ##############################################################################################################################################
 
 @app.route('/login.html', methods=['POST', 'GET'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
+    form = LoginForm()
     
-    return render_template('/noLog/login.html')
+    if current_user.is_authenticated:
+        # Redirigir según tipo de usuario ya logueado
+        if isinstance(current_user, Member):
+            return redirect(url_for('portal_miembro'))
+        elif hasattr(current_user, 'is_superuser') and current_user.is_superuser:
+            return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('miembros'))
+    
+    if request.method == 'POST':
+        credential = request.form.get('credential', '').strip()
+        password = request.form.get('password', '')
+        
+        if not credential or not password:
+            flash('Por favor ingresa tus credenciales.', 'error')
+            return render_template('/noLog/login.html', form=form)
+        
+        # Primero buscar en Club (por username)
+        club_user = Club.query.filter_by(username=credential).first()
+        if club_user and club_user.check_password(password):
+            login_user(club_user)
+            flash('¡Inicio de sesión exitoso!', 'success')
+            # Redirigir según tipo
+            if club_user.is_superuser:
+                return redirect(url_for('admin_dashboard'))
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('miembros'))
+        
+        # Si no se encontró en Club, buscar en Member (por email)
+        member_user = Member.query.filter_by(email=credential).first()
+        if member_user and member_user.check_password(password):
+            login_user(member_user)
+            flash('¡Bienvenido!', 'success')
+            return redirect(url_for('portal_miembro'))
+        
+        flash('Usuario o contraseña incorrectos.', 'error')
+    
+    return render_template('/noLog/login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Has cerrado sesión correctamente.', 'info')
+    return redirect(url_for('index'))
 
 
 @app.route('/trazabilidad.html')
+@login_required
 def trazabilidad():
     form = PlantForm()
     return render_template('/logueado/trazabilidad.html', form=form)
 
-@app.route('/ctrplanta.html')
-def ctrplanta():
-    return render_template('/logueado/ctrplanta.html')
-
 @app.route('/graficos.html')
+@login_required
 def graficos():
     return render_template('/logueado/graficos.html')
+
+# ================================================================================
+# RUTAS DE ADMINISTRACIÓN
+# ================================================================================
+
+def superuser_required(f):
+    """Decorador que requiere que el usuario sea superusuario"""
+    @wraps(f)
+    @login_required
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_superuser:
+            flash('No tienes permisos para acceder a esta sección.', 'error')
+            return redirect(url_for('miembros'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def generar_username(longitud=8):
+    """Genera un nombre de usuario aleatorio"""
+    caracteres = string.ascii_letters + string.digits
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
+
+def generar_password(longitud=10):
+    """Genera una contraseña aleatoria segura"""
+    caracteres = string.ascii_letters + string.digits + "!@#$%"
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
+
+@app.route('/admin')
+@superuser_required
+def admin_dashboard():
+    """Dashboard principal de administración"""
+    form = LoginForm()  # Para CSRF token
+    
+    # Estadísticas
+    total_clubs = Club.query.filter_by(is_superuser=False).count()
+    
+    # Clubs de este mes
+    from datetime import datetime
+    hoy = datetime.now()
+    clubs_este_mes = Club.query.filter(
+        Club.is_superuser == False,
+        extract('year', Club.fecha_creacion) == hoy.year,
+        extract('month', Club.fecha_creacion) == hoy.month
+    ).count()
+    
+    # Clubs de este año
+    clubs_este_anio = Club.query.filter(
+        Club.is_superuser == False,
+        extract('year', Club.fecha_creacion) == hoy.year
+    ).count()
+    
+    # Últimos 5 clubs creados
+    ultimos_clubs = Club.query.filter_by(is_superuser=False).order_by(Club.fecha_creacion.desc()).limit(5).all()
+    
+    # Verificar si hay credenciales recién creadas en la sesión
+    nuevas_credenciales = None
+    
+    return render_template('admin/dashboard.html', 
+                           form=form,
+                           total_clubs=total_clubs,
+                           clubs_este_mes=clubs_este_mes,
+                           clubs_este_anio=clubs_este_anio,
+                           ultimos_clubs=ultimos_clubs,
+                           nuevas_credenciales=nuevas_credenciales)
+
+@app.route('/admin/crear-cuenta', methods=['POST'])
+@superuser_required
+def admin_crear_cuenta():
+    """Crear una nueva cuenta de club"""
+    username = request.form.get('username', '').strip()
+    password = request.form.get('password', '').strip()
+    email = request.form.get('email', '').strip()
+    
+    # Generar credenciales si no se proporcionan
+    if not username:
+        username = generar_username()
+    if not password:
+        password = generar_password()
+    
+    # Verificar si ya existe
+    if Club.query.filter_by(username=username).first():
+        flash(f'El usuario "{username}" ya existe.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    
+    if email and Club.query.filter_by(email=email).first():
+        flash(f'El email "{email}" ya está registrado.', 'error')
+        return redirect(url_for('admin_dashboard'))
+    
+    # Crear el club
+    nuevo_club = Club(username=username, email=email)
+    nuevo_club.set_password(password)
+    
+    db.session.add(nuevo_club)
+    db.session.commit()
+    
+    flash(f'¡Cuenta creada! Usuario: {username} | Contraseña: {password}', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/cuentas')
+@superuser_required
+def admin_cuentas():
+    """Lista todas las cuentas"""
+    form = LoginForm()  # Para CSRF token
+    clubs = Club.query.order_by(Club.is_superuser.desc(), Club.id.asc()).all()
+    return render_template('admin/cuentas.html', form=form, clubs=clubs)
+
+@app.route('/admin/editar-cuenta/<int:id>', methods=['GET', 'POST'])
+@superuser_required
+def admin_editar_cuenta(id):
+    """Editar una cuenta de club"""
+    club = Club.query.get_or_404(id)
+    
+    if club.is_superuser:
+        flash('No puedes editar cuentas de administrador.', 'error')
+        return redirect(url_for('admin_cuentas'))
+    
+    if request.method == 'POST':
+        nuevo_username = request.form.get('username', '').strip()
+        nuevo_email = request.form.get('email', '').strip()
+        
+        if nuevo_username and nuevo_username != club.username:
+            if Club.query.filter_by(username=nuevo_username).first():
+                flash('Ese nombre de usuario ya existe.', 'error')
+                return redirect(url_for('admin_cuentas'))
+            club.username = nuevo_username
+        
+        if nuevo_email:
+            club.email = nuevo_email
+        
+        db.session.commit()
+        flash('Cuenta actualizada correctamente.', 'success')
+        return redirect(url_for('admin_cuentas'))
+    
+    return render_template('admin/editar_cuenta.html', club=club)
+
+@app.route('/admin/resetear-password/<int:id>', methods=['POST'])
+@superuser_required
+def admin_resetear_password(id):
+    """Resetear la contraseña de una cuenta"""
+    club = Club.query.get_or_404(id)
+    
+    if club.is_superuser:
+        flash('No puedes resetear contraseñas de administradores.', 'error')
+        return redirect(url_for('admin_cuentas'))
+    
+    nueva_password = generar_password()
+    club.set_password(nueva_password)
+    db.session.commit()
+    
+    flash(f'Contraseña reseteada para {club.username}. Nueva contraseña: {nueva_password}', 'success')
+    return redirect(url_for('admin_cuentas'))
+
+@app.route('/admin/eliminar-cuenta/<int:id>', methods=['POST'])
+@superuser_required
+def admin_eliminar_cuenta(id):
+    """Eliminar una cuenta de club"""
+    club = Club.query.get_or_404(id)
+    
+    if club.is_superuser:
+        flash('No puedes eliminar cuentas de administrador.', 'error')
+        return redirect(url_for('admin_cuentas'))
+    
+    username = club.username
+    db.session.delete(club)
+    db.session.commit()
+    
+    flash(f'Cuenta "{username}" eliminada.', 'success')
+    return redirect(url_for('admin_cuentas'))
+
+@app.route('/admin/estadisticas')
+@superuser_required
+def admin_estadisticas():
+    """Página de estadísticas detalladas"""
+    form = LoginForm()
+    
+    from datetime import datetime
+    hoy = datetime.now()
+    
+    # Estadísticas por año
+    # Estadísticas por año
+    stats_anio_query = db.session.query(
+        extract('year', Club.fecha_creacion).label('anio'),
+        db.func.count(Club.id).label('total')
+    ).filter(Club.is_superuser == False).group_by('anio').all()
+    
+    # Convertir a dict para serialización JSON
+    stats_anio = [{'anio': r.anio, 'total': r.total} for r in stats_anio_query]
+    
+    # Estadísticas por mes del año actual
+    stats_mes_query = db.session.query(
+        extract('month', Club.fecha_creacion).label('mes'),
+        db.func.count(Club.id).label('total')
+    ).filter(
+        Club.is_superuser == False,
+        extract('year', Club.fecha_creacion) == hoy.year
+    ).group_by('mes').all()
+    
+    # Convertir a dict
+    stats_mes = [{'mes': r.mes, 'total': r.total} for r in stats_mes_query]
+    
+    return render_template('admin/estadisticas.html', 
+                           form=form,
+                           stats_anio=stats_anio,
+                           stats_mes=stats_mes)
+
+# ================================================================================
+# RUTAS DE MIEMBROS (USUARIOS FINALES)
+# ================================================================================
+
+def member_required(f):
+    """Decorador que requiere que el usuario sea un Member"""
+    @wraps(f)
+    @login_required
+    def decorated_function(*args, **kwargs):
+        if not isinstance(current_user, Member):
+            flash('Acceso solo para miembros registrados.', 'error')
+            return redirect(url_for('login_miembro'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/registro-miembro', methods=['GET', 'POST'])
+def registro_miembro():
+    """Registro de nuevos miembros"""
+    form = MemberRegistrationForm()
+    
+    if form.validate_on_submit():
+        cedula = form.cedula.data
+        email = form.email.data
+        password = form.password.data
+        confirm = form.confirm_password.data
+        
+        # Verificar que las contraseñas coincidan
+        if password != confirm:
+            flash('Las contraseñas no coinciden.', 'error')
+            return render_template('miembro/registro.html', form=form)
+        
+        # Verificar que la cédula existe en User (miembro de algún club)
+        usuario = User.query.filter_by(cedula=cedula).first()
+        if not usuario:
+            flash('Esta cédula no está registrada en ningún club. Contacta a tu club para registrarte.', 'error')
+            return render_template('miembro/registro.html', form=form)
+        
+        # Verificar que no exista ya una cuenta Member con esa cédula
+        if Member.query.filter_by(cedula=cedula).first():
+            flash('Ya existe una cuenta con esta cédula.', 'error')
+            return render_template('miembro/registro.html', form=form)
+        
+        # Verificar que el email no esté en uso
+        if Member.query.filter_by(email=email).first():
+            flash('Este email ya está registrado.', 'error')
+            return render_template('miembro/registro.html', form=form)
+        
+        # Crear el Member
+        nuevo_miembro = Member(cedula=cedula, email=email)
+        nuevo_miembro.set_password(password)
+        db.session.add(nuevo_miembro)
+        db.session.commit()
+        
+        flash('¡Cuenta creada exitosamente! Ya puedes iniciar sesión.', 'success')
+        return redirect(url_for('login_miembro'))
+    
+    return render_template('miembro/registro.html', form=form)
+
+@app.route('/login-miembro', methods=['GET', 'POST'])
+def login_miembro():
+    """Login de miembros"""
+    form = MemberLoginForm()
+    
+    if current_user.is_authenticated and isinstance(current_user, Member):
+        return redirect(url_for('portal_miembro'))
+    
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password.data
+        
+        miembro = Member.query.filter_by(email=email).first()
+        if miembro and miembro.check_password(password):
+            login_user(miembro)
+            flash('¡Bienvenido!', 'success')
+            return redirect(url_for('portal_miembro'))
+        else:
+            flash('Email o contraseña incorrectos.', 'error')
+    
+    return render_template('miembro/login.html', form=form)
+
+@app.route('/logout-miembro')
+@member_required
+def logout_miembro():
+    """Logout de miembros"""
+    logout_user()
+    flash('Has cerrado sesión.', 'info')
+    return redirect(url_for('login_miembro'))
+
+@app.route('/portal-miembro')
+@member_required
+def portal_miembro():
+    """Portal principal del miembro"""
+    # Obtener datos del usuario vinculado
+    usuario = User.query.filter_by(cedula=current_user.cedula).first()
+    
+    # Obtener compras
+    compras = Ventas.query.filter_by(cedula=current_user.cedula).all()
+    total_compras = len(compras)
+    total_gramos = sum(c.cantidad for c in compras)
+    
+    return render_template('miembro/portal.html', 
+                           usuario=usuario,
+                           total_compras=total_compras,
+                           total_gramos=total_gramos)
+
+@app.route('/portal-miembro/compras')
+@member_required
+def portal_compras():
+    """Historial de compras del miembro"""
+    usuario = User.query.filter_by(cedula=current_user.cedula).first()
+    compras = Ventas.query.filter_by(cedula=current_user.cedula).order_by(Ventas.retiro.desc()).all()
+    total_gramos = sum(c.cantidad for c in compras)
+    
+    return render_template('miembro/compras.html',
+                           usuario=usuario,
+                           compras=compras,
+                           total_gramos=total_gramos)
+
+@app.route('/portal-miembro/contacto', methods=['GET', 'POST'])
+@member_required
+def portal_contacto():
+    """Formulario de contacto al club"""
+    form = ContactForm()
+    usuario = User.query.filter_by(cedula=current_user.cedula).first()
+    
+    if form.validate_on_submit():
+        # Aquí podrías enviar email o guardar en BD
+        # Por ahora solo mostramos mensaje de éxito
+        flash('¡Mensaje enviado correctamente! El club te contactará pronto.', 'success')
+        return redirect(url_for('portal_contacto'))
+    
+    return render_template('miembro/contacto.html', form=form, usuario=usuario)
+
+
+def calcular_stock():
+    """Calcula el stock disponible por raza considerando reservas de pedidos"""
+    from sqlalchemy import func
+    
+    # Sumar gramos cosechados por raza (plantas con fecha de cosecha)
+    cosechado = db.session.query(
+        Trazabilidad.raza,
+        func.sum(func.cast(Trazabilidad.cantidad, db.Integer)).label('total_cosechado')
+    ).filter(Trazabilidad.cosecha.isnot(None)).group_by(Trazabilidad.raza).all()
+    
+    # Sumar gramos vendidos por raza
+    vendido = db.session.query(
+        Ventas.raza,
+        func.sum(Ventas.cantidad).label('total_vendido')
+    ).group_by(Ventas.raza).all()
+    
+    # Sumar gramos reservados (pedidos pendientes o coordinados)
+    reservado = db.session.query(
+        Pedido.raza,
+        func.sum(Pedido.cantidad_solicitada).label('total_reservado')
+    ).filter(Pedido.estado.in_(['pendiente', 'coordinado'])).group_by(Pedido.raza).all()
+    
+    # Crear diccionarios
+    vendido_dict = {v.raza: v.total_vendido or 0 for v in vendido}
+    reservado_dict = {r.raza: r.total_reservado or 0 for r in reservado}
+    
+    # Calcular stock
+    productos = []
+    for c in cosechado:
+        total = c.total_cosechado or 0
+        vendido_qty = vendido_dict.get(c.raza, 0)
+        reservado_qty = reservado_dict.get(c.raza, 0)
+        disponible = total - vendido_qty - reservado_qty
+        
+        productos.append({
+            'raza': c.raza,
+            'total': total,
+            'vendido': vendido_qty,
+            'reservado': reservado_qty,
+            'stock': max(0, disponible)  # Stock disponible para nuevos pedidos
+        })
+    
+    return productos
+
+
+@app.route('/api/catalogo')
+def api_catalogo():
+    """API que retorna el catálogo con stock"""
+    productos = calcular_stock()
+    return jsonify(productos)
+
+
+@app.route('/portal-miembro/catalogo')
+@member_required
+def portal_catalogo():
+    """Catálogo de productos para miembros"""
+    usuario = User.query.filter_by(cedula=current_user.cedula).first()
+    productos = calcular_stock()
+    
+    # Ordenar por stock (mayor primero)
+    productos.sort(key=lambda x: x['stock'], reverse=True)
+    
+    return render_template('miembro/catalogo.html', usuario=usuario, productos=productos)
+
+
+@app.route('/portal-miembro/pedido', methods=['GET', 'POST'])
+@app.route('/portal-miembro/pedido/<raza>', methods=['GET', 'POST'])
+@member_required
+def portal_pedido(raza=None):
+    """Formulario para coordinar pedido"""
+    form = PedidoForm()
+    usuario = User.query.filter_by(cedula=current_user.cedula).first()
+    
+    # Si no se especificó raza, redirigir al catálogo
+    if not raza:
+        return redirect(url_for('portal_catalogo'))
+    
+    # Obtener stock de esta raza
+    productos = calcular_stock()
+    producto = next((p for p in productos if p['raza'] == raza), None)
+    
+    if not producto or producto['stock'] <= 0:
+        flash('Esta raza no está disponible.', 'error')
+        return redirect(url_for('portal_catalogo'))
+    
+    stock = producto['stock']
+    
+    if request.method == 'POST':
+        cantidad = request.form.get('cantidad', type=int)
+        mensaje = request.form.get('mensaje', '')
+        
+        if not cantidad or cantidad < 1:
+            flash('Indica una cantidad válida.', 'error')
+        elif cantidad > stock:
+            flash(f'Solo hay {stock}g disponibles.', 'error')
+        else:
+            # Crear pedido
+            pedido = Pedido(
+                cedula=current_user.cedula,
+                raza=raza,
+                cantidad_solicitada=cantidad,
+                mensaje=mensaje
+            )
+            db.session.add(pedido)
+            db.session.commit()
+            
+            flash('¡Solicitud enviada! El club te contactará para coordinar.', 'success')
+            return redirect(url_for('portal_catalogo'))
+    
+    return render_template('miembro/pedido.html', 
+                           form=form, 
+                           usuario=usuario, 
+                           raza=raza, 
+                           stock=stock)
+
+
+@app.route('/portal-miembro/mis-pedidos')
+@member_required
+def portal_mis_pedidos():
+    """Lista de pedidos del miembro"""
+    usuario = User.query.filter_by(cedula=current_user.cedula).first()
+    pedidos = Pedido.query.filter_by(cedula=current_user.cedula).order_by(Pedido.fecha.desc()).all()
+    return render_template('miembro/mis_pedidos.html', usuario=usuario, pedidos=pedidos)
+
+
+# Vista para el club: ver stock de productos
+@app.route('/stock')
+@login_required
+def ver_stock():
+    """Vista del club para ver stock actual de productos"""
+    if isinstance(current_user, Member):
+        return redirect(url_for('portal_miembro'))
+    
+    productos = calcular_stock()
+    # Ordenar por stock disponible (mayor primero)
+    productos.sort(key=lambda x: x['stock'], reverse=True)
+    
+    # Calcular totales
+    total_cosechado = sum(p['total'] for p in productos)
+    total_vendido = sum(p['vendido'] for p in productos)
+    total_reservado = sum(p['reservado'] for p in productos)
+    total_disponible = sum(p['stock'] for p in productos)
+    
+    return render_template('logueado/stock.html', 
+                           productos=productos,
+                           total_cosechado=total_cosechado,
+                           total_vendido=total_vendido,
+                           total_reservado=total_reservado,
+                           total_disponible=total_disponible)
+
+
+# Vista para el club: ver pedidos recibidos
+@app.route('/pedidos')
+@login_required
+def ver_pedidos():
+    """Vista del club para ver pedidos de miembros"""
+    if isinstance(current_user, Member):
+        return redirect(url_for('portal_miembro'))
+    
+    pedidos = Pedido.query.order_by(Pedido.fecha.desc()).all()
+    return render_template('logueado/pedidos.html', pedidos=pedidos)
+
+
+@app.route('/pedido/<int:id>/estado', methods=['POST'])
+@login_required
+def cambiar_estado_pedido(id):
+    """Cambiar estado de un pedido"""
+    if isinstance(current_user, Member):
+        return redirect(url_for('portal_miembro'))
+    
+    from datetime import datetime
+    
+    pedido = Pedido.query.get_or_404(id)
+    nuevo_estado = request.form.get('estado')
+    estado_anterior = pedido.estado
+    
+    if nuevo_estado in ['pendiente', 'coordinado', 'completado', 'cancelado']:
+        # Si se completa el pedido, crear la venta automáticamente
+        if nuevo_estado == 'completado' and estado_anterior != 'completado':
+            nueva_venta = Ventas(
+                cedula=pedido.cedula,
+                raza=pedido.raza,
+                cantidad=pedido.cantidad_solicitada,
+                retiro=datetime.now()
+            )
+            db.session.add(nueva_venta)
+            flash(f'Pedido completado. Venta de {pedido.cantidad_solicitada}g de {pedido.raza} registrada.', 'success')
+        else:
+            flash(f'Pedido actualizado a: {nuevo_estado}', 'success')
+        
+        pedido.estado = nuevo_estado
+        db.session.commit()
+    
+    return redirect(url_for('ver_pedidos'))
 
 
 if __name__ == '__main__':

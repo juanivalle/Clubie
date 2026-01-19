@@ -1,0 +1,150 @@
+{% extends 'admin/base-admin.html' %}
+
+{% block body %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 30px;
+    }
+
+    .chart-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        padding: 25px;
+        border: 1px solid rgba(155, 89, 182, 0.2);
+    }
+
+    .chart-card h3 {
+        color: #9b59b6;
+        margin-bottom: 20px;
+    }
+
+    .chart-container {
+        height: 300px;
+        position: relative;
+    }
+
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .stats-table th,
+    .stats-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .stats-table th {
+        color: #9b59b6;
+    }
+
+    .stats-table td:last-child {
+        text-align: right;
+        font-weight: 600;
+        color: #28a745;
+    }
+</style>
+
+<h1 class="page-title"><i class="fas fa-chart-bar"></i> Estadísticas</h1>
+
+<div class="stats-grid">
+    <!-- Estadísticas por Año -->
+    <div class="chart-card">
+        <h3><i class="fas fa-calendar"></i> Clubs Registrados por Año</h3>
+        <div class="chart-container">
+            <canvas id="chartAnio"></canvas>
+        </div>
+        <table class="stats-table" style="margin-top: 20px;">
+            {% for stat in stats_anio %}
+            <tr>
+                <td>{{ stat.anio|int }}</td>
+                <td>{{ stat.total }} clubs</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2" style="text-align: center; color: #888;">Sin datos</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Estadísticas por Mes -->
+    <div class="chart-card">
+        <h3><i class="fas fa-calendar-alt"></i> Clubs Registrados este Año (por Mes)</h3>
+        <div class="chart-container">
+            <canvas id="chartMes"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+<script>
+    // Datos para gráfico por año
+    const statsAnio = {{ stats_anio | tojson }};
+    const anios = statsAnio.map(s => s.anio || 'N/A');
+    const totalesAnio = statsAnio.map(s => s.total);
+
+    if (document.getElementById('chartAnio')) {
+        new Chart(document.getElementById('chartAnio').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: anios,
+                datasets: [{
+                    label: 'Clubs registrados',
+                    data: totalesAnio,
+                    backgroundColor: 'rgba(155, 89, 182, 0.6)',
+                    borderColor: 'rgba(155, 89, 182, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    // Datos para gráfico por mes
+    const statsMes = {{ stats_mes | tojson }};
+    const mesesNombres = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const datosMes = new Array(12).fill(0);
+
+    statsMes.forEach(s => {
+        if (s.mes) {
+            datosMes[s.mes - 1] = s.total;
+        }
+    });
+
+    if (document.getElementById('chartMes')) {
+        new Chart(document.getElementById('chartMes').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: mesesNombres,
+                datasets: [{
+                    label: 'Clubs registrados',
+                    data: datosMes,
+                    backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+</script>
+
+{% endblock %}

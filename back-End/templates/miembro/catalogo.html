@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Clubie</title>
+    <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            background-color: #0a0a1a;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            background: rgba(40, 167, 69, 0.15);
+            border-bottom: 1px solid rgba(40, 167, 69, 0.3);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo img {
+            height: 40px;
+        }
+
+        header nav a {
+            color: #28a745;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        header .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        main {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .catalogo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .producto-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-5px);
+            border-color: #28a745;
+        }
+
+        .producto-nombre {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #28a745;
+        }
+
+        .stock-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stock-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .stock-alto {
+            background: #28a745;
+        }
+
+        .stock-medio {
+            background: #f39c12;
+        }
+
+        .stock-bajo {
+            background: #e74c3c;
+        }
+
+        .stock-agotado {
+            background: #6c757d;
+        }
+
+        .stock-cantidad {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .stock-label {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .btn-coordinar {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .btn-coordinar:hover {
+            background: #218838;
+        }
+
+        .btn-coordinar:disabled,
+        .btn-agotado {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.2);
+            border: 1px solid #28a745;
+            color: #28a745;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><a href="{{ url_for('index') }}"><img
+                    src="{{ url_for('static', filename='media/editado.png') }}" alt="Clubie"></a></div>
+        <nav>
+            <a href="{{ url_for('portal_miembro') }}"><i class="fas fa-home"></i> Mi Portal</a>
+            <a href="{{ url_for('portal_catalogo') }}"><i class="fas fa-cannabis"></i> Catálogo</a>
+            <a href="{{ url_for('portal_compras') }}"><i class="fas fa-shopping-cart"></i> Mis Compras</a>
+            <a href="{{ url_for('portal_contacto') }}"><i class="fas fa-envelope"></i> Contacto</a>
+        </nav>
+        <div>
+            <span class="user-info">
+                <a href="{{ url_for('portal_miembro') }}" style="color: #28a745; text-decoration: none;">
+                    <i class="fas fa-user"></i> {{ usuario.name }}
+                </a>
+            </span>
+            <a href="{{ url_for('logout_miembro') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+        </div>
+    </header>
+
+    <main>
+        <h1><i class="fas fa-cannabis"></i> Catálogo de Productos</h1>
+        <p class="subtitle">Stock disponible en tiempo real. Coordina tu pedido directamente.</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% if productos %}
+        <div class="catalogo-grid">
+            {% for producto in productos %}
+            <div class="producto-card">
+                <div class="producto-nombre">{{ producto.raza }}</div>
+
+                <div class="stock-indicator">
+                    {% if producto.stock > 50 %}
+                    <span class="stock-dot stock-alto"></span>
+                    <span style="color: #28a745;">Disponible</span>
+                    {% elif producto.stock > 20 %}
+                    <span class="stock-dot stock-medio"></span>
+                    <span style="color: #f39c12;">Stock limitado</span>
+                    {% elif producto.stock > 0 %}
+                    <span class="stock-dot stock-bajo"></span>
+                    <span style="color: #e74c3c;">Últimas unidades</span>
+                    {% else %}
+                    <span class="stock-dot stock-agotado"></span>
+                    <span style="color: #6c757d;">Agotado</span>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <span class="stock-cantidad">{{ producto.stock }}g</span>
+                    <span class="stock-label"> disponibles</span>
+                </div>
+
+                {% if producto.stock > 0 %}
+                <a href="{{ url_for('portal_pedido', raza=producto.raza) }}" class="btn-coordinar">
+                    <i class="fas fa-calendar-check"></i> Coordinar Pedido
+                </a>
+                {% else %}
+                <button class="btn-coordinar btn-agotado" disabled>
+                    <i class="fas fa-times"></i> Sin Stock
+                </button>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-cannabis"></i>
+            <h3>No hay productos disponibles</h3>
+            <p>El club aún no tiene productos cosechados. Vuelve pronto.</p>
+        </div>
+        {% endif %}
+    </main>
+</body>
+
+</html>

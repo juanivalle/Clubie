@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordinar Pedido - Clubie</title>
+    <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            background-color: #0a0a1a;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            background: rgba(40, 167, 69, 0.15);
+            border-bottom: 1px solid rgba(40, 167, 69, 0.3);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo img {
+            height: 40px;
+        }
+
+        header nav a {
+            color: #28a745;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        header .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        main {
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            color: #28a745;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 30px;
+        }
+
+        .producto-info {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .producto-info h2 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .producto-info .stock {
+            font-size: 1.2em;
+        }
+
+        .pedido-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            background: #1a1a2e;
+            color: #fff;
+            font-size: 1em;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #28a745;
+        }
+
+        .form-group small {
+            color: #888;
+            font-size: 0.85em;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background: #218838;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #e74c3c;
+        }
+
+        .info-box {
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #3498db;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><a href="{{ url_for('index') }}"><img
+                    src="{{ url_for('static', filename='media/editado.png') }}" alt="Clubie"></a></div>
+        <nav>
+            <a href="{{ url_for('portal_miembro') }}"><i class="fas fa-home"></i> Mi Portal</a>
+            <a href="{{ url_for('portal_catalogo') }}"><i class="fas fa-cannabis"></i> Catálogo</a>
+            <a href="{{ url_for('portal_compras') }}"><i class="fas fa-shopping-cart"></i> Mis Compras</a>
+        </nav>
+        <div>
+            <span class="user-info">
+                <a href="{{ url_for('portal_miembro') }}" style="color: #28a745; text-decoration: none;">
+                    <i class="fas fa-user"></i> {{ usuario.name }}
+                </a>
+            </span>
+            <a href="{{ url_for('logout_miembro') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+        </div>
+    </header>
+
+    <main>
+        <a href="{{ url_for('portal_catalogo') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Volver al Catálogo
+        </a>
+
+        <h1><i class="fas fa-calendar-check"></i> Coordinar Pedido</h1>
+
+        <div class="producto-info">
+            <h2>{{ raza }}</h2>
+            <p class="stock">Stock disponible: <strong>{{ stock }}g</strong></p>
+        </div>
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            Esto NO es una compra. Es una solicitud de coordinación. El club te contactará para acordar el retiro.
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'error' if category == 'error' else 'success' }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="pedido-form">
+            <form method="POST">
+                {{ form.csrf_token }}
+                <input type="hidden" name="raza" value="{{ raza }}">
+
+                <div class="form-group">
+                    <label><i class="fas fa-weight"></i> Cantidad que deseas (gramos)</label>
+                    {{ form.cantidad(class="form-control", max=stock) }}
+                    <small>Máximo disponible: {{ stock }}g</small>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-comment"></i> Mensaje (opcional)</label>
+                    <textarea name="mensaje" placeholder="¿Cuándo podrías pasar? ¿Algo que debamos saber?"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-paper-plane"></i> Enviar Solicitud
+                </button>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>

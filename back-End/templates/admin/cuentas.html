@@ -1,0 +1,263 @@
+{% extends 'admin/base-admin.html' %}
+
+{% block body %}
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .accounts-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .accounts-table th,
+    .accounts-table td {
+        padding: 15px 20px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .accounts-table th {
+        background: rgba(155, 89, 182, 0.2);
+        color: #9b59b6;
+        font-weight: 600;
+    }
+
+    .accounts-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9em;
+        text-decoration: none;
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    .btn-edit {
+        background: #3498db;
+        color: white;
+    }
+
+    .btn-edit:hover {
+        background: #2980b9;
+    }
+
+    .btn-reset {
+        background: #f39c12;
+        color: white;
+    }
+
+    .btn-reset:hover {
+        background: #d68910;
+    }
+
+    .btn-delete {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #c0392b;
+    }
+
+    .badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8em;
+    }
+
+    .badge-admin {
+        background: #9b59b6;
+        color: white;
+    }
+
+    .badge-user {
+        background: #28a745;
+        color: white;
+    }
+
+    .search-box {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .search-box input {
+        flex: 1;
+        max-width: 300px;
+        padding: 12px;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background: #1a1a2e;
+        color: #fff;
+    }
+
+    /* Modal de edición */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .modal.active {
+        display: flex;
+    }
+
+    .modal-content {
+        background: #1a1a2e;
+        border-radius: 12px;
+        padding: 30px;
+        width: 100%;
+        max-width: 400px;
+        border: 1px solid rgba(155, 89, 182, 0.3);
+    }
+
+    .modal-title {
+        font-size: 1.3em;
+        color: #9b59b6;
+        margin-bottom: 20px;
+    }
+
+    .modal-close {
+        float: right;
+        background: none;
+        border: none;
+        color: #888;
+        font-size: 1.5em;
+        cursor: pointer;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #ccc;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background: #0a0a1a;
+        color: #fff;
+    }
+
+    .btn-primary {
+        background: #9b59b6;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background: #8e44ad;
+    }
+
+    .new-password-display {
+        background: rgba(40, 167, 69, 0.1);
+        border: 1px solid #28a745;
+        padding: 15px;
+        border-radius: 6px;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    .new-password-display .password {
+        font-size: 1.5em;
+        font-family: monospace;
+        color: #28a745;
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title"><i class="fas fa-users"></i> Gestión de Cuentas</h1>
+</div>
+
+<table class="accounts-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Tipo</th>
+            <th>Fecha Creación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for club in clubs %}
+        <tr>
+            <td>{{ club.id }}</td>
+            <td>{{ club.username }}</td>
+            <td>{{ club.email or '-' }}</td>
+            <td>
+                {% if club.is_superuser %}
+                <span class="badge badge-admin">Admin</span>
+                {% else %}
+                <span class="badge badge-user">Club</span>
+                {% endif %}
+            </td>
+            <td>{{ club.fecha_creacion.strftime('%d/%m/%Y') if club.fecha_creacion else 'N/A' }}</td>
+            <td>
+                {% if not club.is_superuser %}
+                <a href="{{ url_for('admin_editar_cuenta', id=club.id) }}" class="btn btn-edit">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+                <form action="{{ url_for('admin_resetear_password', id=club.id) }}" method="POST"
+                    style="display: inline;">
+                    {{ form.csrf_token }}
+                    <button type="submit" class="btn btn-reset"
+                        onclick="return confirm('¿Resetear contraseña de {{ club.username }}?')">
+                        <i class="fas fa-key"></i> Reset Pass
+                    </button>
+                </form>
+                <form action="{{ url_for('admin_eliminar_cuenta', id=club.id) }}" method="POST"
+                    style="display: inline;">
+                    {{ form.csrf_token }}
+                    <button type="submit" class="btn btn-delete"
+                        onclick="return confirm('¿ELIMINAR cuenta {{ club.username }}? Esta acción no se puede deshacer.')">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+                {% else %}
+                <span style="color: #888;">Cuenta protegida</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6" style="text-align: center; color: #888; padding: 30px;">
+                No hay cuentas registradas
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

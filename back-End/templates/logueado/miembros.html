@@ -8,112 +8,112 @@
 
 {% extends 'base-log.html' %}
 
-    {% block body %}
-    
-    <div class="row">
-        <div class="col-md-5">
-            <div class="card card-body">
-                <h2>Nuevo Miembro</h2>
-                <form action="/registerform" method="POST" autocomplete="off" id="miembroForm">
-                    {{ form.csrf_token }}
-                    <div class="form-group">
-                        <label for="txtName">Nombre Completo:</label>
-                        <input id ="txtName" type="text" name="name" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="txtCi">Cedula:</label>
-                        <input id="txtCi" type="text" name="cedula"  class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="txtTelefono">Telefono:</label>
-                        <input id="txtTelefono" type="text" name="telefono"  class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="txtEmail">Email:</label>
-                        <input id="txtEmail"type="text" name="email"  class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block" id="btnmiembro">
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-7">
-            <h2>Miembros</h2>
-            <table id="miembros" class="table table-stripped table-bordered bg-white table-sm">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Cedula</th>
-                        <th>Teléfono</th>
-                        <th>Email</th>
-                        <th>Operaciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.cedula }}</td>
-                        <td>{{ user.telefono }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>
-                            <a href="/edit/{{user.cedula}}" class="btn btn-secondary" id="btnedit">Editar</a>
-                            <a href="/delete/{{user.cedula}}" class="btn btn-danger" id="btndelete">X</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+{% block body %}
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card card-body">
+            <h2>Nuevo Miembro</h2>
+            <form action="/registerform" method="POST" autocomplete="off" id="miembroForm">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <label for="txtName">Nombre Completo:</label>
+                    <input id="txtName" type="text" name="name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="txtCi">Cedula:</label>
+                    <input id="txtCi" type="text" name="cedula" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="txtTelefono">Telefono:</label>
+                    <input id="txtTelefono" type="text" name="telefono" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="txtEmail">Email:</label>
+                    <input id="txtEmail" type="text" name="email" class="form-control">
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Cargar miembro" class="btn btn-primary btn-block" id="btnmiembro">
+                </div>
+            </form>
         </div>
     </div>
-    <script>
-        let btnMiembro = document.getElementById('btnmiembro');
-        btnMiembro.addEventListener('click', function(event) {
-            event.preventDefault(); // Evitar el envío automático del formulario
+    <div class="col-md-7">
+        <h2>Miembros</h2>
+        <table id="miembros" class="table table-stripped table-bordered bg-white table-sm">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cedula</th>
+                    <th>Teléfono</th>
+                    <th>Email</th>
+                    <th>Operaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.cedula }}</td>
+                    <td>{{ user.telefono }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <a href="/edit/{{user.cedula}}" class="btn btn-secondary" id="btnedit">Editar</a>
+                        <a href="/delete-socio/{{user.cedula}}" class="btn btn-danger" id="btndelete">X</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    let btnMiembro = document.getElementById('btnmiembro');
+    btnMiembro.addEventListener('click', function (event) {
+        event.preventDefault(); // Evitar el envío automático del formulario
 
-            let form = document.getElementById('miembroForm');
-            let formData = new FormData(form);
+        let form = document.getElementById('miembroForm');
+        let formData = new FormData(form);
 
-            // Crear una solicitud XMLHttpRequest
-            let xhr = new XMLHttpRequest();
-            xhr.open('POST', '/cedula'); // Ruta en tu servidor para verificar la cédula
+        // Crear una solicitud XMLHttpRequest
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/cedula'); // Ruta en tu servidor para verificar la cédula
 
-            // Configurar el controlador de eventos para la respuesta de la solicitud
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    let response = JSON.parse(xhr.responseText);
-                    if (response.existe) {
-                        // La cédula ya existe, mostrar una alerta de error
-                        alert('El miembro con la cédula ingresada ya está registrado.');
-                    } else {
-                        // El miembro no existe, enviar el formulario para cargar el miembro
-                        form.submit();
-                    }
+        // Configurar el controlador de eventos para la respuesta de la solicitud
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+                if (response.existe) {
+                    // La cédula ya existe, mostrar una alerta de error
+                    alert('El miembro con la cédula ingresada ya está registrado.');
                 } else {
-                    // Error al realizar la solicitud AJAX, mostrar una alerta de error genérica
-                    alert('Se produjo un error al verificar la cédula.');
+                    // El miembro no existe, enviar el formulario para cargar el miembro
+                    form.submit();
                 }
-            };
-
-            // Enviar la solicitud con los datos del formulario en el cuerpo como datos del formulario
-            xhr.send(formData);
-        });
-
-        
-        let btnEdit = document.getElementById('btnedit');
-        btnEdit.addEventListener('click', function() {
-            alert('Seguro que desea editar el miembro?');
-        });
-        
-        let btnDelete = document.getElementById('btndelete');
-        btnDelete.addEventListener('click', function(event) {
-            var confirmation = confirm('¿Estás seguro de que deseas eliminar el miembro?');
-            if (!confirmation) {
-                event.preventDefault();
-                console.log('La eliminación del miembro fue cancelada.');
+            } else {
+                // Error al realizar la solicitud AJAX, mostrar una alerta de error genérica
+                alert('Se produjo un error al verificar la cédula.');
             }
-        });
-        </script>
-    
-    {% endblock %}
+        };
+
+        // Enviar la solicitud con los datos del formulario en el cuerpo como datos del formulario
+        xhr.send(formData);
+    });
+
+
+    let btnEdit = document.getElementById('btnedit');
+    btnEdit.addEventListener('click', function () {
+        alert('Seguro que desea editar el miembro?');
+    });
+
+    let btnDelete = document.getElementById('btndelete');
+    btnDelete.addEventListener('click', function (event) {
+        var confirmation = confirm('¿Estás seguro de que deseas eliminar el miembro?');
+        if (!confirmation) {
+            event.preventDefault();
+            console.log('La eliminación del miembro fue cancelada.');
+        }
+    });
+</script>
+
+{% endblock %}

@@ -2,10 +2,11 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
 
 <header>
-    <div class="logo"><a href="home.html"><img src="{{ url_for('static', filename='media/ediatdo.png') }}" alt="Logo de marca"></a></div>
+    <div class="logo"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='media/editado.png') }}"
+                alt="Logo de marca"></a></div>
     <nav class="opcion">
         <ul class="nav-links">
-            <li><a href="home.html" class="active">Home<span></span></a></li>
+            <li><a href="{{ url_for('index') }}" class="active">Home<span></span></a></li>
             <li><a href="nosotros.html">Nosotros<span></span></a></li>
             <li><a href="equipo.html">Equipo<span></span></a></li>
             <li><a href="road-map.html">Road Map<span></span></a></li>
@@ -15,14 +16,27 @@
     </nav>
     <ul class="opciones">
         <li class="opcion">
-            <span class="opcion-text"><a class ="link" href="login.html">login</a></span>
+            {% if current_user.is_authenticated %}
+            {% if current_user.is_superuser is defined and current_user.is_superuser %}
+            <span class="opcion-text"><a class="link" href="{{ url_for('admin_dashboard') }}">{{ current_user.username
+                    }}</a></span>
+            {% elif current_user.username is defined %}
+            <span class="opcion-text"><a class="link" href="{{ url_for('miembros') }}">{{ current_user.username
+                    }}</a></span>
+            {% else %}
+            <span class="opcion-text"><a class="link" href="{{ url_for('portal_miembro') }}">Mi Portal</a></span>
+            {% endif %}
+            {% else %}
+            <span class="opcion-text"><a class="link" href="{{ url_for('login') }}">login</a></span>
+            {% endif %}
         </li>
     </ul>
-</div>
+    </div>
 </header>
+
 <body>
     {% block content %}
-    
+
     {% endblock %}
     <footer id="myFooter" class="footer-distributed">
 

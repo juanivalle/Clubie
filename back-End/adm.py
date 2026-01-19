@@ -1,107 +1,132 @@
-from flask import Flask, render_template, url_for, redirect
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_user, LoginManager, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
+"""
+Script de Administración de Clubie
+===================================
+Este script permite a los administradores crear cuentas para clubs.
+Los clubs se contactan con nosotros y nosotros les generamos sus credenciales.
+
+Uso:
+    python adm.py crear         # Crear cuenta con credenciales aleatorias
+    python adm.py crear usuario password email  # Crear con datos específicos
+    python adm.py listar        # Listar todas las cuentas
+"""
+import sys
 import random
-import hashlib
-from flask_bcrypt import check_password_hash, Bcrypt
-from app import create_app, db
+import string
 
+# Configurar path para importar desde el directorio actual
+sys.path.insert(0, '.')
 
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'thisisasecretkey'
-db = SQLAlchemy(app)
+from clases import db, Club, app
 
+def generar_username(longitud=8):
+    """Genera un nombre de usuario aleatorio"""
+    caracteres = string.ascii_letters + string.digits
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
 
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "login"
+def generar_password(longitud=10):
+    """Genera una contraseña aleatoria segura"""
+    caracteres = string.ascii_letters + string.digits + "!@#$%"
+    return ''.join(random.choice(caracteres) for _ in range(longitud))
 
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(6), unique=True, nullable=False)
-    password = db.Column(db.String(256), nullable=False)
-
-"""GENERA usuario y password aleatorio de 6 caracteres si no me equivoco"""
-def generate_username(length):
-    characters = "abcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-    username = ''.join(random.choice(characters) for i in range(length))
-    return username
-
-
-def generate_password(length):
-    characters = "abcdefghijklmnopqrstuvwxyz01234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-    password = ''.join(random.choice(characters) for i in range(length))
-    return password
-
-def hash_password(password):
-    """ESTO NO SE QUE TAN NECESARIO ES PERO ES UN CIFRADO DE CONTRASEÑAS"""
-    salt = hashlib.sha256(str(random.getrandbits(256)).encode('utf-8')).hexdigest().encode('utf-8')
-    hash = hashlib.sha256(salt + password.encode('utf-8')).hexdigest()
-    return (salt + hash).decode('utf-8')
-
-"""No se como puedo ac"""
-@app.route('/new_user', methods=['POST'])
-def new_user():
-    if current_user.is_authenticated and current_user.is_superuser():
-        new_user = User(username=generate_username(6), password=hash_password(generate_password(6)))
-        db.session.add(new_user)
+def crear_cuenta(username=None, password=None, email=None):
+    """Crea una nueva cuenta de club"""
+    with app.app_context():
+        # Generar credenciales si no se proporcionan
+        if not username:
+            username = generar_username()
+        if not password:
+            password = generar_password()
+        if not email:
+            email = f"{username.lower()}@club.com"
+        
+        # Verificar si ya existe
+        existente = Club.query.filter_by(username=username).first()
+        if existente:
+            print(f"\n❌ Error: El usuario '{username}' ya existe.")
+            return None
+        
+        existente_email = Club.query.filter_by(email=email).first()
+        if existente_email:
+            print(f"\n❌ Error: El email '{email}' ya está registrado.")
+            return None
+        
+        # Crear el club
+        nuevo_club = Club(username=username, email=email)
+        nuevo_club.set_password(password)
+        
+        db.session.add(nuevo_club)
         db.session.commit()
+        
+        print("\n" + "="*50)
+        print("✅ CUENTA CREADA EXITOSAMENTE")
+        print("="*50)
+        print(f"   👤 Usuario:    {username}")
+        print(f"   🔑 Contraseña: {password}")
+        print(f"   📧 Email:      {email}")
+        print("="*50)
+        print("\n⚠️  Guarda estas credenciales, la contraseña no se puede recuperar.")
+        print()
+        
+        return {'username': username, 'password': password, 'email': email}
 
+def listar_cuentas():
+    """Lista todas las cuentas de clubs registradas"""
+    with app.app_context():
+        clubs = Club.query.all()
+        
+        if not clubs:
+            print("\n📋 No hay cuentas registradas.")
+            return
+        
+        print("\n" + "="*60)
+        print("📋 CUENTAS REGISTRADAS")
+        print("="*60)
+        print(f"{'ID':<5} {'Usuario':<20} {'Email':<30}")
+        print("-"*60)
+        
+        for club in clubs:
+            print(f"{club.id:<5} {club.username:<20} {club.email:<30}")
+        
+        print("="*60)
+        print(f"Total: {len(clubs)} cuenta(s)")
+        print()
 
-class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(
-        min=6, max=6)], render_kw={"placeholder": "Usuario"})
+def mostrar_ayuda():
+    """Muestra la ayuda del script"""
+    print(__doc__)
+    print("Comandos disponibles:")
+    print("  crear                        - Crear cuenta con credenciales aleatorias")
+    print("  crear <user> <pass> <email>  - Crear cuenta con datos específicos")
+    print("  listar                       - Listar todas las cuentas")
+    print("  ayuda                        - Mostrar esta ayuda")
+    print()
 
-    password = PasswordField(validators=[InputRequired(), Length(
-        min=6, max=6)], render_kw={"placeholder": "Contraseña"})
+def main():
+    if len(sys.argv) < 2:
+        mostrar_ayuda()
+        return
     
-    submit = SubmitField("Iniciar")
-
-"""SUPER USUARIO"""
-app = create_app()
-with app.app_context():
-    db.create_all()
-
-    superuser = User(username='Moria3', is_superuser=True)
-    superuser.set_password('Kiko01')
-    db.session.add(superuser)
-    db.session.commit()
-
-
-@app.before_first_request
-def create_tables():
-    db.create_all()
-
-
-@app.route('/', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user and check_password_hash(user.password, form.password.data):
-            login_user(user)
-            return redirect(url_for('votacion.html'))
+    comando = sys.argv[1].lower()
+    
+    if comando == 'crear':
+        if len(sys.argv) == 2:
+            # Crear con credenciales aleatorias
+            crear_cuenta()
+        elif len(sys.argv) == 5:
+            # Crear con credenciales específicas
+            crear_cuenta(sys.argv[2], sys.argv[3], sys.argv[4])
         else:
-            ValidationError("Usuario o contraseña equivocado")
-    return render_template('login.html', form=form)
-
-
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('login'))
-
+            print("❌ Uso: python adm.py crear [usuario password email]")
+    
+    elif comando == 'listar':
+        listar_cuentas()
+    
+    elif comando == 'ayuda' or comando == 'help' or comando == '-h':
+        mostrar_ayuda()
+    
+    else:
+        print(f"❌ Comando desconocido: {comando}")
+        mostrar_ayuda()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    main()

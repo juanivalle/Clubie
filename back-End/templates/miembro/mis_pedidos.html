@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos - Clubie</title>
+    <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
+
+        body {
+            background-color: #0a0a1a;
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        header {
+            background: rgba(40, 167, 69, 0.15);
+            border-bottom: 1px solid rgba(40, 167, 69, 0.3);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo img {
+            height: 40px;
+        }
+
+        header nav a {
+            color: #28a745;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+        }
+
+        header .logout-btn {
+            background: #dc3545;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 30px;
+        }
+
+        .pedidos-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .pedidos-table th,
+        .pedidos-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pedidos-table th {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-pendiente {
+            background: #f39c12;
+            color: #000;
+        }
+
+        .badge-coordinado {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .badge-completado {
+            background: #28a745;
+            color: #fff;
+        }
+
+        .badge-cancelado {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #888;
+        }
+
+        .empty-state i {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #444;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><a href="{{ url_for('index') }}"><img
+                    src="{{ url_for('static', filename='media/editado.png') }}" alt="Clubie"></a></div>
+        <nav>
+            <a href="{{ url_for('portal_miembro') }}"><i class="fas fa-home"></i> Mi Portal</a>
+            <a href="{{ url_for('portal_catalogo') }}"><i class="fas fa-cannabis"></i> Catálogo</a>
+            <a href="{{ url_for('portal_mis_pedidos') }}"><i class="fas fa-clipboard-list"></i> Mis Pedidos</a>
+        </nav>
+        <div>
+            <span class="user-info">
+                <a href="{{ url_for('portal_miembro') }}" style="color: #28a745; text-decoration: none;">
+                    <i class="fas fa-user"></i> {{ usuario.name }}
+                </a>
+            </span>
+            <a href="{{ url_for('logout_miembro') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+        </div>
+    </header>
+
+    <main>
+        <h1><i class="fas fa-clipboard-list"></i> Mis Pedidos</h1>
+
+        {% if pedidos %}
+        <table class="pedidos-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Raza</th>
+                    <th>Cantidad</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Mensaje</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos %}
+                <tr>
+                    <td>{{ pedido.id }}</td>
+                    <td>{{ pedido.raza }}</td>
+                    <td>{{ pedido.cantidad_solicitada }}g</td>
+                    <td>{{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td><span class="badge badge-{{ pedido.estado }}">{{ pedido.estado|capitalize }}</span></td>
+                    <td>{{ pedido.mensaje or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-clipboard-list"></i>
+            <h3>No tienes pedidos</h3>
+            <p>Cuando coordines un pedido desde el catálogo, aparecerá aquí.</p>
+        </div>
+        {% endif %}
+    </main>
+</body>
+
+</html>

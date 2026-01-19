@@ -1,30 +1,43 @@
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_wtf import FlaskForm
-from wtforms import *
-from wtforms.validators import *
+from wtforms import StringField, IntegerField, PasswordField, SelectField, SubmitField, validators
+from wtforms.fields import DateTimeLocalField
+from wtforms.validators import DataRequired, Email, Length, InputRequired, Optional, NumberRange, ValidationError
 from flask_wtf.file import FileField, FileAllowed, FileSize
+from flask_login import UserMixin
+from flask_bcrypt import Bcrypt
 from rutas import *
 from datetime import datetime
+import os
 
 
-app.config['SECRET_KEY'] = 'clave_secreta'
+# Configuración segura - usa variable de entorno o valor por defecto para desarrollo
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-cambiar-en-produccion')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
 
 class User(db.Model):
     cedula = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
     name = db.Column(db.String(30), nullable=False)
     telefono = db.Column(db.Integer, nullable=False, unique=True)
     email = db.Column(db.String(30), nullable=False, unique=True)
+    fecha_registro = db.Column(db.DateTime, default=datetime.now)
     
+    # Relación con ventas
+    ventas = db.relationship('Ventas', backref='usuario', lazy=True)
+    
+    def __repr__(self):
+        return f'<User {self.name}>'
 
 class RegistrationForm(FlaskForm):
-    name = StringField('name', validators=[validators.Length(min=6, max=25)])
-    cedula = IntegerField('cedula', validators=[validators.NumberRange(min=1000000, max=99999999)])
-    telefono = IntegerField('telefono', validators=[validators.NumberRange(min=10000000, max=999999999)])
-    email = StringField('email', validators=[validators.Length(min=6, max=35)])
+    name = StringField('Nombre Completo', validators=[DataRequired(), Length(min=3, max=50, message='El nombre debe tener entre 3 y 50 caracteres')])
+    cedula = IntegerField('Cédula', validators=[DataRequired(), NumberRange(min=1000000, max=99999999, message='Cédula inválida')])
+    telefono = IntegerField('Teléfono', validators=[DataRequired(), NumberRange(min=10000000, max=999999999, message='Teléfono inválido')])
+    email = StringField('Email', validators=[DataRequired(), Email(message='Email inválido'), Length(max=50)])
+    submit = SubmitField('Registrar Miembro')
 
 class EditForm(FlaskForm):
     cedula = StringField('cedula', validators=[DataRequired()])
@@ -33,23 +46,31 @@ class EditForm(FlaskForm):
     email = StringField('email', validators=[DataRequired(), Email()])
     submit = SubmitField('Guardar cambios')
 
-class Club(db.Model):
+class Club(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     campoarchivo = db.Column(db.String(30))
     username = db.Column(db.String(30), unique=True, nullable=False)
-    password = db.Column(db.String(25), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     email = db.Column(db.String(70))
+    is_superuser = db.Column(db.Boolean, default=False)
+    fecha_creacion = db.Column(db.DateTime, default=datetime.now)
+    
+    def set_password(self, password):
+        """Hashea y guarda la contraseña"""
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    def check_password(self, password):
+        """Verifica la contraseña contra el hash"""
+        return bcrypt.check_password_hash(self.password_hash, password)
 
 class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(
-        min=6, max=6)], render_kw={"placeholder": "Usuario"})
-    password = PasswordField(validators=[InputRequired(), Length(
-        min=6, max=6)], render_kw={"placeholder": "Contraseña"})
-    submit = SubmitField("Iniciar")
+    username = StringField('Usuario', validators=[InputRequired(message='Usuario requerido'), Length(min=4, max=20, message='Usuario debe tener entre 4 y 20 caracteres')], render_kw={"placeholder": "Usuario"})
+    password = PasswordField('Contraseña', validators=[InputRequired(message='Contraseña requerida'), Length(min=4, max=30, message='Contraseña debe tener entre 4 y 30 caracteres')], render_kw={"placeholder": "Contraseña"})
+    submit = SubmitField("Iniciar Sesión")
 
 class Trazabilidad(db.Model):
     idplanta = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    raza = db.Column(db.String(30), nullable=False, unique=True)
+    raza = db.Column(db.String(30), nullable=False)
     Enraizado = db.Column(db.DateTime, nullable=True)
     Riego = db.Column(db.DateTime, nullable=True)
     paso1 = db.Column(db.DateTime, nullable=True)
@@ -82,7 +103,129 @@ class Ventasform(FlaskForm):
 
 class Ventas(db.Model):
     idventas = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
-    cedula = db.Column(db.String(20), nullable=False)
+    cedula = db.Column(db.Integer, db.ForeignKey('user.cedula'), nullable=False)
     raza = db.Column(db.String(30), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
-    retiro = db.Column(db.DateTime, default=datetime.now())
+    retiro = db.Column(db.DateTime, default=datetime.now)
+    
+    def __repr__(self):
+        return f'<Venta {self.idventas}: {self.cantidad}g de {self.raza}>'
+
+
+# ================================================================================
+# MODELO Y FORMULARIOS PARA MIEMBROS (USUARIOS FINALES)
+# ================================================================================
+
+class Member(db.Model, UserMixin):
+    """Cuenta de login para miembros de clubs (usuarios finales)"""
+    id = db.Column(db.Integer, primary_key=True)
+    cedula = db.Column(db.Integer, db.ForeignKey('user.cedula'), nullable=False)
+    email = db.Column(db.String(70), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    fecha_registro = db.Column(db.DateTime, default=datetime.now)
+    
+    # Relación con User (datos del miembro en el club)
+    usuario = db.relationship('User', backref='cuenta_member', lazy=True)
+    
+    def set_password(self, password):
+        """Hashea y guarda la contraseña"""
+        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    def check_password(self, password):
+        """Verifica la contraseña contra el hash"""
+        return bcrypt.check_password_hash(self.password_hash, password)
+    
+    def get_id(self):
+        """Retorna ID con prefijo para diferenciar de Club"""
+        return f"member_{self.id}"
+    
+    def __repr__(self):
+        return f'<Member {self.email}>'
+
+
+class MemberRegistrationForm(FlaskForm):
+    """Formulario de registro para miembros"""
+    cedula = IntegerField('Cédula', validators=[
+        DataRequired(message='La cédula es requerida'),
+        NumberRange(min=1000000, max=99999999, message='Cédula inválida')
+    ], render_kw={"placeholder": "Tu número de cédula"})
+    
+    email = StringField('Email', validators=[
+        DataRequired(message='El email es requerido'),
+        Email(message='Email inválido'),
+        Length(max=70)
+    ], render_kw={"placeholder": "tu@email.com"})
+    
+    password = PasswordField('Contraseña', validators=[
+        DataRequired(message='La contraseña es requerida'),
+        Length(min=6, max=30, message='La contraseña debe tener entre 6 y 30 caracteres')
+    ], render_kw={"placeholder": "Mínimo 6 caracteres"})
+    
+    confirm_password = PasswordField('Confirmar Contraseña', validators=[
+        DataRequired(message='Confirma tu contraseña')
+    ], render_kw={"placeholder": "Repite tu contraseña"})
+    
+    submit = SubmitField("Crear Cuenta")
+
+
+class MemberLoginForm(FlaskForm):
+    """Formulario de login para miembros"""
+    email = StringField('Email', validators=[
+        DataRequired(message='El email es requerido'),
+        Email(message='Email inválido')
+    ], render_kw={"placeholder": "tu@email.com"})
+    
+    password = PasswordField('Contraseña', validators=[
+        DataRequired(message='La contraseña es requerida')
+    ], render_kw={"placeholder": "Tu contraseña"})
+    
+    submit = SubmitField("Iniciar Sesión")
+
+
+class ContactForm(FlaskForm):
+    """Formulario de contacto al club"""
+    asunto = StringField('Asunto', validators=[
+        DataRequired(message='El asunto es requerido'),
+        Length(max=100)
+    ], render_kw={"placeholder": "¿En qué podemos ayudarte?"})
+    
+    mensaje = StringField('Mensaje', validators=[
+        DataRequired(message='El mensaje es requerido'),
+        Length(max=500)
+    ], render_kw={"placeholder": "Escribe tu mensaje aquí..."})
+    
+    submit = SubmitField("Enviar Mensaje")
+
+
+# ================================================================================
+# MODELO Y FORMULARIO PARA PEDIDOS (COORDINACIÓN DE COMPRAS)
+# ================================================================================
+
+class Pedido(db.Model):
+    """Solicitud de coordinación de compra de un miembro"""
+    id = db.Column(db.Integer, primary_key=True)
+    cedula = db.Column(db.Integer, db.ForeignKey('user.cedula'), nullable=False)
+    raza = db.Column(db.String(30), nullable=False)
+    cantidad_solicitada = db.Column(db.Integer, nullable=False)
+    mensaje = db.Column(db.String(200), nullable=True)
+    fecha = db.Column(db.DateTime, default=datetime.now)
+    estado = db.Column(db.String(20), default='pendiente')  # pendiente, coordinado, completado, cancelado
+    
+    # Relación con User
+    usuario = db.relationship('User', backref='pedidos', lazy=True)
+    
+    def __repr__(self):
+        return f'<Pedido {self.id}: {self.cantidad_solicitada}g de {self.raza}>'
+
+
+class PedidoForm(FlaskForm):
+    """Formulario para solicitar coordinación de pedido"""
+    raza = SelectField('Raza', validators=[DataRequired()])
+    cantidad = IntegerField('Cantidad (gramos)', validators=[
+        DataRequired(message='Indica la cantidad'),
+        NumberRange(min=1, max=100, message='Cantidad entre 1 y 100 gramos')
+    ], render_kw={"placeholder": "Ej: 10"})
+    mensaje = StringField('Mensaje (opcional)', validators=[
+        Length(max=200)
+    ], render_kw={"placeholder": "¿Cuándo podrías pasar a retirarlo?"})
+    submit = SubmitField("Coordinar Pedido")

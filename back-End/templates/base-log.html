@@ -1,36 +1,90 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Clubie - Panel de Gestión</title>
     <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/footer.css') }}">
     <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+    <style>
+        /* Estilos del header que necesitan !important para evitar conflictos con Bootstrap */
+        .header .logout-btn {
+            background: #dc3545 !important;
+            color: white !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            border-radius: 4px !important;
+            cursor: pointer;
+            text-decoration: none !important;
+            font-size: 14px !important;
+            display: inline-block !important;
+            white-space: nowrap;
+        }
+
+        .header .logout-btn:hover {
+            background: #c82333 !important;
+            color: white !important;
+        }
+
+        .header .user-info {
+            color: #28a745 !important;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 
-
-<header class="header">
-    <div class="logo"><a href="home.html"><img src="{{ url_for('static', filename='media/editado.png') }}" alt="Logo de marca"></a></div>
-    <nav class="opcion">
-        <ul class="nav-links">
-            <li><a href="miembros.html">Miembros<span></span></a></li>
-            <li><a href="ventas.html">Ventas<span></span></a></li>
-            <li><a href="trazabilidad.html">Trazabildiad<span></span></a></li>
-            <li><a href="ctrplanta.html">Control de plantas<span></span></a></li>
-            <li><a href="graficos.html">Graficos<span></span></a>
-        </ul>
-    </nav>
-    </div>
-</header>
-
 <body>
-    <div class="p-5">
-        {% block body %}
+    <header class="header">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='media/editado.png') }}" alt="Logo de marca">
+            </a>
+        </div>
+        <nav class="opcion">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('miembros') }}">Miembros<span></span></a></li>
+                <li><a href="{{ url_for('ventas') }}">Ventas<span></span></a></li>
+                <li><a href="{{ url_for('trazabilidad') }}">Trazabilidad<span></span></a></li>
+                <li><a href="{{ url_for('ctrPlantas') }}">Control de plantas<span></span></a></li>
+                <li><a href="{{ url_for('graficos') }}">Gráficos<span></span></a></li>
+                <li><a href="{{ url_for('ver_pedidos') }}">Pedidos<span></span></a></li>
+                <li><a href="{{ url_for('ver_stock') }}">Stock<span></span></a></li>
+            </ul>
+        </nav>
+        <div class="nav-right">
+            {% if current_user.is_authenticated %}
+            <span class="user-info">
+                <a href="{{ url_for('miembros') }}" style="color: #28a745 !important; text-decoration: none;">
+                    <i class="fas fa-user"></i> {{ current_user.username }}
+                </a>
+            </span>
+            <a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+            {% endif %}
+        </div>
+    </header>
 
-        {% endblock %}
-    </div>
+    <main>
+        <div class="p-5">
+            <!-- Mensajes Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }}"
+                style="padding: 10px; margin-bottom: 15px; border-radius: 4px; background: {{ '#f8d7da' if category == 'error' else '#d4edda' if category == 'success' else '#d1ecf1' }};">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block body %}
+            {% endblock %}
+        </div>
+    </main>
 </body>
 
 </html>

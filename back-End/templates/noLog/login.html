@@ -1,64 +1,250 @@
-<meta charset="utf-8">
-    <title>Clubie | Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../../static/css/login.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
-    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Clubie</title>
     <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
-    
+    <script src="https://kit.fontawesome.com/cb8886a847.js" crossorigin="anonymous"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Roboto", sans-serif;
+        }
 
+        body {
+            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
 
-    <body class="cuerpo">
-        <header>
-            <div class="logo"><a href="home.html"><img src="../../static/media/editado.png" alt="Logo de marca"></a></div>
-            <nav class="opcion">
-                <ul class="nav-links">
-                    <li><a href="home.html" class="active">Home<span></span></a></li>
-                    <li><a href="nosotros.html">Nosotros<span></span></a></li>
-                    <li><a href="equipo.html">Equipo<span></span></a></li>
-                    <li><a href="road-map.html">Road Map<span></span></a></li>
-                    <li><a href="contact.html">Contacto<span></span></a></li>
-                    <!--<li><a href="miembros.html">loginpage<span></span></a></li>-->
-                </ul>
-            </nav>
-            <ul class="opciones">
-                <li class="opcion">
-                    <span class="opcion-text"><a class ="link" href="login.html">login</a></span>
-                </li>
-            </ul>
+        .login-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 70px;
+            filter: drop-shadow(0 4px 8px rgba(40, 167, 69, 0.3));
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+        }
+
+        .subtitle {
+            color: #888;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #aaa;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: #28a745;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: #1a1a2e;
+            color: #fff;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 15px rgba(40, 167, 69, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: #666;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 0.95em;
+        }
+
+        .links a {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 0.95em;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.5);
+            color: #e74c3c;
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            color: #28a745;
+        }
+
+        .alert-info {
+            background: rgba(52, 152, 219, 0.15);
+            border: 1px solid rgba(52, 152, 219, 0.5);
+            color: #3498db;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #555;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #333;
+        }
+
+        .divider span {
+            padding: 0 15px;
+            font-size: 0.85em;
+        }
+
+        .help-text {
+            color: #666;
+            font-size: 0.85em;
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <a href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='media/editado.png') }}" alt="Clubie">
+            </a>
         </div>
-        </header>
-        <div class="login-box">
-            <img class="avatar" src="../../static/media/Logo-verde.png" alt="logo">
-            <h1>Ingresar</h1>
-            <form>
-                <label for="username">Nombre de usuario:</label>
-                <input type="text" id="username" name="username" required><br><br>
-            
-                <label for="password">Contraseña:</label>
-                <input type="password" id="password" name="password" required><br><br>
-            
-                <input type="button" value="Log in" onclick="mostrarPopup()">
-              </form>
-            
-              <div id="popup" class="popup">
-                <h2>¡Usuario incorrecto!</h2>
-                <p>Por favor, verifica tus credenciales.</p>
-                <button onclick="cerrarPopup()">Cerrar</button>
-              </div>
-            
-              <script>
-                // Función para mostrar el popup
-                function mostrarPopup() {
-                  var popup = document.getElementById("popup");
-                  popup.style.display = "block";
-                }
-            
-                // Función para cerrar el popup
-                function cerrarPopup() {
-                  var popup = document.getElementById("popup");
-                  popup.style.display = "none";
-                }
-              </script>
-    </body>
+
+        <h1><i class="fas fa-cannabis"></i> Bienvenido</h1>
+        <p class="subtitle">Ingresa con tu cuenta de club o miembro</p>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" autocomplete="off">
+            {{ form.csrf_token }}
+
+            <!-- Fake fields to trick browser -->
+            <input type="text" style="display:none">
+            <input type="password" style="display:none">
+
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Usuario o Email</label>
+                <input type="text" name="credential" placeholder="Tu usuario o email" required autocomplete="off"
+                    id="login_cred" readonly onfocus="this.removeAttribute('readonly');"
+                    style="background-color: #1a1a2e;">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Contraseña</label>
+                <input type="password" name="password" placeholder="Tu contraseña" required autocomplete="new-password"
+                    id="login_pass" readonly onfocus="this.removeAttribute('readonly');"
+                    style="background-color: #1a1a2e;">
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+            </button>
+        </form>
+
+        <div class="help-text">
+            <i class="fas fa-info-circle"></i> Clubs: usa tu nombre de usuario<br>
+            Miembros: usa tu email
+        </div>
+
+        <div class="divider"><span>¿Eres miembro nuevo?</span></div>
+
+        <div class="links">
+            <a href="{{ url_for('registro_miembro') }}"><i class="fas fa-user-plus"></i> Registrarme como miembro</a>
+            <br><br>
+            <a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Volver al inicio</a>
+        </div>
+    </div>
+</body>
+
+</html>

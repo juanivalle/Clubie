@@ -1,0 +1,247 @@
+{% extends 'admin/base-admin.html' %}
+
+{% block body %}
+<style>
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(142, 68, 173, 0.1));
+        border: 1px solid rgba(155, 89, 182, 0.3);
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+    }
+
+    .stat-card .stat-number {
+        font-size: 3em;
+        font-weight: 700;
+        color: #9b59b6;
+    }
+
+    .stat-card .stat-label {
+        font-size: 1em;
+        color: #aaa;
+        margin-top: 5px;
+    }
+
+    .section-title {
+        font-size: 1.5em;
+        margin: 30px 0 20px 0;
+        color: #9b59b6;
+        border-bottom: 2px solid rgba(155, 89, 182, 0.3);
+        padding-bottom: 10px;
+    }
+
+    .form-card {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        padding: 25px;
+        max-width: 500px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        color: #ccc;
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #444;
+        border-radius: 6px;
+        background: #1a1a2e;
+        color: #fff;
+        font-size: 1em;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #9b59b6;
+    }
+
+    .btn-primary {
+        background: #9b59b6;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 600;
+        width: 100%;
+    }
+
+    .btn-primary:hover {
+        background: #8e44ad;
+    }
+
+    .credenciales-box {
+        background: rgba(40, 167, 69, 0.1);
+        border: 1px solid #28a745;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .credenciales-box h4 {
+        color: #28a745;
+        margin-bottom: 15px;
+    }
+
+    .credenciales-box .cred-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(40, 167, 69, 0.2);
+    }
+
+    .credenciales-box .cred-label {
+        color: #888;
+    }
+
+    .credenciales-box .cred-value {
+        color: #28a745;
+        font-weight: 600;
+        font-family: monospace;
+    }
+
+    .recent-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .recent-table th,
+    .recent-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .recent-table th {
+        background: rgba(155, 89, 182, 0.2);
+        color: #9b59b6;
+        font-weight: 600;
+    }
+
+    .recent-table tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+</style>
+
+<h1 class="page-title"><i class="fas fa-tachometer-alt"></i> Panel de Administración</h1>
+
+<!-- Estadísticas Rápidas -->
+<div class="dashboard-grid">
+    <div class="stat-card">
+        <div class="stat-number">{{ total_clubs }}</div>
+        <div class="stat-label">Total de Clubs</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ clubs_este_mes }}</div>
+        <div class="stat-label">Nuevos este mes</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-number">{{ clubs_este_anio }}</div>
+        <div class="stat-label">Nuevos este año</div>
+    </div>
+</div>
+
+<!-- Formulario Crear Cuenta -->
+<h2 class="section-title"><i class="fas fa-user-plus"></i> Crear Nueva Cuenta</h2>
+<div class="form-card">
+    <form method="POST" action="{{ url_for('admin_crear_cuenta') }}">
+        {{ form.csrf_token }}
+
+        <div class="form-group">
+            <label>Usuario (dejar vacío para generar automáticamente)</label>
+            <input type="text" name="username" placeholder="Ej: miclub2024">
+        </div>
+
+        <div class="form-group">
+            <label>Contraseña (dejar vacío para generar automáticamente)</label>
+            <input type="text" name="password" placeholder="Se generará una segura">
+        </div>
+
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="club@ejemplo.com" required>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-plus"></i> Crear Cuenta
+        </button>
+    </form>
+
+    {% if nuevas_credenciales %}
+    <div class="credenciales-box">
+        <h4><i class="fas fa-check-circle"></i> Cuenta Creada</h4>
+        <div class="cred-item">
+            <span class="cred-label">Usuario:</span>
+            <span class="cred-value">{{ nuevas_credenciales.username }}</span>
+        </div>
+        <div class="cred-item">
+            <span class="cred-label">Contraseña:</span>
+            <span class="cred-value">{{ nuevas_credenciales.password }}</span>
+        </div>
+        <div class="cred-item">
+            <span class="cred-label">Email:</span>
+            <span class="cred-value">{{ nuevas_credenciales.email }}</span>
+        </div>
+        <p style="margin-top: 15px; color: #888; font-size: 0.9em;">
+            <i class="fas fa-exclamation-triangle"></i> Guarda estas credenciales, la contraseña no se puede recuperar.
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Últimas Cuentas -->
+<h2 class="section-title"><i class="fas fa-history"></i> Últimas Cuentas Creadas</h2>
+<table class="recent-table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Fecha Creación</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for club in ultimos_clubs %}
+        <tr>
+            <td>{{ club.id }}</td>
+            <td>{{ club.username }}</td>
+            <td>{{ club.email or '-' }}</td>
+            <td>{{ club.fecha_creacion.strftime('%d/%m/%Y %H:%M') if club.fecha_creacion else 'N/A' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4" style="text-align: center; color: #888;">No hay cuentas registradas</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
