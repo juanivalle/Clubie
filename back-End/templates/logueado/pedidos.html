@@ -77,16 +77,19 @@
     }
 
     .btn-actualizar {
-        padding: 8px 15px;
-        background: #3498db;
+        padding: 10px 14px;
+        background: #28a745;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         cursor: pointer;
+        font-size: 1em;
+        transition: all 0.2s;
     }
 
     .btn-actualizar:hover {
-        background: #2980b9;
+        background: #218838;
+        transform: scale(1.05);
     }
 
     .empty-state {
@@ -145,11 +148,10 @@
                 <td>{{ pedido.mensaje or '-' }}</td>
                 <td>{{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
                 <td><span class="badge badge-{{ pedido.estado }}">{{ pedido.estado|capitalize }}</span></td>
-                <td>
-                    <form action="{{ url_for('cambiar_estado_pedido', id=pedido.id) }}" method="POST"
-                        style="display: flex; gap: 5px;">
+                <td style="min-width: 150px;">
+                    <form action="{{ url_for('cambiar_estado_pedido', id=pedido.id) }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <select name="estado" class="estado-select">
+                        <select name="estado" class="estado-select" style="width: 100%; margin-bottom: 8px;">
                             <option value="pendiente" {% if pedido.estado=='pendiente' %}selected{% endif %}>Pendiente
                             </option>
                             <option value="coordinado" {% if pedido.estado=='coordinado' %}selected{% endif %}>
@@ -159,7 +161,9 @@
                             <option value="cancelado" {% if pedido.estado=='cancelado' %}selected{% endif %}>Cancelado
                             </option>
                         </select>
-                        <button type="submit" class="btn-actualizar">Actualizar</button>
+                        <button type="submit" class="btn-actualizar" style="width: 100%;">
+                            <i class="fas fa-check"></i> Confirmar
+                        </button>
                     </form>
                 </td>
             </tr>
