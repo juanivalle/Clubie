@@ -14,9 +14,7 @@
 - [Funcionalidades](#Funcionalidades)
 
 ## Equipo de trabajo
-- Carlos Barrio  [@charlybarrio](https://github.com/charlybarrio) - Front-end
 - Juan Ignacio Valle  [@juanivalle](https://github.com/juanivalle) - Full-stack
-- Neo Dau  [@NeoDau](https://github.com/NeoDau) - Front-end
 - Matias Mancini [@EMME-ESSE](https://github.com/EMME-ESSE) - Back-end
 - Agustin Meriles  [@AgustinMeriles](https://github.com/AgustinMeriles) - Back-end
 
