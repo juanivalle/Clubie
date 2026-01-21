@@ -1047,8 +1047,23 @@ def cambiar_estado_pedido(id):
 
 
 # Crear tablas si no existen (Ejecutar al iniciar la app)
+# Crear tablas si no existen (Ejecutar al iniciar la app)
 with app.app_context():
     db.create_all()
+
+    # --- Inicialización Automática de Admins ---
+    cuentas_admin = ['JuanIgnacioValle', 'AgustinMeriles']
+    for username in cuentas_admin:
+        if not Club.query.filter_by(username=username).first():
+            from clases import generar_password # Asegurar import
+            password = generar_password(12)
+            nuevo_club = Club(username=username, email=f'{username.lower()}@clubie.com')
+            nuevo_club.set_password(password)
+            db.session.add(nuevo_club)
+            db.session.commit()
+            # Estos prints aparecerán en los logs de Railway
+            print(f"🚀 [INIT] Cuenta creada: {username} | Pass: {password}")
+    # -------------------------------------------
 
 if __name__ == '__main__':
     app.run(debug=True)
