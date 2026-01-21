@@ -1058,7 +1058,8 @@ with app.app_context():
             # from clases import generar_password  <-- Error: la función está definida arriba en este mismo archivo
             # Usamos la funcion local directamente
             password = generar_password(12)
-            nuevo_club = Club(username=username, email=f'{username.lower()}@clubie.com')
+            # is_superuser=True otorga permisos de administrador global
+            nuevo_club = Club(username=username, email=f'{username.lower()}@clubie.com', is_superuser=True)
             nuevo_club.set_password(password)
             db.session.add(nuevo_club)
             db.session.commit()
