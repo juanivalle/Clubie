@@ -23,7 +23,17 @@ if not _secret_key:
     print("⚠️  ADVERTENCIA: SECRET_KEY no configurada. Usando clave temporal.")
     print("   En producción, configure la variable de entorno SECRET_KEY")
 app.config['SECRET_KEY'] = _secret_key
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
+# Configuración de Base de Datos
+# Si existe DATABASE_URL (Railway), usa PostgreSQL
+# Si no, usa SQLite local
+_db_url = os.environ.get('DATABASE_URL')
+if _db_url:
+    # Corrección para SQLAlchemy moderna (postgres:// -> postgresql://)
+    if _db_url.startswith("postgres://"):
+        _db_url = _db_url.replace("postgres://", "postgresql://", 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = _db_url
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)

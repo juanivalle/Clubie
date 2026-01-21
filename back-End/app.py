@@ -1046,7 +1046,9 @@ def cambiar_estado_pedido(id):
     return redirect(url_for('ver_pedidos'))
 
 
+# Crear tablas si no existen (Ejecutar al iniciar la app)
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
