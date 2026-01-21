@@ -1055,7 +1055,8 @@ with app.app_context():
     cuentas_admin = ['JuanIgnacioValle', 'AgustinMeriles']
     for username in cuentas_admin:
         if not Club.query.filter_by(username=username).first():
-            from clases import generar_password # Asegurar import
+            # from clases import generar_password  <-- Error: la función está definida arriba en este mismo archivo
+            # Usamos la funcion local directamente
             password = generar_password(12)
             nuevo_club = Club(username=username, email=f'{username.lower()}@clubie.com')
             nuevo_club.set_password(password)
