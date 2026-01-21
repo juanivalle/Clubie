@@ -58,8 +58,12 @@
                     <td>{{ user.telefono }}</td>
                     <td>{{ user.email }}</td>
                     <td>
-                        <a href="/edit/{{user.cedula}}" class="btn btn-secondary" id="btnedit">Editar</a>
-                        <a href="/delete-socio/{{user.cedula}}" class="btn btn-danger" id="btndelete">X</a>
+                        <a href="/edit/{{user.cedula}}" class="btn btn-secondary btn-sm">Editar</a>
+                        <form action="/delete-socio/{{user.cedula}}" method="POST" style="display: inline;"
+                            onsubmit="return confirm('¿Estás seguro de que deseas eliminar el miembro?')">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm">X</button>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}

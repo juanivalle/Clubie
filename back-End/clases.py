@@ -12,8 +12,17 @@ from datetime import datetime
 import os
 
 
-# Configuración segura - usa variable de entorno o valor por defecto para desarrollo
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-cambiar-en-produccion')
+# Configuración segura de SECRET_KEY
+# En producción, DEBE configurarse la variable de entorno SECRET_KEY
+import secrets
+_secret_key = os.environ.get('SECRET_KEY')
+if not _secret_key:
+    # En desarrollo: genera una clave aleatoria (cambia en cada reinicio)
+    # En producción: DEBE configurarse la variable de entorno
+    _secret_key = secrets.token_hex(32)
+    print("⚠️  ADVERTENCIA: SECRET_KEY no configurada. Usando clave temporal.")
+    print("   En producción, configure la variable de entorno SECRET_KEY")
+app.config['SECRET_KEY'] = _secret_key
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database2.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -21,10 +30,14 @@ bcrypt = Bcrypt(app)
 
 class User(db.Model):
     cedula = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
     name = db.Column(db.String(30), nullable=False)
-    telefono = db.Column(db.Integer, nullable=False, unique=True)
-    email = db.Column(db.String(30), nullable=False, unique=True)
+    telefono = db.Column(db.Integer, nullable=False)
+    email = db.Column(db.String(30), nullable=False)
     fecha_registro = db.Column(db.DateTime, default=datetime.now)
+    
+    # Relación con Club
+    club = db.relationship('Club', backref='miembros_club', lazy=True)
     
     # Relación con ventas
     ventas = db.relationship('Ventas', backref='usuario', lazy=True)
@@ -70,6 +83,7 @@ class LoginForm(FlaskForm):
 
 class Trazabilidad(db.Model):
     idplanta = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
     raza = db.Column(db.String(30), nullable=False)
     Enraizado = db.Column(db.DateTime, nullable=True)
     Riego = db.Column(db.DateTime, nullable=True)
@@ -103,6 +117,7 @@ class Ventasform(FlaskForm):
 
 class Ventas(db.Model):
     idventas = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
     cedula = db.Column(db.Integer, db.ForeignKey('user.cedula'), nullable=False)
     raza = db.Column(db.String(30), nullable=False)
     cantidad = db.Column(db.Integer, nullable=False)
@@ -119,6 +134,7 @@ class Ventas(db.Model):
 class Member(db.Model, UserMixin):
     """Cuenta de login para miembros de clubs (usuarios finales)"""
     id = db.Column(db.Integer, primary_key=True)
+    club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
     cedula = db.Column(db.Integer, db.ForeignKey('user.cedula'), nullable=False)
     email = db.Column(db.String(70), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
@@ -158,8 +174,18 @@ class MemberRegistrationForm(FlaskForm):
     
     password = PasswordField('Contraseña', validators=[
         DataRequired(message='La contraseña es requerida'),
-        Length(min=6, max=30, message='La contraseña debe tener entre 6 y 30 caracteres')
-    ], render_kw={"placeholder": "Mínimo 6 caracteres"})
+        Length(min=8, max=30, message='La contraseña debe tener entre 8 y 30 caracteres')
+    ], render_kw={"placeholder": "Mín. 8 caracteres, 1 mayúscula, 1 número, 1 símbolo"})
+    
+    def validate_password(self, password):
+        """Valida complejidad de la contraseña"""
+        p = password.data
+        if not any(c.isupper() for c in p):
+            raise ValidationError('La contraseña debe incluir al menos una mayúscula.')
+        if not any(c.isdigit() for c in p):
+            raise ValidationError('La contraseña debe incluir al menos un número.')
+        if not any(c in "!@#$%^&*()_+-=[]{}|;:,.<>?" for c in p):
+            raise ValidationError('La contraseña debe incluir al menos un carácter especial (!@#$%).')
     
     confirm_password = PasswordField('Confirmar Contraseña', validators=[
         DataRequired(message='Confirma tu contraseña')
@@ -204,6 +230,7 @@ class ContactForm(FlaskForm):
 class Pedido(db.Model):
     """Solicitud de coordinación de compra de un miembro"""
     id = db.Column(db.Integer, primary_key=True)
+    club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
     cedula = db.Column(db.Integer, db.ForeignKey('user.cedula'), nullable=False)
     raza = db.Column(db.String(30), nullable=False)
     cantidad_solicitada = db.Column(db.Integer, nullable=False)

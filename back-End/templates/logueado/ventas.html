@@ -28,8 +28,11 @@
           <td>{{ venta.cantidad }}</td>
           <td>{{ venta.retiro.strftime('%Y-%m-%dT%H:%M') }}</td>
           <td>
-            <a href="/delete-venta/{{venta.idventas}}" class="btn btn-danger btn-sm"
-              onclick="return confirm('¿Estás seguro de eliminar esta venta?')">Eliminar</a>
+            <form action="/delete-venta/{{venta.idventas}}" method="POST" style="display: inline;"
+              onsubmit="return confirm('¿Estás seguro de eliminar esta venta?')">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+            </form>
           </td>
         </tr>
         {% endfor %}

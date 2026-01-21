@@ -1,0 +1,143 @@
+{% extends 'base-log.html' %}
+
+{% block body %}
+<link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css">
+<link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css') }}">
+
+<style>
+    .card-body {
+        background: #1a1a2e;
+        border: 1px solid #28a745;
+    }
+
+    .card-body label {
+        color: #28a745;
+        font-weight: 500;
+    }
+
+    .form-control {
+        background: #16213e;
+        border: 1px solid #28a745;
+        color: white;
+    }
+
+    .form-control:focus {
+        background: #1a1a2e;
+        border-color: #28a745;
+        color: white;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+
+    h3 {
+        color: #28a745;
+        margin-bottom: 20px;
+    }
+
+    .btn-volver {
+        background: #6c757d;
+        color: white;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="col-md-8 offset-md-2">
+    <div class="card card-body">
+        <h3><i class="fas fa-edit"></i> Editar Planta #{{ planta.idplanta }}</h3>
+
+        <form action="/editplanta/{{ planta.idplanta }}" method="POST">
+            {{ form.csrf_token }}
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="raza">Raza / Variedad</label>
+                        <input type="text" id="raza" name="raza" class="form-control" value="{{ planta.raza or '' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cantidad">Cantidad (g)</label>
+                        <input type="text" id="cantidad" name="cantidad" class="form-control"
+                            value="{{ planta.cantidad or '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Riego">Riego</label>
+                        <input type="datetime-local" id="Riego" name="Riego" class="form-control"
+                            value="{{ planta.Riego.strftime('%Y-%m-%dT%H:%M') if planta.Riego else '' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="Enraizado">Enraizado</label>
+                        <input type="datetime-local" id="Enraizado" name="Enraizado" class="form-control"
+                            value="{{ planta.Enraizado.strftime('%Y-%m-%dT%H:%M') if planta.Enraizado else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="paso1">1er Trasplante</label>
+                        <input type="datetime-local" id="paso1" name="paso1" class="form-control"
+                            value="{{ planta.paso1.strftime('%Y-%m-%dT%H:%M') if planta.paso1 else '' }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="paso2">2do Trasplante</label>
+                        <input type="datetime-local" id="paso2" name="paso2" class="form-control"
+                            value="{{ planta.paso2.strftime('%Y-%m-%dT%H:%M') if planta.paso2 else '' }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="paso3">3er Trasplante</label>
+                        <input type="datetime-local" id="paso3" name="paso3" class="form-control"
+                            value="{{ planta.paso3.strftime('%Y-%m-%dT%H:%M') if planta.paso3 else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="floracion">Floración</label>
+                        <input type="datetime-local" id="floracion" name="floracion" class="form-control"
+                            value="{{ planta.floracion.strftime('%Y-%m-%dT%H:%M') if planta.floracion else '' }}">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="cosecha">Cosecha</label>
+                        <input type="datetime-local" id="cosecha" name="cosecha" class="form-control"
+                            value="{{ planta.cosecha.strftime('%Y-%m-%dT%H:%M') if planta.cosecha else '' }}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones">Observaciones</label>
+                <textarea id="observaciones" name="observaciones" class="form-control"
+                    rows="3">{{ planta.observaciones or '' }}</textarea>
+            </div>
+
+            <div class="form-group mt-4">
+                <a href="{{ url_for('ctrPlantas') }}" class="btn btn-volver">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

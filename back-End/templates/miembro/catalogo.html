@@ -189,6 +189,7 @@
             <a href="{{ url_for('portal_miembro') }}"><i class="fas fa-home"></i> Mi Portal</a>
             <a href="{{ url_for('portal_catalogo') }}"><i class="fas fa-cannabis"></i> Catálogo</a>
             <a href="{{ url_for('portal_compras') }}"><i class="fas fa-shopping-cart"></i> Mis Compras</a>
+            <a href="{{ url_for('portal_mis_pedidos') }}"><i class="fas fa-clipboard-list"></i> Mis Pedidos</a>
             <a href="{{ url_for('portal_contacto') }}"><i class="fas fa-envelope"></i> Contacto</a>
         </nav>
         <div>
@@ -197,7 +198,7 @@
                     <i class="fas fa-user"></i> {{ usuario.name }}
                 </a>
             </span>
-            <a href="{{ url_for('logout_miembro') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+            <a href="{{ url_for('logout') }}" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Salir</a>
         </div>
     </header>
 

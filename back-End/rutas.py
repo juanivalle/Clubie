@@ -11,5 +11,7 @@ allowed_origins = os.environ.get('CORS_ORIGINS', 'http://localhost:5000,http://1
 CORS(app, resources={r"/api/*": {"origins": allowed_origins}})
 
 if __name__ == '__main__':
-    app.run(host="localhost", port="5000", debug=True)
+    # Debug mode controlado por variable de entorno (deshabilitado por defecto)
+    debug_mode = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
+    app.run(host="localhost", port="5000", debug=debug_mode)
 

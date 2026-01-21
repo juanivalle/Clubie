@@ -149,6 +149,14 @@
                 <td>{{ pedido.fecha.strftime('%d/%m/%Y %H:%M') }}</td>
                 <td><span class="badge badge-{{ pedido.estado }}">{{ pedido.estado|capitalize }}</span></td>
                 <td style="min-width: 150px;">
+                    {% if pedido.estado in ['completado', 'cancelado'] %}
+                    <!-- Estado final - No editable -->
+                    <div style="text-align: center; padding: 10px;">
+                        <i class="fas fa-lock" style="color: #666; margin-bottom: 5px;"></i>
+                        <small style="color: #888; display: block;">Estado final</small>
+                    </div>
+                    {% else %}
+                    <!-- Estados pendiente/coordinado - Editable -->
                     <form action="{{ url_for('cambiar_estado_pedido', id=pedido.id) }}" method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <select name="estado" class="estado-select" style="width: 100%; margin-bottom: 8px;">
@@ -165,6 +173,7 @@
                             <i class="fas fa-check"></i> Confirmar
                         </button>
                     </form>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

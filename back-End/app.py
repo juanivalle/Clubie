@@ -1,4 +1,8 @@
-from flask import Flask, jsonify, render_template, url_for, redirect, request, flash
+from flask import Flask, jsonify, render_template, url_for, redirect, request, flash, Response
+from io import BytesIO
+from datetime import datetime
+from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_, text, extract
 from flask_login import login_user, LoginManager, login_required, logout_user, current_user
@@ -10,13 +14,24 @@ from sqlalchemy.orm import joinedload
 from functools import wraps
 from flask_wtf.csrf import generate_csrf
 import random
+import secrets
 import string
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 login_manager.login_message = 'Por favor inicia sesión para acceder a esta página.'
 login_manager.login_message_category = 'info'
+
+# Rate Limiter - Protección contra fuerza bruta
+limiter = Limiter(
+    key_func=get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
 
 # Exponer csrf_token() como función global de Jinja
 app.jinja_env.globals['csrf_token'] = generate_csrf
@@ -36,34 +51,37 @@ def index():
     return render_template("/noLog/home.html", usuarios=usuarios)
 
 @app.route('/registerform', methods=['GET', 'POST'])
+@login_required
 def register():
     form = RegistrationForm()
     if request.method == "POST":
-
         if form.validate_on_submit():
             cedula = form.cedula.data
             name = form.name.data
-            telefono =form.telefono.data
-            email = form.email.data        
-            user = User.query.filter(or_(
-                User.cedula == cedula, User.name == name, User.telefono == telefono, User.email == email)).first()
+            telefono = form.telefono.data
+            email = form.email.data
+            # Verificar si ya existe en ESTE club
+            user = User.query.filter(
+                User.club_id == current_user.id,
+                or_(User.cedula == cedula, User.telefono == telefono, User.email == email)
+            ).first()
             if user:
+                flash('Ya existe un miembro con esa cédula, teléfono o email.', 'error')
                 return redirect(url_for('miembros'))
-            new_user = User(cedula=cedula, name=name,
-                            telefono=telefono, email=email)
+            new_user = User(cedula=cedula, name=name, telefono=telefono, email=email, club_id=current_user.id)
             db.session.add(new_user)
             db.session.commit()
-            
+            flash('Miembro registrado exitosamente.', 'success')
         return redirect(url_for('miembros'))
-
     return redirect(url_for('miembros', form=form))
 
 @app.route('/miembros.html')
 @login_required
 def miembros():
     form = RegistrationForm()
-    usuarios = User.query.all()
-    return render_template('/logueado/miembros.html',form=form, users=usuarios)
+    # Filtrar solo miembros de ESTE club
+    usuarios = User.query.filter_by(club_id=current_user.id).all()
+    return render_template('/logueado/miembros.html', form=form, users=usuarios)
 
 
 
@@ -78,15 +96,19 @@ def verificar_cedula():
     response = {'existe': existe_cedula}
     return jsonify(response)
 
-# FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB // FUNCIONA
-@app.route('/delete-socio/<cedula>')
+# FUNCION QUE SE ENCARGARA DE ELIMINAR SOCIOS DEL CLUB
+@app.route('/delete-socio/<int:cedula>', methods=['POST'])
 @login_required
 def delete_socio(cedula):
-    socio = User.query.filter_by(cedula=cedula).first()
+    # IMPORTANTE: Verificar que el socio pertenece a ESTE club (seguridad)
+    socio = User.query.filter_by(cedula=cedula, club_id=current_user.id).first()
     
     if socio:
         db.session.delete(socio)
         db.session.commit()
+        flash('Miembro eliminado correctamente.', 'success')
+    else:
+        flash('Miembro no encontrado o no pertenece a este club.', 'error')
     
     return redirect(url_for('miembros'))
 
@@ -115,8 +137,9 @@ def editar_usuario(cedula):
 def registerplanta():
     form = PlantForm()
     if request.method == "POST":
-        if form.validate_on_submit():  
-            trazabilidad = Trazabilidad.query.order_by(Trazabilidad.idplanta.desc()).first()
+        if form.validate_on_submit():
+            # Obtener el último ID de planta de ESTE club
+            trazabilidad = Trazabilidad.query.filter_by(club_id=current_user.id).order_by(Trazabilidad.idplanta.desc()).first()
             if trazabilidad:
                 new_idplanta = trazabilidad.idplanta + 1
             else:
@@ -133,7 +156,8 @@ def registerplanta():
             observaciones = form.observaciones.data
             new_planta = Trazabilidad(idplanta=new_idplanta, raza=raza, Enraizado=Enraizado, Riego=Riego,
                                        paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
-                                       cosecha=cosecha, cantidad=cantidad, observaciones=observaciones)
+                                       cosecha=cosecha, cantidad=cantidad, observaciones=observaciones,
+                                       club_id=current_user.id)
             db.session.add(new_planta)
             db.session.commit()
         return redirect(url_for('trazabilidad'))
@@ -144,8 +168,106 @@ def registerplanta():
 @login_required
 def ctrPlantas():
     form = PlantForm()
-    planta = Trazabilidad.query.all()
+    # Filtrar plantas de ESTE club
+    planta = Trazabilidad.query.filter_by(club_id=current_user.id).all()
     return render_template('/logueado/ctrplanta.html', form=form, planta=planta)
+
+@app.route('/exportar_plantas', methods=['GET'])
+@login_required
+def exportar_plantas():
+    """Exportar datos de trazabilidad de plantas a Excel con filtro de fechas"""
+    fecha_inicio = request.args.get('fecha_inicio')
+    fecha_fin = request.args.get('fecha_fin')
+    
+    # Query base filtrada por club
+    query = Trazabilidad.query.filter_by(club_id=current_user.id)
+    
+    # Aplicar filtros de fecha si se proporcionan (basado en fecha de cosecha)
+    if fecha_inicio:
+        try:
+            inicio = datetime.strptime(fecha_inicio, '%Y-%m-%d')
+            query = query.filter(Trazabilidad.cosecha >= inicio)
+        except ValueError:
+            pass
+    
+    if fecha_fin:
+        try:
+            fin = datetime.strptime(fecha_fin, '%Y-%m-%d')
+            query = query.filter(Trazabilidad.cosecha <= fin)
+        except ValueError:
+            pass
+    
+    plantas = query.all()
+    
+    # Crear libro Excel
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Control de Plantas"
+    
+    # Estilos
+    header_font = Font(bold=True, color="FFFFFF")
+    header_fill = PatternFill(start_color="28a745", end_color="28a745", fill_type="solid")
+    header_alignment = Alignment(horizontal="center", vertical="center")
+    thin_border = Border(
+        left=Side(style='thin'),
+        right=Side(style='thin'),
+        top=Side(style='thin'),
+        bottom=Side(style='thin')
+    )
+    
+    # Headers
+    headers = ["ID Planta", "Raza", "Riego", "Enraizado", "1er Trasplante", 
+               "2do Trasplante", "3er Trasplante", "Floración", "Cosecha", 
+               "Cantidad (g)", "Observaciones"]
+    
+    for col, header in enumerate(headers, 1):
+        cell = ws.cell(row=1, column=col, value=header)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = header_alignment
+        cell.border = thin_border
+    
+    # Datos
+    for row, planta in enumerate(plantas, 2):
+        data = [
+            planta.idplanta,
+            planta.raza,
+            planta.Riego.strftime('%d/%m/%Y') if planta.Riego else '',
+            planta.Enraizado.strftime('%d/%m/%Y') if planta.Enraizado else '',
+            planta.paso1.strftime('%d/%m/%Y') if planta.paso1 else '',
+            planta.paso2.strftime('%d/%m/%Y') if planta.paso2 else '',
+            planta.paso3.strftime('%d/%m/%Y') if planta.paso3 else '',
+            planta.floracion.strftime('%d/%m/%Y') if planta.floracion else '',
+            planta.cosecha.strftime('%d/%m/%Y') if planta.cosecha else '',
+            planta.cantidad,
+            planta.observaciones or ''
+        ]
+        for col, value in enumerate(data, 1):
+            cell = ws.cell(row=row, column=col, value=value)
+            cell.border = thin_border
+    
+    # Ajustar ancho de columnas
+    column_widths = [12, 20, 12, 12, 15, 15, 15, 12, 12, 12, 30]
+    for i, width in enumerate(column_widths, 1):
+        ws.column_dimensions[chr(64 + i)].width = width
+    
+    # Nombre del archivo con fecha
+    fecha_actual = datetime.now().strftime('%Y%m%d')
+    filename = f"control_plantas_{current_user.username}_{fecha_actual}.xlsx"
+    
+    # Guardar en memoria
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+    
+    # Usar send_file estándar de Flask
+    from flask import send_file
+    return send_file(
+        output,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name=filename
+    )
 
 @app.route('/editplanta/<idplanta>', methods=['GET', 'POST'])
 @login_required
@@ -170,14 +292,18 @@ def editar_planta(idplanta):
 
     return render_template('/logueado/edit_planta.html', form=form, planta=planta)
 
-@app.route('/deleteplanta/<idplanta>')
+@app.route('/deleteplanta/<int:idplanta>', methods=['POST'])
 @login_required
 def delete_planta(idplanta):
-    elplant = Trazabilidad.query.filter_by(idplanta=idplanta).first()
+    # Verificar que la planta pertenece a ESTE club
+    elplant = Trazabilidad.query.filter_by(idplanta=idplanta, club_id=current_user.id).first()
   
     if elplant:
         db.session.delete(elplant)
         db.session.commit()
+        flash('Planta eliminada correctamente.', 'success')
+    else:
+        flash('Planta no encontrada o no pertenece a este club.', 'error')
 
     return redirect(url_for('ctrPlantas'))
 
@@ -192,18 +318,13 @@ def ventosa():
         raza = form.razaVenta.data
         cantidad = form.cantVenta.data
         retiro = form.retiro.data
-        usuario = User.query.filter_by(cedula=cedula).first()
+        # Verificar que el usuario pertenece a este club
+        usuario = User.query.filter_by(cedula=cedula, club_id=current_user.id).first()
         if usuario:
-            # Verifica si el usuario ha superado el límite de cantidad de compras
-            #total_ventas += cantidad
-            #if total_ventas + cantidad > 40:
-                #flash("Alerta de compra excedida")
-                #return redirect(url_for('home'))
-            new_venta = Ventas(cedula=cedula, raza=raza, cantidad=cantidad, retiro=retiro)
+            new_venta = Ventas(cedula=cedula, raza=raza, cantidad=cantidad, retiro=retiro, club_id=current_user.id)
             db.session.add(new_venta)
             db.session.commit()
         return redirect(url_for('ventas'))
-
     return render_template('home.html', form=form)
 
 @app.route('/get-username')
@@ -216,6 +337,19 @@ def get_username():
         username = 'Usuario no encontrado'
     return username
 
+@app.route('/delete-venta/<int:idventas>', methods=['POST'])
+@login_required
+def delete_venta(idventas):
+    """Eliminar una venta por su ID"""
+    venta = Ventas.query.filter_by(idventas=idventas, club_id=current_user.id).first()
+    if venta:
+        db.session.delete(venta)
+        db.session.commit()
+        flash('Venta eliminada correctamente', 'success')
+    else:
+        flash('Venta no encontrada', 'error')
+    return redirect(url_for('ventas'))
+
 
 
 
@@ -224,7 +358,8 @@ def get_username():
 @login_required
 def ventas():
     form = Ventasform()
-    ventas = Ventas.query.all()
+    # Filtrar ventas de ESTE club
+    ventas = Ventas.query.filter_by(club_id=current_user.id).all()
     return render_template('/logueado/ventas.html', form=form, ventas=ventas)
 
 @app.route('/delete-venta/<int:idventas>')
@@ -311,6 +446,7 @@ def obDatosU():
 
 @app.route('/login.html', methods=['POST', 'GET'])
 @app.route('/login', methods=['POST', 'GET'])
+@limiter.limit("5 per minute", methods=["POST"])  # Protección contra fuerza bruta
 def login():
     form = LoginForm()
     
@@ -391,10 +527,19 @@ def generar_username(longitud=8):
     caracteres = string.ascii_letters + string.digits
     return ''.join(random.choice(caracteres) for _ in range(longitud))
 
-def generar_password(longitud=10):
-    """Genera una contraseña aleatoria segura"""
-    caracteres = string.ascii_letters + string.digits + "!@#$%"
-    return ''.join(random.choice(caracteres) for _ in range(longitud))
+def generar_password(longitud=12):
+    """Genera una contraseña aleatoria criptográficamente segura y compleja"""
+    if longitud < 12: longitud = 12
+    
+    alphabet = string.ascii_letters + string.digits + "!@#$%"
+    
+    while True:
+        password = ''.join(secrets.choice(alphabet) for _ in range(longitud))
+        if (any(c.islower() for c in password)
+                and any(c.isupper() for c in password)
+                and any(c.isdigit() for c in password)
+                and any(c in "!@#$%" for c in password)):
+            return password
 
 @app.route('/admin')
 @superuser_required
@@ -621,46 +766,18 @@ def registro_miembro():
             flash('Este email ya está registrado.', 'error')
             return render_template('miembro/registro.html', form=form)
         
-        # Crear el Member
-        nuevo_miembro = Member(cedula=cedula, email=email)
+        # Crear el Member (heredando el club_id del User)
+        nuevo_miembro = Member(cedula=cedula, email=email, club_id=usuario.club_id)
         nuevo_miembro.set_password(password)
         db.session.add(nuevo_miembro)
         db.session.commit()
         
         flash('¡Cuenta creada exitosamente! Ya puedes iniciar sesión.', 'success')
-        return redirect(url_for('login_miembro'))
+        return redirect(url_for('login'))
     
     return render_template('miembro/registro.html', form=form)
 
-@app.route('/login-miembro', methods=['GET', 'POST'])
-def login_miembro():
-    """Login de miembros"""
-    form = MemberLoginForm()
-    
-    if current_user.is_authenticated and isinstance(current_user, Member):
-        return redirect(url_for('portal_miembro'))
-    
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
-        
-        miembro = Member.query.filter_by(email=email).first()
-        if miembro and miembro.check_password(password):
-            login_user(miembro)
-            flash('¡Bienvenido!', 'success')
-            return redirect(url_for('portal_miembro'))
-        else:
-            flash('Email o contraseña incorrectos.', 'error')
-    
-    return render_template('miembro/login.html', form=form)
 
-@app.route('/logout-miembro')
-@member_required
-def logout_miembro():
-    """Logout de miembros"""
-    logout_user()
-    flash('Has cerrado sesión.', 'info')
-    return redirect(url_for('login_miembro'))
 
 @app.route('/portal-miembro')
 @member_required
@@ -708,27 +825,33 @@ def portal_contacto():
     return render_template('miembro/contacto.html', form=form, usuario=usuario)
 
 
-def calcular_stock():
-    """Calcula el stock disponible por raza considerando reservas de pedidos"""
+def calcular_stock(club_id):
+    """Calcula el stock disponible por raza considerando reservas de pedidos para un club específico"""
     from sqlalchemy import func
     
-    # Sumar gramos cosechados por raza (plantas con fecha de cosecha)
+    # Sumar gramos cosechados por raza (plantas con fecha de cosecha) DE ESTE CLUB
     cosechado = db.session.query(
         Trazabilidad.raza,
         func.sum(func.cast(Trazabilidad.cantidad, db.Integer)).label('total_cosechado')
-    ).filter(Trazabilidad.cosecha.isnot(None)).group_by(Trazabilidad.raza).all()
+    ).filter(
+        Trazabilidad.club_id == club_id,
+        Trazabilidad.cosecha.isnot(None)
+    ).group_by(Trazabilidad.raza).all()
     
-    # Sumar gramos vendidos por raza
+    # Sumar gramos vendidos por raza DE ESTE CLUB
     vendido = db.session.query(
         Ventas.raza,
         func.sum(Ventas.cantidad).label('total_vendido')
-    ).group_by(Ventas.raza).all()
+    ).filter(Ventas.club_id == club_id).group_by(Ventas.raza).all()
     
-    # Sumar gramos reservados (pedidos pendientes o coordinados)
+    # Sumar gramos reservados (pedidos pendientes o coordinados) DE ESTE CLUB
     reservado = db.session.query(
         Pedido.raza,
         func.sum(Pedido.cantidad_solicitada).label('total_reservado')
-    ).filter(Pedido.estado.in_(['pendiente', 'coordinado'])).group_by(Pedido.raza).all()
+    ).filter(
+        Pedido.club_id == club_id,
+        Pedido.estado.in_(['pendiente', 'coordinado'])
+    ).group_by(Pedido.raza).all()
     
     # Crear diccionarios
     vendido_dict = {v.raza: v.total_vendido or 0 for v in vendido}
@@ -754,9 +877,20 @@ def calcular_stock():
 
 
 @app.route('/api/catalogo')
+@login_required
 def api_catalogo():
     """API que retorna el catálogo con stock"""
-    productos = calcular_stock()
+    if isinstance(current_user, Member):
+        # Obtener club_id del miembro
+        usuario = User.query.filter_by(cedula=current_user.cedula).first()
+        club_id = usuario.club_id if usuario else None
+    else:
+        club_id = current_user.id
+    
+    if not club_id:
+        return jsonify([])
+    
+    productos = calcular_stock(club_id)
     return jsonify(productos)
 
 
@@ -765,7 +899,11 @@ def api_catalogo():
 def portal_catalogo():
     """Catálogo de productos para miembros"""
     usuario = User.query.filter_by(cedula=current_user.cedula).first()
-    productos = calcular_stock()
+    if not usuario:
+        flash('Usuario no encontrado.', 'error')
+        return redirect(url_for('portal_miembro'))
+    
+    productos = calcular_stock(usuario.club_id)
     
     # Ordenar por stock (mayor primero)
     productos.sort(key=lambda x: x['stock'], reverse=True)
@@ -786,7 +924,7 @@ def portal_pedido(raza=None):
         return redirect(url_for('portal_catalogo'))
     
     # Obtener stock de esta raza
-    productos = calcular_stock()
+    productos = calcular_stock(usuario.club_id)
     producto = next((p for p in productos if p['raza'] == raza), None)
     
     if not producto or producto['stock'] <= 0:
@@ -804,12 +942,13 @@ def portal_pedido(raza=None):
         elif cantidad > stock:
             flash(f'Solo hay {stock}g disponibles.', 'error')
         else:
-            # Crear pedido
+            # Crear pedido con club_id
             pedido = Pedido(
                 cedula=current_user.cedula,
                 raza=raza,
                 cantidad_solicitada=cantidad,
-                mensaje=mensaje
+                mensaje=mensaje,
+                club_id=usuario.club_id
             )
             db.session.add(pedido)
             db.session.commit()
@@ -841,7 +980,7 @@ def ver_stock():
     if isinstance(current_user, Member):
         return redirect(url_for('portal_miembro'))
     
-    productos = calcular_stock()
+    productos = calcular_stock(current_user.id)
     # Ordenar por stock disponible (mayor primero)
     productos.sort(key=lambda x: x['stock'], reverse=True)
     
@@ -867,7 +1006,8 @@ def ver_pedidos():
     if isinstance(current_user, Member):
         return redirect(url_for('portal_miembro'))
     
-    pedidos = Pedido.query.order_by(Pedido.fecha.desc()).all()
+    # Filtrar pedidos de ESTE club
+    pedidos = Pedido.query.filter_by(club_id=current_user.id).order_by(Pedido.fecha.desc()).all()
     return render_template('logueado/pedidos.html', pedidos=pedidos)
 
 
@@ -880,7 +1020,8 @@ def cambiar_estado_pedido(id):
     
     from datetime import datetime
     
-    pedido = Pedido.query.get_or_404(id)
+    # Verificar que el pedido pertenece a este club
+    pedido = Pedido.query.filter_by(id=id, club_id=current_user.id).first_or_404()
     nuevo_estado = request.form.get('estado')
     estado_anterior = pedido.estado
     
@@ -891,7 +1032,8 @@ def cambiar_estado_pedido(id):
                 cedula=pedido.cedula,
                 raza=pedido.raza,
                 cantidad=pedido.cantidad_solicitada,
-                retiro=datetime.now()
+                retiro=datetime.now(),
+                club_id=current_user.id
             )
             db.session.add(nueva_venta)
             flash(f'Pedido completado. Venta de {pedido.cantidad_solicitada}g de {pedido.raza} registrada.', 'success')
