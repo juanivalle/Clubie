@@ -118,13 +118,14 @@ header {
   position: sticky;
   top: 0;
   left: 0;
-  width: 100vw;
-  padding: 30px 100px;
+  width: 100%;
+  padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   z-index: 333;
   background-color: rgba(0, 0, 0, 0.8);
+  box-sizing: border-box;
   /* Valor del canal alfa (alpha) para la opacidad */
 
 }
@@ -135,23 +136,30 @@ header {
 
 .header .logo img {
   transition: all 0.3s;
-  height: auto;
+  height: 40px;
   width: auto;
 }
 
 .header .logo img:hover {
-  transform: scale(1.2);
+  transform: scale(1.1);
+}
+
+nav.opcion {
+  flex: 1;
+  display: flex;
+  justify-content: center;
 }
 
 .opcion a {
   position: relative;
-  font-size: 1.1em;
+  font-size: 0.95em;
   color: #fff;
   font-weight: 600;
   text-decoration: none;
-  margin-left: 20px;
-  padding: 6px 15px;
+  margin-left: 10px;
+  padding: 6px 12px;
   transition: .5s;
+  white-space: nowrap;
 }
 
 .opcion a span {
