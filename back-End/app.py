@@ -89,6 +89,10 @@ def miembros():
 @app.route('/cedula', methods=['POST'])
 def verificar_cedula():
     cedula = request.form.get('cedula')
+    
+    # Validación simple: si tiene más de 8 dígitos, es inválido (y muy grande para Integer)
+    if not cedula or len(cedula) > 8 or not cedula.isdigit():
+        return jsonify({'existe': False, 'error': 'Largo máximo 8 dígitos'})
 
     user = User.query.filter_by(cedula=cedula).first()
     existe_cedula = user is not None
