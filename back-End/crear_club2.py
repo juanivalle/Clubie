@@ -3,7 +3,7 @@ from app import app, db, generar_password
 from clases import Club
 
 with app.app_context():
-    cuentas = ['JuanIgnacioValle', 'AgustinMeriles']
+    cuentas = ['JuanIgnacioValle', 'AgustinMeriles', 'MatiasDaCunha']
     
     for username in cuentas:
         if not Club.query.filter_by(username=username).first():
