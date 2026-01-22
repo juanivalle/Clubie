@@ -50,24 +50,6 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
-# === RUTA TEMPORAL - ELIMINAR DESPUÉS DE USAR ===
-@app.route('/fix-sequence')
-@login_required
-def fix_sequence():
-    """Sincroniza la secuencia de PostgreSQL con el máximo ID existente.
-    Visitar UNA VEZ después del deploy y luego eliminar esta ruta."""
-    try:
-        # Ejecutar SQL para sincronizar la secuencia
-        db.session.execute(db.text(
-            "SELECT setval('trazabilidad_idplanta_seq', (SELECT COALESCE(MAX(idplanta), 0) FROM trazabilidad))"
-        ))
-        db.session.commit()
-        return "✅ Secuencia sincronizada correctamente. Ya puedes eliminar esta ruta del código."
-    except Exception as e:
-        db.session.rollback()
-        return f"❌ Error: {str(e)}"
-# === FIN RUTA TEMPORAL ===
-
 @app.route('/registerform', methods=['GET', 'POST'])
 @login_required
 def register():
