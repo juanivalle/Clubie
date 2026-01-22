@@ -1,75 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/miembros.css') }}" />
-    <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
-    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
-    <title>Trazabilidad</title>
-  </head>
 
-  <body>
-{% extends 'base-log.html'%} 
-    
-    {% block body %}
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://bootswatch.com/4/materia/bootstrap.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/miembros.css') }}" />
+  <link rel="icon" href="{{ url_for('static', filename='media/Logo-verde.ico') }}">
+  <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+  <title>Trazabilidad</title>
+</head>
 
-    <div class="col-md-7">
-      <h2>Trazabilidad</h2>
+<body>
+  {% extends 'base-log.html'%}
+
+  {% block body %}
+
+  <div class="col-md-7">
+    <h2>Trazabilidad</h2>
+  </div>
+
+  <!-- Mensajes de alerta -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="col-12 mb-3">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show"
+      role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-    <div class="form">
-      <div class="row">
-        <div class="col-md-5">
-          <div class="card card-body">
-            <form action="/registerplanta" method="POST" autocomplete="off">
-              {{ form.csrf_token }}
-              <div class="form-group">  
-                <label>Raza</label>
-                <input id="raza" type="text" name="raza" class="form-control">
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+  <div class="form">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="card card-body">
+          <form action="/registerplanta" method="POST" autocomplete="off">
+            {{ form.csrf_token }}
+            <div class="form-group">
+              <label>Raza</label>
+              <input id="raza" type="text" name="raza" class="form-control">
 
-                <label>Enraizado</label>
-                <input id="Enraizado" type="datetime-local" name="Enraizado" class="form-control">
+              <label>Enraizado</label>
+              <input id="Enraizado" type="datetime-local" name="Enraizado" class="form-control">
 
-                <label>Riego</label>
-                <input id="Riego" type="datetime-local" name="Riego" class="form-control">
+              <label>Riego</label>
+              <input id="Riego" type="datetime-local" name="Riego" class="form-control">
 
-                <label>1er transplante</label>
-                <input id="paso1" type="datetime-local" name="paso1" class="form-control">
+              <label>1er transplante</label>
+              <input id="paso1" type="datetime-local" name="paso1" class="form-control">
 
-                <label>2do transplante</label>
-                <input id="paso2" type="datetime-local" name="paso2" class="form-control">
+              <label>2do transplante</label>
+              <input id="paso2" type="datetime-local" name="paso2" class="form-control">
 
-                <label>3er transplante</label>
-                <input id="paso3" type="datetime-local" name="paso3" class="form-control">
+              <label>3er transplante</label>
+              <input id="paso3" type="datetime-local" name="paso3" class="form-control">
 
-                <label>Floración</label>
-                <input id="floracion" type="datetime-local" name="floracion" class="form-control">
+              <label>Floración</label>
+              <input id="floracion" type="datetime-local" name="floracion" class="form-control">
 
-                <label>Cosecha</label>
-                <input id="cosecha" type="datetime-local" name="cosecha" class="form-control">
+              <label>Cosecha</label>
+              <input id="cosecha" type="datetime-local" name="cosecha" class="form-control">
 
-                <label>Cantidad</label>
-                <input id="cantidad" type="text" name="cantidad" class="form-control">
+              <label>Cantidad</label>
+              <input id="cantidad" type="text" name="cantidad" class="form-control">
 
-                <label for="observaciones" class="form-label mt-4">Observaciones</label>
-                <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
-              </div>
-              <div class="form-group">
-                <input type="submit" value="Guardar Datos" class="btn btn-primary btn-block" id="btnTrazabilidad">
-              </div>
-            </form>
-          </div>
+              <label for="observaciones" class="form-label mt-4">Observaciones</label>
+              <textarea class="form-control" id="observaciones" name="observaciones" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+              <input type="submit" value="Guardar Datos" class="btn btn-primary btn-block" id="btnTrazabilidad">
+            </div>
+          </form>
         </div>
       </div>
     </div>
-    <script>
-      let btnTrzbld = document.getElementById('btnTrazabilidad');
-      btnTrzbld.addEventListener('click', function() {
-        alert('Datos actualizados.');
-      });
-    </script>
-    {% endblock %}
-  </body>
+  </div>
+  <script>
+    let btnTrzbld = document.getElementById('btnTrazabilidad');
+    btnTrzbld.addEventListener('click', function () {
+      alert('Datos actualizados.');
+    });
+  </script>
+  {% endblock %}
+</body>
+
 </html>

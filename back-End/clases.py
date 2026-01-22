@@ -92,7 +92,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Iniciar Sesión")
 
 class Trazabilidad(db.Model):
-    idplanta = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    idplanta = db.Column(db.Integer, primary_key=True, autoincrement=True)
     club_id = db.Column(db.Integer, db.ForeignKey('club.id'), nullable=False)
     raza = db.Column(db.String(30), nullable=False)
     Enraizado = db.Column(db.DateTime, nullable=True)

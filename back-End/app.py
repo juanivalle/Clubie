@@ -50,28 +50,54 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
+# === RUTA TEMPORAL - ELIMINAR DESPUÉS DE USAR ===
+@app.route('/fix-sequence')
+@login_required
+def fix_sequence():
+    """Sincroniza la secuencia de PostgreSQL con el máximo ID existente.
+    Visitar UNA VEZ después del deploy y luego eliminar esta ruta."""
+    try:
+        # Ejecutar SQL para sincronizar la secuencia
+        db.session.execute(db.text(
+            "SELECT setval('trazabilidad_idplanta_seq', (SELECT COALESCE(MAX(idplanta), 0) FROM trazabilidad))"
+        ))
+        db.session.commit()
+        return "✅ Secuencia sincronizada correctamente. Ya puedes eliminar esta ruta del código."
+    except Exception as e:
+        db.session.rollback()
+        return f"❌ Error: {str(e)}"
+# === FIN RUTA TEMPORAL ===
+
 @app.route('/registerform', methods=['GET', 'POST'])
 @login_required
 def register():
     form = RegistrationForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            cedula = form.cedula.data
-            name = form.name.data
-            telefono = form.telefono.data
-            email = form.email.data
-            # Verificar si ya existe en ESTE club
-            user = User.query.filter(
-                User.club_id == current_user.id,
-                or_(User.cedula == cedula, User.telefono == telefono, User.email == email)
-            ).first()
-            if user:
-                flash('Ya existe un miembro con esa cédula, teléfono o email.', 'error')
-                return redirect(url_for('miembros'))
-            new_user = User(cedula=cedula, name=name, telefono=telefono, email=email, club_id=current_user.id)
-            db.session.add(new_user)
-            db.session.commit()
-            flash('Miembro registrado exitosamente.', 'success')
+            try:
+                cedula = form.cedula.data
+                name = form.name.data
+                telefono = form.telefono.data
+                email = form.email.data
+                
+                # Verificar si ya existe en ESTE club
+                user = User.query.filter(
+                    User.club_id == current_user.id,
+                    or_(User.cedula == cedula, User.telefono == telefono, User.email == email)
+                ).first()
+                if user:
+                    flash('Ya existe un miembro con esa cédula, teléfono o email.', 'error')
+                    return redirect(url_for('miembros'))
+                    
+                new_user = User(cedula=cedula, name=name, telefono=telefono, email=email, club_id=current_user.id)
+                db.session.add(new_user)
+                db.session.commit()
+                flash('Miembro registrado exitosamente.', 'success')
+                
+            except Exception as e:
+                db.session.rollback()
+                flash('Error al registrar el miembro. Verifica los datos ingresados.', 'error')
+                
         return redirect(url_for('miembros'))
     return redirect(url_for('miembros', form=form))
 
@@ -142,28 +168,42 @@ def registerplanta():
     form = PlantForm()
     if request.method == "POST":
         if form.validate_on_submit():
-            # Obtener el último ID de planta de ESTE club
-            trazabilidad = Trazabilidad.query.filter_by(club_id=current_user.id).order_by(Trazabilidad.idplanta.desc()).first()
-            if trazabilidad:
-                new_idplanta = trazabilidad.idplanta + 1
-            else:
-                new_idplanta = 1
-            raza = form.raza.data
-            Enraizado = form.Enraizado.data
-            Riego = form.Riego.data
-            paso1 = form.paso1.data
-            paso2 = form.paso2.data
-            paso3 = form.paso3.data
-            floracion = form.floracion.data
-            cosecha = form.cosecha.data
-            cantidad = int(form.cantidad.data.replace(',', ''))
-            observaciones = form.observaciones.data
-            new_planta = Trazabilidad(idplanta=new_idplanta, raza=raza, Enraizado=Enraizado, Riego=Riego,
-                                       paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
-                                       cosecha=cosecha, cantidad=cantidad, observaciones=observaciones,
-                                       club_id=current_user.id)
-            db.session.add(new_planta)
-            db.session.commit()
+            try:
+                # Validar que cantidad sea un número válido
+                cantidad_raw = form.cantidad.data.replace(',', '').replace('g', '').replace('G', '').strip()
+                if not cantidad_raw.isdigit():
+                    flash('Error: La cantidad debe ser un número válido (sin letras). Ejemplo: 100', 'error')
+                    return redirect(url_for('trazabilidad'))
+                cantidad = int(cantidad_raw)
+                
+                raza = form.raza.data
+                Enraizado = form.Enraizado.data
+                Riego = form.Riego.data
+                paso1 = form.paso1.data
+                paso2 = form.paso2.data
+                paso3 = form.paso3.data
+                floracion = form.floracion.data
+                cosecha = form.cosecha.data
+                observaciones = form.observaciones.data
+                
+                # ID se genera automáticamente por la base de datos (autoincrement)
+                new_planta = Trazabilidad(raza=raza, Enraizado=Enraizado, Riego=Riego,
+                                           paso1=paso1, paso2=paso2, paso3=paso3, floracion=floracion,
+                                           cosecha=cosecha, cantidad=cantidad, observaciones=observaciones,
+                                           club_id=current_user.id)
+                db.session.add(new_planta)
+                db.session.commit()
+                flash('Planta registrada exitosamente', 'success')
+                
+            except ValueError:
+                db.session.rollback()
+                flash('Error: Verifica que todos los campos numéricos contengan solo números.', 'error')
+                return redirect(url_for('trazabilidad'))
+            except Exception as e:
+                db.session.rollback()
+                flash(f'Error al registrar la planta. Por favor intenta de nuevo.', 'error')
+                return redirect(url_for('trazabilidad'))
+                
         return redirect(url_for('trazabilidad'))
     return render_template('/logueado/trazabilidad.html', form=form)
 
@@ -318,16 +358,37 @@ def delete_planta(idplanta):
 def ventosa():
     form = Ventasform()
     if request.method == "POST":
-        cedula = form.cedulaVenta.data
-        raza = form.razaVenta.data
-        cantidad = form.cantVenta.data
-        retiro = form.retiro.data
-        # Verificar que el usuario pertenece a este club
-        usuario = User.query.filter_by(cedula=cedula, club_id=current_user.id).first()
-        if usuario:
+        try:
+            cedula = form.cedulaVenta.data
+            raza = form.razaVenta.data
+            cantidad_raw = str(form.cantVenta.data).replace(',', '').replace('g', '').replace('G', '').strip()
+            
+            # Validar cantidad
+            if not cantidad_raw.isdigit():
+                flash('Error: La cantidad debe ser un número válido (sin letras).', 'error')
+                return redirect(url_for('ventas'))
+            cantidad = int(cantidad_raw)
+            
+            retiro = form.retiro.data
+            
+            # Verificar que el usuario pertenece a este club
+            usuario = User.query.filter_by(cedula=cedula, club_id=current_user.id).first()
+            if not usuario:
+                flash('Error: No existe un miembro con esa cédula en este club.', 'error')
+                return redirect(url_for('ventas'))
+                
             new_venta = Ventas(cedula=cedula, raza=raza, cantidad=cantidad, retiro=retiro, club_id=current_user.id)
             db.session.add(new_venta)
             db.session.commit()
+            flash('Venta registrada exitosamente.', 'success')
+            
+        except ValueError:
+            db.session.rollback()
+            flash('Error: Verifica que los campos numéricos sean válidos.', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash('Error al registrar la venta. Por favor intenta de nuevo.', 'error')
+            
         return redirect(url_for('ventas'))
     return render_template('home.html', form=form)
 
