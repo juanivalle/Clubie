@@ -50,39 +50,7 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
-# === RUTA TEMPORAL - ELIMINAR DESPUÉS DE USAR ===
-@app.route('/create-admins')
-# No requerimos login porque quizás no tiene cuenta admin aún, pero idealmente sí. 
-# El usuario dijo "crear cuenta de super admin que falta".
-# Si ya tiene una cuenta admin, mejor protegerla. El usuario tiene 'JuanIgnacioValle', asumimos que puede loguearse.
-@login_required 
-def create_admins():
-    """Ruta temporal para crear administradores definidos en código"""
-    try:
-        cuentas = ['JuanIgnacioValle', 'AgustinMeriles', 'MatiasDaCunha']
-        reporte = []
-        
-        for username in cuentas:
-            # Buscar si ya existe
-            existe = Club.query.filter_by(username=username).first()
-            
-            if not existe:
-                # Crear cuenta
-                password = generar_password(12)
-                nuevo_club = Club(username=username, email=f'{username.lower()}@clubie.com')
-                nuevo_club.set_password(password)
-                db.session.add(nuevo_club)
-                reporte.append(f"✅ CREADO: {username} - Password: {password}")
-            else:
-                reporte.append(f"ℹ️ YA EXISTE: {username}")
-        
-        db.session.commit()
-        return "<br>".join(reporte) + "<br><br><b>Guarda las contraseñas y luego elimina esta ruta.</b>"
-        
-    except Exception as e:
-        db.session.rollback()
-        return f"❌ Error: {str(e)}"
-# === FIN RUTA TEMPORAL ===
+
 
 @app.route('/registerform', methods=['GET', 'POST'])
 @login_required
