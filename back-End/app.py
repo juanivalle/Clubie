@@ -1,6 +1,6 @@
-from flask import Flask, jsonify, render_template, url_for, redirect, request, flash, Response
+from flask import Flask, jsonify, render_template, url_for, redirect, request, flash, Response, session
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, timedelta
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from flask_sqlalchemy import SQLAlchemy
@@ -36,6 +36,59 @@ limiter = Limiter(
 # Exponer csrf_token() como función global de Jinja
 app.jinja_env.globals['csrf_token'] = generate_csrf
 
+# === CONFIGURACIÓN DE SESIONES POR ROL ===
+# Tiempo máximo de cookie (para miembros: 30 días)
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)
+
+# Timeouts de inactividad por tipo de usuario
+SESSION_TIMEOUTS = {
+    'admin': timedelta(minutes=15),    # Superadmin: 15 minutos
+    'club': timedelta(minutes=60),     # Club: 60 minutos  
+    'member': timedelta(days=30)       # Miembro: 30 días
+}
+
+@app.before_request
+def check_session_timeout():
+    """Verifica timeout de sesión según el rol del usuario"""
+    # Solo verificar si hay usuario logueado
+    if not current_user.is_authenticated:
+        return
+    
+    # Determinar tipo de usuario y timeout correspondiente
+    if isinstance(current_user, Member):
+        user_type = 'member'
+    elif isinstance(current_user, Club):
+        if getattr(current_user, 'is_superuser', False):
+            user_type = 'admin'
+        else:
+            user_type = 'club'
+    else:
+        return  # Tipo desconocido, no aplicar timeout
+    
+    timeout = SESSION_TIMEOUTS.get(user_type)
+    if not timeout:
+        return
+    
+    # Obtener última actividad de la sesión
+    last_activity = session.get('last_activity')
+    now = datetime.now()
+    
+    if last_activity:
+        # Convertir de timestamp si es necesario
+        if isinstance(last_activity, (int, float)):
+            last_activity = datetime.fromtimestamp(last_activity)
+        
+        # Verificar si excedió el timeout
+        if now - last_activity > timeout:
+            logout_user()
+            session.clear()
+            flash('Tu sesión ha expirado por inactividad. Por favor inicia sesión nuevamente.', 'info')
+            return redirect(url_for('index'))
+    
+    # Actualizar última actividad
+    session['last_activity'] = now.timestamp()
+# === FIN CONFIGURACIÓN DE SESIONES ===
+
 @login_manager.user_loader
 def load_user(user_id):
     # Soportar tanto Club como Member
@@ -49,6 +102,24 @@ def load_user(user_id):
 def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
+
+# === RUTA TEMPORAL - ELIMINAR DESPUÉS DE USAR ===
+@app.route('/migrate-cantidad')
+@login_required
+def migrate_cantidad():
+    """Migra la columna cantidad de VARCHAR(3) a INTEGER.
+    Visitar UNA VEZ después del deploy y luego eliminar esta ruta."""
+    try:
+        # Primero convertir los datos existentes a integer
+        db.session.execute(db.text(
+            "ALTER TABLE trazabilidad ALTER COLUMN cantidad TYPE INTEGER USING cantidad::integer"
+        ))
+        db.session.commit()
+        return "✅ Columna 'cantidad' migrada a INTEGER correctamente. Ya puedes eliminar esta ruta."
+    except Exception as e:
+        db.session.rollback()
+        return f"❌ Error: {str(e)}"
+# === FIN RUTA TEMPORAL ===
 
 
 
@@ -304,19 +375,35 @@ def editar_planta(idplanta):
     form = PlantForm(obj=planta)
 
     if form.validate_on_submit():
-        planta.raza = form.raza.data
-        planta.Enraizado = form.Enraizado.data
-        planta.Riego = form.Riego.data
-        planta.paso1 = form.paso1.data
-        planta.paso2 = form.paso2.data
-        planta.paso3 = form.paso3.data
-        planta.floracion = form.floracion.data
-        planta.cosecha = form.cosecha.data
-        if form.cantidad.data:
-            planta.cantidad = str(form.cantidad.data).replace(',', '')
-        planta.observaciones = form.observaciones.data
-        db.session.commit()
-        return redirect(url_for('ctrPlantas'))
+        try:
+            planta.raza = form.raza.data
+            planta.Enraizado = form.Enraizado.data
+            planta.Riego = form.Riego.data
+            planta.paso1 = form.paso1.data
+            planta.paso2 = form.paso2.data
+            planta.paso3 = form.paso3.data
+            planta.floracion = form.floracion.data
+            planta.cosecha = form.cosecha.data
+            
+            # Validar y convertir cantidad a entero
+            if form.cantidad.data:
+                cantidad_raw = str(form.cantidad.data).replace(',', '').replace('g', '').replace('G', '').strip()
+                if not cantidad_raw.isdigit():
+                    flash('Error: La cantidad debe ser un número válido (sin letras).', 'error')
+                    return render_template('/logueado/edit_planta.html', form=form, planta=planta)
+                planta.cantidad = int(cantidad_raw)
+            
+            planta.observaciones = form.observaciones.data
+            db.session.commit()
+            flash('Planta actualizada exitosamente.', 'success')
+            return redirect(url_for('ctrPlantas'))
+            
+        except ValueError:
+            db.session.rollback()
+            flash('Error: Verifica que la cantidad sea un número válido.', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash('Error al actualizar la planta. Por favor intenta de nuevo.', 'error')
 
     return render_template('/logueado/edit_planta.html', form=form, planta=planta)
 
@@ -519,6 +606,8 @@ def login():
         club_user = Club.query.filter_by(username=credential).first()
         if club_user and club_user.check_password(password):
             login_user(club_user)
+            session.permanent = True
+            session['last_activity'] = datetime.now().timestamp()
             flash('¡Inicio de sesión exitoso!', 'success')
             # Redirigir según tipo
             if club_user.is_superuser:
@@ -530,6 +619,8 @@ def login():
         member_user = Member.query.filter_by(email=credential).first()
         if member_user and member_user.check_password(password):
             login_user(member_user)
+            session.permanent = True
+            session['last_activity'] = datetime.now().timestamp()
             flash('¡Bienvenido!', 'success')
             return redirect(url_for('portal_miembro'))
         

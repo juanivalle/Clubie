@@ -102,7 +102,7 @@ class Trazabilidad(db.Model):
     paso3 = db.Column(db.DateTime, nullable=True)
     floracion = db.Column(db.DateTime, nullable=True)
     cosecha = db.Column(db.DateTime, nullable=True)
-    cantidad = db.Column(db.String(3), nullable=False)
+    cantidad = db.Column(db.Integer, nullable=False)
     observaciones = db.Column(db.String(80), nullable=True)
 
 class PlantForm(FlaskForm):
