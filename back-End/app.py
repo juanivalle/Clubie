@@ -103,23 +103,6 @@ def index():
     usuarios = User.query.all()
     return render_template("/noLog/home.html", usuarios=usuarios)
 
-# === RUTA TEMPORAL - ELIMINAR DESPUÉS DE USAR ===
-@app.route('/migrate-cantidad')
-@login_required
-def migrate_cantidad():
-    """Migra la columna cantidad de VARCHAR(3) a INTEGER.
-    Visitar UNA VEZ después del deploy y luego eliminar esta ruta."""
-    try:
-        # Primero convertir los datos existentes a integer
-        db.session.execute(db.text(
-            "ALTER TABLE trazabilidad ALTER COLUMN cantidad TYPE INTEGER USING cantidad::integer"
-        ))
-        db.session.commit()
-        return "✅ Columna 'cantidad' migrada a INTEGER correctamente. Ya puedes eliminar esta ruta."
-    except Exception as e:
-        db.session.rollback()
-        return f"❌ Error: {str(e)}"
-# === FIN RUTA TEMPORAL ===
 
 
 
